@@ -1,5 +1,5 @@
-Voom::Presenters.define(:plugin_drawer, namespace: :plugins) do
-  helpers Voom::Presenters::Helpers::Inflector
+Coprl::Presenters.define(:plugin_drawer, namespace: :plugins) do
+  helpers Coprl::Presenters::Helpers::Inflector
   drawer 'Plugins' do
     menu do
       item 'Sample Plugin' do
@@ -7,7 +7,7 @@ Voom::Presenters.define(:plugin_drawer, namespace: :plugins) do
           loads :index
         end
       end
-      %i(image_crop chart).sort.each do |comp|
+      %i(image_crop chart google_maps cacheable script scroll_to clipboard markup iframe color_picker timer animate).sort.each do |comp|
         item titleize(comp) do
           event :click do
             loads comp

@@ -579,15 +579,15 @@ function hookupComponentsManually(root, selector, fn) {
     }
 }
 
-function hookupComponents(root, selector, VoomClass, MDCClass) {
-    var ctor = componentFactory(VoomClass, MDCClass);
+function hookupComponents(root, selector, CoprlClass, MDCClass) {
+    var ctor = componentFactory(CoprlClass, MDCClass);
     hookupComponentsManually(root, selector, ctor);
 }
 
-// Returns a function capable of constructing a Voom component.
-function componentFactory(VoomClass, MDCClass) {
+// Returns a function capable of constructing a Coprl component.
+function componentFactory(CoprlClass, MDCClass) {
     return function (element) {
-        return new VoomClass(element, typeof MDCClass === 'function' ? new MDCClass(element) : null);
+        return new CoprlClass(element, typeof MDCClass === 'function' ? new MDCClass(element) : null);
     };
 }
 
@@ -10817,8 +10817,8 @@ var VDialog = function () {
 
 var EVENT_DROPPED = 'dropped';
 
-var DRAG_DATA_MIME_TYPE = 'application/x.voom-drag-data+json';
-var ELEMENT_ID_MIME_TYPE = 'text/x.voom-element-id';
+var DRAG_DATA_MIME_TYPE = 'application/x.coprl-drag-data+json';
+var ELEMENT_ID_MIME_TYPE = 'text/x.coprl-element-id';
 
 function createDragStartHandler(root, element) {
     return function (event) {
@@ -10864,7 +10864,7 @@ function createDragLeaveHandler(root, element) {
 }
 
 function createDropHandler(root, element) {
-    // When an element is upgraded to a Voom component after being replaced via
+    // When an element is upgraded to a Coprl component after being replaced via
     // `replaces`, root may refer to the replaced element itself instead of the
     // element's root node.
     // Since a valid drop zone may exist anywhere on the page, it is not
@@ -34213,9 +34213,7 @@ var VPosts = function (_VBase) {
                 }
             }
 
-            var paramCount = Array.from(formData).length;
-
-            if (paramCount < 1) {
+            if (this.paramCount(formData) < 1) {
                 console.warn('Creating request with no data!' + ' Are you sure you\'ve hooked everything up correctly?');
             }
 
@@ -34384,8 +34382,16 @@ var VPosts = function (_VBase) {
                 }
 
                 // Send our FormData object; HTTP headers are set automatically
-                httpRequest.send(formData);
+                // Rack 2.2 will throw an exception https://github.com/rack/rack/issues/1603
+                // if we set the header as multi-part form data with no data in the body
+                // So we set the body to null in this case.
+                httpRequest.send(_this2.paramCount(formData) < 1 ? null : formData);
             });
+        }
+    }, {
+        key: 'paramCount',
+        value: function paramCount(formData) {
+            return Array.from(formData).length;
         }
     }, {
         key: 'isForm',
@@ -37625,7 +37631,7 @@ function initChips(e) {
     // call for chips is not needed.
 
     Object(__WEBPACK_IMPORTED_MODULE_2__base_component__["d" /* hookupComponentsManually */])(e, '.v-chip-set', function (element) {
-        var chipFactory = voomChipFactoryFactory(CHIP_BEHAVIOR_NO_AUTO_REMOVE);
+        var chipFactory = CoprlChipFactoryFactory(CHIP_BEHAVIOR_NO_AUTO_REMOVE);
         var mdcComponent = new __WEBPACK_IMPORTED_MODULE_0__material_chips__["b" /* MDCChipSet */](element, undefined, chipFactory);
 
         return new VChipSet(element, mdcComponent);
@@ -37706,7 +37712,7 @@ var VChip = function (_eventHandlerMixin) {
 }(Object(__WEBPACK_IMPORTED_MODULE_1__mixins_event_handler__["a" /* eventHandlerMixin */])(__WEBPACK_IMPORTED_MODULE_2__base_component__["a" /* VBaseComponent */]));
 
 // Returns a function which constructs VChip components.
-function voomChipFactoryFactory() {
+function CoprlChipFactoryFactory() {
     var behavior = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : CHIP_BEHAVIOR_AUTO_REMOVE;
 
     var autoRemove = behavior === CHIP_BEHAVIOR_AUTO_REMOVE;

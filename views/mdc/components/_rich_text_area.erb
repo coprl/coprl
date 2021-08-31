@@ -10,6 +10,7 @@
        id="<%= comp.id %>-rta"
        style="<%= 'width: 100%;' if comp.full_width %>"
        data-name="<%= comp.name %>"
+       data-toolbar='<%= comp.toolbar_options.to_json %>'
        <%= "data-placeholder='#{comp.placeholder}'" if comp.placeholder %>>
     <%= comp.value %>
   </div>

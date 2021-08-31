@@ -38923,7 +38923,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 // These Blots will be registered with Quill.
 var blots = [__WEBPACK_IMPORTED_MODULE_1__rich_text_area_horizontal_rule_blot__["a" /* HorizontalRuleBlot */]];
-var toolbarOptions = [['bold', 'italic', 'underline', 'strike'], [{ 'color': [] }], [{ 'align': [] }], ['blockquote', 'horizontal-rule'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], [{ 'script': 'sub' }, { 'script': 'super' }], [{ 'direction': 'rtl' }], [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'size': ['xx-small', false, 'large', 'x-large'] }], ['link', 'image', 'video'], ['clean']];
 var EMPTY_VALUE = '';
 
 function initRichTextArea(e) {
@@ -38944,7 +38943,7 @@ var VRichTextArea = function (_dirtyableMixin) {
 
         _this.quillWrapper = element.querySelector('.v-rich-text-area');
         _this.quill = new __WEBPACK_IMPORTED_MODULE_0_quill___default.a(_this.quillWrapper, {
-            modules: { toolbar: toolbarOptions },
+            modules: { toolbar: _this.toolbarOptions(_this.quillWrapper.dataset.toolbar) },
             bounds: _this.quillWrapper,
             theme: 'snow',
             placeholder: _this.quillWrapper.dataset.placeholder
@@ -39015,6 +39014,16 @@ var VRichTextArea = function (_dirtyableMixin) {
             var rawDocument = this.quill.root.innerHTML;
 
             this.fixedUpContentElement.innerHTML = convertLists(rawDocument);
+        }
+    }, {
+        key: "toolbarOptions",
+        value: function toolbarOptions(options) {
+            var extTools = JSON.parse(options);
+            var keys = Object.keys(extTools);
+            var filteredOpts = keys.filter(function (key) {
+                return extTools[key];
+            });
+            return [['bold', 'italic', 'underline', 'strike'], [{ 'color': [] }], [{ 'align': [] }], ['blockquote', 'horizontal-rule'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], [{ 'script': 'sub' }, { 'script': 'super' }], [{ 'direction': 'rtl' }], [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'size': ['xx-small', false, 'large', 'x-large'] }], filteredOpts, ['clean']];
         }
     }]);
 

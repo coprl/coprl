@@ -8,19 +8,6 @@ import {dirtyableMixin} from './mixins/dirtyable';
 const blots = [
     HorizontalRuleBlot,
 ];
-const toolbarOptions = [
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }],
-    [{ 'align': [] }],
-    ['blockquote', 'horizontal-rule'],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'script': 'sub'}, { 'script': 'super' }],
-    [{ 'direction': 'rtl' }],
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-    [{ 'size': ['xx-small', false, 'large', 'x-large'] }],
-    ['link', 'image', 'video'],
-    ['clean']
-];
 const EMPTY_VALUE = '';
 
 export function initRichTextArea(e) {
@@ -37,7 +24,7 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
 
         this.quillWrapper = element.querySelector('.v-rich-text-area');
         this.quill = new Quill(this.quillWrapper, {
-            modules: {toolbar: toolbarOptions},
+            modules: {toolbar: this.toolbarOptions(this.quillWrapper.dataset.toolbar)},
             bounds: this.quillWrapper,
             theme: 'snow',
             placeholder: this.quillWrapper.dataset.placeholder
@@ -97,6 +84,27 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
         const rawDocument = this.quill.root.innerHTML;
 
         this.fixedUpContentElement.innerHTML = convertLists(rawDocument);
+    }
+
+    toolbarOptions(options) {
+        const extTools = JSON.parse(options);
+        const keys = Object.keys(extTools);
+        const filteredOpts = keys.filter(function(key) {
+            return extTools[key]
+        });
+        return [
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }],
+            [{ 'align': [] }],
+            ['blockquote', 'horizontal-rule'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'size': ['xx-small', false, 'large', 'x-large'] }],
+            filteredOpts,
+            ['clean']
+        ];
     }
 }
 

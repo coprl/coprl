@@ -11,7 +11,16 @@ module Coprl
             @rows = attribs.delete(:rows) || default(:rows)
             @height = "#{@rows * 24}px"
             @resizable = attribs.delete(:resizable) { false }
+            @links = attribs.delete(:links) { true }
+            @images = attribs.delete(:images) { true }
+            @videos = attribs.delete(:videos) { true }
             expand!
+          end
+
+          def toolbar_options
+            {link: @links,
+             image: @images,
+             video: @videos}
           end
         end
       end

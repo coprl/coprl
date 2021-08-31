@@ -25,6 +25,16 @@ Coprl::Presenters.define(:text_areas) do
         hint 'Default is full width and 25 rows'
       end
 
+      rich_text_area name: :notes,
+                     placeholder: 'Text entered here is saved as HTML',
+                     rows: 10,
+                     links: false,
+                     images: false,
+                     videos: false do
+        label 'Rich Text Area - control external content options'
+        hint 'Default is links, images and video embeds enabled'
+      end
+
       button 'Submit' do
         event :click do
           posts '/_echo_'

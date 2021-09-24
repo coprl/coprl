@@ -4102,7 +4102,6 @@ module.exports = DESCRIPTORS ? function (object, key, value) {
     component: {
         datetime: {
             flatpickr: {
-                altInput: true,
                 disableMobile: true,
                 clickOpens: false,
                 defaultHour: 0
@@ -45172,6 +45171,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+// field types:
+var TYPE_DATE = 'date';
+var TYPE_TIME = 'time';
+var TYPE_DATE_TIME = 'datetime';
+
+// date/time selection modes:
+// (see https://flatpickr.js.org/options, option `mode`)
+var MODE_SINGLE = 'single';
+var MODE_MULTIPLE = 'multiple';
+var MODE_RANGE = 'range';
+
 function initDateTime(e) {
     console.debug('\tDateTime');
     Object(__WEBPACK_IMPORTED_MODULE_3__base_component__["c" /* hookupComponents */])(e, '.v-datetime', VDateTime, __WEBPACK_IMPORTED_MODULE_1__material_textfield__["a" /* MDCTextField */]);
@@ -45186,16 +45196,17 @@ var VDateTime = function (_VTextField) {
 
         var _this = _possibleConstructorReturn(this, (VDateTime.__proto__ || Object.getPrototypeOf(VDateTime)).call(this, element, mdcComponent));
 
-        var type = element.dataset.type;
-        var defaultConfig = {};
+        var defaultConfig = { altInput: true };
+
         if (!_this.root.documentElement) {
             defaultConfig.appendTo = _this.root.querySelector('.v-root');
         }
+
         var config = Object.assign(defaultConfig, __WEBPACK_IMPORTED_MODULE_4__config__["a" /* default */].get('component.datetime.flatpickr', {}), JSON.parse(element.dataset.config));
 
-        if (type === 'datetime') {
+        if (_this.type === TYPE_DATE_TIME) {
             config.enableTime = true;
-        } else if (type === 'time') {
+        } else if (_this.type === TYPE_TIME) {
             config.enableTime = true;
             config.noCalendar = true;
         }
@@ -45211,6 +45222,19 @@ var VDateTime = function (_VTextField) {
 
         _this.fp = __WEBPACK_IMPORTED_MODULE_0_flatpickr___default()(_this.input, config);
         _this.fp.mdc_text_field = mdcComponent;
+
+        // Avoid dispatching `input` event before both ends of a date range have
+        // been selected:
+        if (_this.mode == MODE_RANGE) {
+            _this.input.addEventListener('input', function (e) {
+                // not `< 2` because `selectedDates.length` will be 0 when the
+                // selector is cleared via the ✕ button.
+                if (_this.fp.selectedDates.length == 1) {
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+        }
 
         element.addEventListener('click', function () {
             return _this.toggle();
@@ -45257,6 +45281,22 @@ var VDateTime = function (_VTextField) {
             var currVal = new Date(this.fp.input.value);
             var prevVal = new Date(this.originalValue);
             return currVal.getTime() !== prevVal.getTime();
+        }
+    }, {
+        key: 'mode',
+        get: function get() {
+            if (!this._mode) {
+                var config = JSON.parse(this.element.dataset['config']) || {};
+
+                this._mode = config['mode'] || MODE_SINGLE; // default per Flatpickr
+            }
+
+            return this._mode;
+        }
+    }, {
+        key: 'type',
+        get: function get() {
+            return this.element.dataset['type'];
         }
     }]);
 

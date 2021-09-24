@@ -65,9 +65,9 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-module.exports = __webpack_require__.p + "../../public/bundle.css";
+throw new Error("Module build failed: Error: Missing binding /Users/nick/Projects/coprl/views/mdc/node_modules/node-sass/vendor/darwin-x64-57/binding.node\nNode Sass could not find a binding for your current environment: OS X 64-bit with Node.js 8.x\n\nFound bindings for the following environments:\n  - OS X 64-bit with Node.js 10.x\n\nThis usually happens because your environment has changed since running `npm install`.\nRun `npm rebuild node-sass` to download the binding for your current environment.\n    at module.exports (/Users/nick/Projects/coprl/views/mdc/node_modules/node-sass/lib/binding.js:15:13)\n    at Object.<anonymous> (/Users/nick/Projects/coprl/views/mdc/node_modules/node-sass/lib/index.js:14:35)\n    at Module._compile (module.js:624:30)\n    at Object.Module._extensions..js (module.js:635:10)\n    at Module.load (module.js:545:32)\n    at tryModuleLoad (module.js:508:12)\n    at Function.Module._load (module.js:500:3)\n    at Module.require (module.js:568:17)\n    at require (internal/module.js:11:18)\n    at Object.sassLoader (/Users/nick/Projects/coprl/views/mdc/node_modules/sass-loader/lib/loader.js:46:72)");
 
 /***/ })
 /******/ ]);

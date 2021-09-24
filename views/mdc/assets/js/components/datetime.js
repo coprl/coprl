@@ -4,6 +4,17 @@ import { VTextField } from './text-fields';
 import { hookupComponents } from './base-component';
 import appConfig from '../config';
 
+// field types:
+const TYPE_DATE = 'date';
+const TYPE_TIME = 'time';
+const TYPE_DATE_TIME = 'datetime';
+
+// date/time selection modes:
+// (see https://flatpickr.js.org/options, option `mode`)
+const MODE_SINGLE = 'single';
+const MODE_MULTIPLE = 'multiple';
+const MODE_RANGE = 'range';
+
 export function initDateTime(e) {
     console.debug('\tDateTime');
     hookupComponents(e, '.v-datetime', VDateTime, MDCTextField);
@@ -14,20 +25,21 @@ export class VDateTime extends VTextField {
     constructor(element, mdcComponent) {
         super(element, mdcComponent);
 
-        const type = element.dataset.type;
-        const defaultConfig = {};
+        const defaultConfig = {altInput: true};
+
         if (!this.root.documentElement) {
           defaultConfig.appendTo = this.root.querySelector('.v-root');
         }
+
         const config = Object.assign(
             defaultConfig,
             appConfig.get('component.datetime.flatpickr', {}),
             JSON.parse(element.dataset.config),
         );
 
-        if (type === 'datetime') {
+        if (this.type === TYPE_DATE_TIME) {
             config.enableTime = true;
-        } else if (type === 'time') {
+        } else if (this.type === TYPE_TIME) {
             config.enableTime = true;
             config.noCalendar = true;
         }
@@ -43,6 +55,19 @@ export class VDateTime extends VTextField {
 
         this.fp = flatpickr(this.input, config);
         this.fp.mdc_text_field = mdcComponent;
+
+        // Avoid dispatching `input` event before both ends of a date range have
+        // been selected:
+        if (this.mode == MODE_RANGE) {
+            this.input.addEventListener('input', e => {
+                // not `< 2` because `selectedDates.length` will be 0 when the
+                // selector is cleared via the ✕ button.
+                if (this.fp.selectedDates.length == 1) {
+                    e.stopPropagation();
+                    return false;
+                }
+            })
+        }
 
         element.addEventListener('click', () => this.toggle());
         this.originalValue = this.fp.input.value;
@@ -79,6 +104,20 @@ export class VDateTime extends VTextField {
         const currVal = new Date(this.fp.input.value);
         const prevVal = new Date(this.originalValue);
         return currVal.getTime() !== prevVal.getTime();
+    }
+
+    get mode() {
+        if (!this._mode) {
+            const config = JSON.parse(this.element.dataset['config']) || {};
+
+            this._mode = config['mode'] || MODE_SINGLE; // default per Flatpickr
+        }
+
+        return this._mode;
+    }
+
+    get type() {
+        return this.element.dataset['type'];
     }
 }
 

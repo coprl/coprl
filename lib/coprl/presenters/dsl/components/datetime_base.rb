@@ -29,13 +29,13 @@ module Coprl
           end
 
           private
-          def merge_config(attrib, default=false)
-            attrib_value = attribs.delete(attrib) {default ? default(attrib) : nil}
+          def merge_config(attrib, use_default=false)
+            attrib_value = attribs.delete(attrib) {use_default ? default(attrib) : nil}
             @config.merge!({attrib => attrib_value}) if attrib_value
           end
 
-          def map_config(attrib, new_attrib, default=false)
-            attrib_value = attribs.delete(attrib) {default ? default(attrib) : nil}
+          def map_config(attrib, new_attrib, use_default=false)
+            attrib_value = attribs.delete(attrib) {use_default ? default(attrib) : nil}
             @config.merge!({new_attrib => attrib_value}) if attrib_value
           end
         end

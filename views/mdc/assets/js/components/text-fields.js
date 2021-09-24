@@ -29,7 +29,7 @@ export class VTextField extends dirtyableMixin(
         this.input.addEventListener('input', (event) => {
             clearTimeout(this.afterInputTimeout);
             this.afterInputTimeout = setTimeout(() => {
-                this.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, {composed: true}));
+                this.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, {bubbles: true, composed: true}));
             }, AFTER_INPUT_TIMEOUT);
         });
 

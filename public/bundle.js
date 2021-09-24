@@ -13473,7 +13473,7 @@ var VTextField = function (_dirtyableMixin) {
         _this.input.addEventListener('input', function (event) {
             clearTimeout(_this.afterInputTimeout);
             _this.afterInputTimeout = setTimeout(function () {
-                _this.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, { composed: true }));
+                _this.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, { bubbles: true, composed: true }));
             }, AFTER_INPUT_TIMEOUT);
         });
 

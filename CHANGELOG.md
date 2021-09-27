@@ -1,3 +1,63 @@
+# [3.0.0-beta.1](https://github.com/coprl/coprl/compare/v2.1.1...v3.0.0-beta.1) (2021-09-27)
+
+
+### Bug Fixes
+
+* add Rack > 2.2.2 support ([c39c18d](https://github.com/coprl/coprl/commit/c39c18d48c557f9f206396eb73e20f15b0a85e7e))
+* add Rack > 2.2.2 support ([6e23287](https://github.com/coprl/coprl/commit/6e232875d1ea3c4250f9e19e841215a750082ffc))
+* added check for engine coprl_presenters_rails_engine_url ([d2ee7b5](https://github.com/coprl/coprl/commit/d2ee7b5900a256c30e6715d1246639dec682ff08))
+* added cli --version ([4c5b10e](https://github.com/coprl/coprl/commit/4c5b10e0707bcdeecfb29908eb3284b692cbcd41))
+* added missing prepare context callbacks to Rails Engine ([bafa36d](https://github.com/coprl/coprl/commit/bafa36d6e95ad9863eb93cb44cc894163c147c4f))
+* added POM scaffolding generators ([1323b32](https://github.com/coprl/coprl/commit/1323b322f83fd9e9519740d9aa7ace4ef8d63b61))
+* added prepare context for Rails native views engine that sets the request and session automatically ([a09f3c6](https://github.com/coprl/coprl/commit/a09f3c637102e640fe0b91894ae89b5a07288846))
+* added support for api base base_url ([8f69979](https://github.com/coprl/coprl/commit/8f699793de899a450df5cfb8b95015a832200178))
+* Added version.rb to plugin generator ([f1f2092](https://github.com/coprl/coprl/commit/f1f20925dfd326fb5a47910952e21b34b762c31d))
+* Added version.rb to plugin generator ([35187bf](https://github.com/coprl/coprl/commit/35187bf188957e2ca93e2bf07963e958452f27fe))
+* defaulted :pom as the rails scaffolding template when the copral gem is included inside Rails ([7179a6f](https://github.com/coprl/coprl/commit/7179a6fddd37c1b1d735469c4a79cf0a960c7d92))
+* expanded plugin generator to include github semantic release, demo pom and sample README ([06de7a2](https://github.com/coprl/coprl/commit/06de7a237f8a417a11776d1994915c32253a981d))
+* fixed bug in context prep for api client ([d0558cf](https://github.com/coprl/coprl/commit/d0558cf3966a9bdc91bd9d106dcb0a7ab6f56c34))
+* fixed typo on if check ([95b3091](https://github.com/coprl/coprl/commit/95b3091365a853eee24e4bce0e37b182da1fdc3d))
+* fixed unordered list partial rendering error ([014f1d1](https://github.com/coprl/coprl/commit/014f1d19926d7e9d39618fbe68c8068db316ac4b))
+* forced release bump ([6c22e06](https://github.com/coprl/coprl/commit/6c22e061acc2e714b5b87be8994b2eb0d488ac2d))
+* generator not compatible with COPRL 3 Rails templating naming conventions ([f6d80f0](https://github.com/coprl/coprl/commit/f6d80f0a44f6305b9339bc2bd6db8487eefc68cc))
+* native rails tag helper conflicts with base components tag method. ([c9d3847](https://github.com/coprl/coprl/commit/c9d3847405ab53c1ba728bf9f2afac655f0b1c1f))
+* Rails routes automatically made available as helpers ([#322](https://github.com/coprl/coprl/issues/322)) ([abb0031](https://github.com/coprl/coprl/commit/abb00311940fda8741459f8aafe29cd7bf074b88))
+* removed google_map built in plugin to its own plugin ([a34290d](https://github.com/coprl/coprl/commit/a34290de890e2fdf7e6c2c7b1714854d454c82a4))
+* small tweaks to simplify the presenters wrappers ([#319](https://github.com/coprl/coprl/issues/319)) ([cbf0c7c](https://github.com/coprl/coprl/commit/cbf0c7c4c80d68ecc84a2989934d2d02e8a1a928))
+* support for index presenters within Rails ([06b5fb9](https://github.com/coprl/coprl/commit/06b5fb97e049db3f8670eef87979959d8bb1e63b))
+* Updated generator to use secure version of Rake ([5e0761f](https://github.com/coprl/coprl/commit/5e0761f7c13139e68da38ea4dfaae4b40c010e71))
+* view paths issue when using partials with Rails Engine ([#321](https://github.com/coprl/coprl/issues/321)) ([2a917e7](https://github.com/coprl/coprl/commit/2a917e7076895037e5a069e77525ef53d2ca45f1))
+* when generating scaffolding creates proper routes that ignore the pom files ([63d6c49](https://github.com/coprl/coprl/commit/63d6c49af151fd409293c4eb46ee200c0c58855b))
+
+
+* Coprl rename (#318) ([8acafd5](https://github.com/coprl/coprl/commit/8acafd5e1a1f116c881ae79c59d069161d7ec2e6)), closes [#318](https://github.com/coprl/coprl/issues/318) [#309](https://github.com/coprl/coprl/issues/309) [#317](https://github.com/coprl/coprl/issues/317) [#316](https://github.com/coprl/coprl/issues/316) [#315](https://github.com/coprl/coprl/issues/315) [#314](https://github.com/coprl/coprl/issues/314) [#313](https://github.com/coprl/coprl/issues/313) [#312](https://github.com/coprl/coprl/issues/312) [#311](https://github.com/coprl/coprl/issues/311) [#310](https://github.com/coprl/coprl/issues/310) [#316](https://github.com/coprl/coprl/issues/316) [#315](https://github.com/coprl/coprl/issues/315) [#314](https://github.com/coprl/coprl/issues/314) [#313](https://github.com/coprl/coprl/issues/313) [#312](https://github.com/coprl/coprl/issues/312) [#311](https://github.com/coprl/coprl/issues/311) [#310](https://github.com/coprl/coprl/issues/310)
+
+
+### Features
+
+* Added singular alias for common actions: load, replace, post, create, and delete ([b57c305](https://github.com/coprl/coprl/commit/b57c305bd4dbf95b8a9662ad747020683bf74c8d))
+* switch to use Rails built-in watchers and reloader ([#320](https://github.com/coprl/coprl/issues/320)) ([53e0ee4](https://github.com/coprl/coprl/commit/53e0ee49caa663ce93ff731c280bcd754da73fc1))
+
+
+### BREAKING CHANGES
+
+* Rails Engine supporting native rails template views and partials.
+Plugin's are incompatible with this version due to Rails render rules requiring leading '_' and application directory.
+
+* Rails 5 work in progress. Not rending templates currently. Use Rails 6 until resoved.
+
+* Fixed local path gemfile entry.
+
+* Removed puts debugging statements.
+
+* Rails 5 changes to get template handlers to render correctly.  Note: If you don't like the load speeds in dev mode, use Rails 6 instead. Rails 6 template speeds are 5 times faster in development.
+
+* Rendering templates even when empty is significantly slower in Rails than in Sinatra. So we prevent render calls a practice across all component templates. Only render what you are using is the rule of thumb, even if the calling template is wrapped with a `if comp` check.
+
+* docs: Updated README
+
+Added more instructions on rails partials and general cleanup.
+
 # [3.0.0-beta.12](https://github.com/rx/presenters/compare/v3.0.0-beta.11...v3.0.0-beta.12) (2021-09-22)
 
 

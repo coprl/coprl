@@ -50,11 +50,6 @@ module Coprl
             @hint = hint
           end
 
-          def behavior
-            return "type=\"#{@behavior}\"" unless @behavior == 'currency'
-            return 'type="number" min="0.00" max="10000000000.00" step="0.01"'
-          end
-
           private
 
           def json_regexp(regexp)

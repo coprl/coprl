@@ -6433,6 +6433,7 @@ var VErrors = function () {
             currentEl.classList.add('mdc-text-field--invalid');
             helperText.classList.add('mdc-text-field-helper-text--validation-msg');
             helperText.classList.remove('v-hidden');
+            currentEl.scrollIntoView(true);
 
             return true;
         }
@@ -6458,11 +6459,11 @@ var VErrors = function () {
             newDiv.insertAdjacentHTML('beforeend', messages.join('<br>'));
 
             // add the newly created element and its content into the DOM
-            if (errorsDiv.clientTop < 10) {
-                errorsDiv.scrollIntoView();
-            }
-
             errorsDiv.insertAdjacentElement('beforebegin', newDiv);
+
+            if (errorsDiv.getBoundingClientRect().top < 0) {
+                window.scrollTo({ top: 0 });
+            }
 
             return true;
         }

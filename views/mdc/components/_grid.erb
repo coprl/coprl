@@ -10,7 +10,7 @@
      data-input-tag="<%= comp.input_tag %>"
      <% end %>
      class="v-grid mdc-layout-grid
-            <%= _padding_classes_(comp.padding, @grid_nesting) %>
+            <%= padding_classes(comp.padding, @grid_nesting) %>
             <%= 'v-grid__wide' if comp.wide %>
             <%= comp.css_class.join(' ') %>"
      style="<%= "background-color: #{comp.color};" if comp.color %><%= "height:#{comp.height};" if comp.height %>"
@@ -27,7 +27,7 @@
      %>
       <div id="<%= col.id %>" class="v-column mdc-layout-grid__cell <%= span %>
                           <%= col.overflow ? nil : 'v-column-hide-overflow' %>
-                          <%= _padding_classes_(col.padding) %> v-column--relative <%= _alignment_class_(col.align) %> <%= col.css_class.join(' ') %>"
+                          <%= padding_classes(col.padding) %> v-column--relative <%= _alignment_class_(col.align) %> <%= col.css_class.join(' ') %>"
            style="<%= "background-color: #{col.color};" if col.color %><%= "height:#{comp.height};" if comp.height %>"
         <%= partial "components/event", :locals => {comp: col, events: col.events, parent_id: col.event_parent_id} if col.events&.any? %>>
         <%= partial("components/progress", :locals => {:comp => col.progress}) if col.progress && includes_one?(Array(col.progress.position), %i(top both))%>

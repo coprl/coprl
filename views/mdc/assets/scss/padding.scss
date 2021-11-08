@@ -1,0 +1,34 @@
+@import "@material/layout-grid/mdc-layout-grid";
+
+$positions: ('top', 'right', 'bottom', 'left');
+
+@each $size in map-keys($mdc-layout-grid-columns) {
+  @include mdc-layout-grid-media-query_($size) {
+    $gutter: map-get($mdc-layout-grid-default-gutter, $size);
+    $levels: (
+      0: 0,
+      1: $gutter/4,
+      2: $gutter/2,
+      3: $gutter,
+      4: $gutter*1.5,
+      5: $gutter*2
+    );
+
+    @each $level, $size in $levels {
+      @each $direction in $positions {
+        .v-padding--#{$direction}#{$level} {
+          padding-#{$direction}: #{$size} !important;
+        }
+      }
+    }
+
+    // declare padding size variables for use within files loaded by the
+    // CustomCss functionality:
+    :root {
+      @each $level, $size in $levels {
+        --v-padding#{$level}: #{$size};
+      }
+    }
+  }
+}
+

@@ -60,6 +60,9 @@ unless defined?(Coprl::Presenters::Settings)
               setting :rich_text_area do
                 setting :rows, 6
               end
+              setting :padding do
+                setting :default_size, 2
+              end
             end
           end
           setting :error_logger, ->(file, e, _params, _presenter_name) {

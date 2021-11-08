@@ -8,7 +8,7 @@ module Coprl
           def initialize(**attribs_, &block)
             super(type: :separator, **attribs_, &block)
             padding = attribs.delete(:padding) {:full}
-            @padding = validate_padding(coerce_padding(padding)).uniq if padding != nil
+            @padding = validate_padding!(coerce_padding(padding)).uniq if padding != nil
             expand!
           end
 

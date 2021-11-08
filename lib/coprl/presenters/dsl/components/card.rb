@@ -32,7 +32,7 @@ module Coprl
             self.text(attribs.delete(:text)) if attribs.key?(:text)
             @shows_errors = attribs.delete(:shows_errors) {true}
             padding = attribs.delete(:padding) {:all}
-            @padding = validate_padding(coerce_padding(padding)).uniq if padding != nil
+            @padding = validate_padding!(coerce_padding(padding)).uniq if padding != nil
             @hidden = attribs.delete(:hidden){false}
             @background_color = attribs.delete(:background_color)
 

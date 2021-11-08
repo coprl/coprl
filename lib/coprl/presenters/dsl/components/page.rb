@@ -3,11 +3,13 @@ module Coprl
     module DSL
       module Components
         class Page < Base
-          attr_accessor :title, :background_color
+          attr_accessor :title, :background_color, :theme_color
 
           def initialize(**attribs_, &block)
-            super(type: :page,
-                  **attribs_, &block)
+            super(type: :page, **attribs_, &block)
+
+            @theme_color = attribs_.delete(:theme_color)
+
             expand!
           end
 

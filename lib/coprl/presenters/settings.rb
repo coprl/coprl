@@ -31,6 +31,7 @@ unless defined?(Coprl::Presenters::Settings)
             # Relative to the root
             setting :custom_css, '../public/presenters'
             setting :protect_from_forgery, false
+            setting :asset_host, proc { |request| request.base_url }
           end
           setting :plugins, []
           setting :components do

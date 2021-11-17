@@ -1,21 +1,25 @@
 # used used by the grid, content and card erbs
 module Coprl::Presenters::WebClient::Helpers
   module PaddingHelpers
-    def _padding_array_(padding, nesting=0)
-      return (%i(top0 right0 bottom0 left0) - padding.map {|p| "#{p.to_s.gsub(%r(\d),'')}0".to_sym} + padding.map(&:to_sym)).sort if padding
-      nesting > 1 ? %i(top3 right0 bottom3 left0).sort : []
+    private
+
+    def padding_array(padding, nesting = 0)
+      if padding
+        padding = Array(padding)
+        return (NO_PADDING - padding.map { |p| "#{p.to_s.gsub(NUMBER, '')}0".to_sym } + padding.map(&:to_sym)).sort
+      end
+
+      nesting > 1 ? NESTED_PADDING : []
     end
 
-    def _padding?(padding, nesting=0)
-      _padding_array_(padding, nesting) != %i(top0 right0 bottom0 left0).sort
+    def padding_classes(padding, nesting = 0)
+      padding_array(padding, nesting).map { |p| "v-padding--#{p}" }.join(' ')
     end
 
-    def _padding_classes_(padding, nesting=0)
-      "v-padding-#{_padding_array_(padding, nesting).join('-')}"
-    end
+    private
 
-    def _alignment_class_(align)
-      "v-grid-column-align-#{align}"
-    end
+    NUMBER = %r{\d}.freeze
+    NO_PADDING = %i[top0 right0 bottom0 left0].sort.freeze
+    NESTED_PADDING = %i[top3 right0 bottom3 left0].sort.freeze
   end
 end

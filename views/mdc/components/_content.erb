@@ -10,18 +10,18 @@
        <%= drop_zone_attributes(comp) %>
        class="v-content
             <%= position_classes %>
-            <%= _padding_classes_(comp.padding) %>
+            <%= padding_classes(comp.padding) %>
             <%= 'v-hidden' if comp.hidden %>
             <%= 'v-dnd-draggable' if comp.draggable %>
-            <%= comp.float  ? 'v-content--float' : 'v-content--relative'%>
+            <%= comp.float  ? 'v-content--float' : 'v-content--relative' %>
             <%= comp.css_class.join(' ') %>
-            <%= color_classname(comp, 'background-', :background_color)%>"
-     <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>
-       style="text-align: <%= comp.text_align %>;
-             <%= "display: inline-block;" if comp.inline %>
-             <%= "width: #{comp.width};" if comp.width %>
-             <%= "height : #{comp.height };" if comp.height  %>
-             <%= color_style(comp, 'background-', :background_color) %>"
+            <%= color_classname(comp, 'background-', :background_color) %>"
+     <%= partial "components/event", locals: {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>
+       style="<% if comp.text_align %>text-align: <%= comp.text_align %>;<% end %>
+              <%= "display: inline-block;" if comp.inline %>
+              <%= "width: #{comp.width};" if comp.width %>
+              <%= "height: #{comp.height };" if comp.height %>
+              <%= color_style(comp, 'background-', :background_color) %>"
        data-is-container>
     <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(top both)) %>
     <% if comp.shows_errors %>

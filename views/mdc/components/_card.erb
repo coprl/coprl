@@ -37,8 +37,7 @@
     <% end %>
     <div class="v-errors" style="<%= "height: #{comp.height};" if comp.height %>">
       <% if comp.components.any? %>
-        <div class="v-card-content
-                  <%= _padding_classes_(comp.padding, subclass: :col) %>"
+        <div class="v-card-content <%= padding_classes(comp.padding, subclass: :col) %>"
              style="<%= "height: #{comp.height};" if comp.height %>">
           <%= partial "components/render", :locals => {:components => comp.components, :scope => nil} if comp.components.any? %>
         </div>

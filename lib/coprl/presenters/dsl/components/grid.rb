@@ -21,7 +21,7 @@ module Coprl
             @columns = []
             @color = color
             padding = attribs.delete(:padding) {nil}
-            @padding = validate_padding(coerce_padding(padding, default_level: 3)).uniq if padding != nil
+            @padding = validate_padding!(coerce_padding(padding, default_level: 3)).uniq if padding != nil
             @wide = attribs.delete(:wide) {false}
             @gutter = coerce_gutter(attribs.delete(:gutter) {nil})
             @height = attribs.delete(:height) {nil}
@@ -91,7 +91,7 @@ module Coprl
               @overflow = attribs.delete(:overflow){true}
               @components = []
               padding = attribs.delete(:padding) {nil}
-              @padding = validate_padding(coerce_padding(padding)).uniq if padding != nil
+              @padding = validate_padding!(coerce_padding(padding)).uniq if padding != nil
               @height = attribs.delete(:height) {nil}
               expand!
             end

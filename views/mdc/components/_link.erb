@@ -1,4 +1,7 @@
 <% target = "_#{comp.target}" %>
-<% if comp %>
-    <a href="<%= comp.url %>" target="<%= target %>"><%= comp.text %></a>
-<% end %>
+<a href="<%= comp.url %>"
+   id="<%= comp.id %>"
+   target="<%= target %>"
+   <%= partial "components/event", locals: {comp: comp, events: comp.events, parent_id: comp.parent_id} if comp.events&.any? %>>
+  <%= comp.text %>
+</a>

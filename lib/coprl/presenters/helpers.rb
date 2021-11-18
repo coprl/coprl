@@ -4,8 +4,9 @@ module Coprl
       include Helpers::Time
       include Helpers::Date
       include Helpers::Redact
+
       if defined?(::Rails)
-        include Coprl::Presenters::Helpers::Rails
+        include Helpers::Rails
       end
     end
   end

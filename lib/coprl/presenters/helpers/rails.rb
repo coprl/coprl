@@ -1,4 +1,4 @@
-if defined?(Rails)
+if defined?(::Rails)
   module Coprl
     module Presenters
       module Helpers
@@ -38,6 +38,18 @@ if defined?(Rails)
           end
 
           alias presenter_url presenters_url
+
+          # Ensure methods called from Rails helpers (e.g. `config.asset_host`
+          # in `ActionView::Helpers::AssetUrlHelper#image_url`) are properly
+          # delegated to Rails:
+          def method_missing(name, *args)
+            if ::Rails.application.respond_to?(name)
+              trace { "delegating ##{name} to Rails.application" }
+              return ::Rails.application.public_send(name, *args)
+            end
+
+            super
+          end
         end
       end
     end

@@ -16,6 +16,10 @@ module Coprl::Presenters::WebClient::Helpers
       padding_array(padding, nesting).map { |p| "v-padding--#{p}" }.join(' ')
     end
 
+    def alignment_class(align)
+      "v-grid-column-align-#{align}"
+    end
+
     private
 
     NUMBER = %r{\d}.freeze

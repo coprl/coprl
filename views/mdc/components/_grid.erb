@@ -27,7 +27,7 @@
      %>
       <div id="<%= col.id %>" class="v-column mdc-layout-grid__cell <%= span %>
                           <%= col.overflow ? nil : 'v-column-hide-overflow' %>
-                          <%= padding_classes(col.padding) %> v-column--relative <%= _alignment_class_(col.align) %> <%= col.css_class.join(' ') %>"
+                          <%= padding_classes(col.padding) %> v-column--relative <%= alignment_class(col.align) %> <%= col.css_class.join(' ') %>"
            style="<%= "background-color: #{col.color};" if col.color %><%= "height:#{comp.height};" if comp.height %>"
         <%= partial "components/event", :locals => {comp: col, events: col.events, parent_id: col.event_parent_id} if col.events&.any? %>>
         <%= partial("components/progress", :locals => {:comp => col.progress}) if col.progress && includes_one?(Array(col.progress.position), %i(top both))%>

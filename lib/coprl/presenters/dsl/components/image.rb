@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Image < EventBase
+        class Image < Base
           include Mixins::Tooltips
 
           VALID_FIT_TYPES = %i[contain cover fill fit].freeze

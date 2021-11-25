@@ -4,7 +4,7 @@ module Coprl
       module Components
         class Table < Base
           include Mixins::Common
-          include Mixins::Event
+
           attr_accessor :header, :rows, :selectable, :width, :border
 
           def initialize(**attribs_, &block)
@@ -66,7 +66,7 @@ module Coprl
                                                    &block)
             end
 
-            class Column < EventBase
+            class Column < Base
               include Mixins::Tooltips
               include Mixins::Chipset
               include Mixins::Selects

@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Badge < EventBase
+        class Badge < Base
           attr_accessor :badge, :icon, :text
 
           def initialize(**attribs_, &block)

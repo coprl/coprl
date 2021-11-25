@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class ExpansionPanel < EventBase
+        class ExpansionPanel < Base
           include Mixins::Common
 
           attr_accessor :open
@@ -30,7 +30,7 @@ module Coprl
             @content = Content.new(parent: self, **attribs, &block)
           end
 
-          class Content < EventBase
+          class Content < Base
             include Mixins::Common
             include Mixins::Attaches
 

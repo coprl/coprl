@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Content < EventBase
+        class Content < Base
           include Mixins::Common
           include Mixins::Attaches
           include Mixins::TextFields

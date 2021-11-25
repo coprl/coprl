@@ -1,10 +1,8 @@
-require 'coprl/presenters/dsl/components/event_base'
-
 module Coprl
   module Presenters
     module Plugins
       module <%= classify(name) %>
-        class <%= classify(name) %>Component < DSL::Components::EventBase
+        class <%= classify(name) %>Component < DSL::Components::Base
           attr_reader :random_fact
           def initialize(random_fact, **attribs_, &block)
             @random_fact = random_fact

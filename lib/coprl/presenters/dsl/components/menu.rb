@@ -71,7 +71,7 @@ module Coprl
             end
           end
 
-          class Item < EventBase
+          class Item < Base
             include Mixins::Tooltips
             include Mixins::Typography
             include BaseMenuItem

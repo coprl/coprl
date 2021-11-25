@@ -1,37 +1,48 @@
-require 'securerandom'
-
 module Coprl
   module Presenters
     module DSL
       module Components
-        # Every object in the POM is a node
+        # Every object in the POM is a node.
         # This class provides common base implementation
         class Base
-          include Lockable
+          extend Pluggable
 
+          include Lockable
           include Coprl::Serializer
           include LoggerMethods
           include Trace
           include Mixins::YieldTo
-          extend Pluggable
+          include Mixins::Event
 
-          attr_reader :type, :id, :input_tag, :attributes, :draggable, :drop_zone, :css_class
+          attr_reader :type,
+                      :id,
+                      :event_parent_id,
+                      :input_tag,
+                      :attributes,
+                      :draggable,
+                      :drop_zone,
+                      :css_class
 
-          alias attribs attributes
+          alias attribs attributes # unused in here, but used in descendents.
 
-          def initialize(type:, parent:, id: nil, tag: nil, input_tag: nil,  **attributes, &block)
+          def initialize(type:, parent:, id: nil, tag: nil, input_tag: nil, **attributes, &block)
             @draggable = attributes.delete(:draggable) {nil}
             @drop_zone = attributes.delete(:drop_zone) {nil}
             @css_class = Array(attributes.delete(:class) {nil})
             @id = id || generate_id
+            @event_parent_id = @id
             @input_tag = input_tag || tag
-            logger.warn(
-                'The `tag` attribute is deprecated. ' \
-                'Please use `input_tag` instead. This will change in a future feature release.') unless tag.nil?
             @type = type
             @parent = parent
             @attributes = attributes
             @block = block
+
+            if tag
+              logger.warn('The `tag` attribute is deprecated. Please use ' \
+                          '`input_tag` instead. This will change in a ' \
+                          'future release.')
+            end
+
             initialize_plugins
           end
 

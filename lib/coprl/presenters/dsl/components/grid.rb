@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Grid < EventBase
+        class Grid < Base
           include Mixins::Attaches
           include Mixins::Dialogs
           include Mixins::Snackbars

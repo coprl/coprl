@@ -123,6 +123,7 @@ export function hookupComponentsManually(root, selector, fn) {
         }
 
         fn(element);
+        element.dispatchEvent(new Event('V:componentCreated'));
     }
 }
 

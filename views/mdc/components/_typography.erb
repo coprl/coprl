@@ -1,5 +1,7 @@
-<% class_name = '' unless bound_locals_include?(:class_name, binding)
-   position_classes = comp.position.map {|p| "v-typography-position-#{p}"}.join(' ')
+<%
+  class_name = '' unless bound_locals_include?(:class_name, binding)
+  class_name = "#{class_name} #{comp.css_class.join(' ')}"
+  position_classes = comp.position.map {|p| "v-typography-position-#{p}"}.join(' ')
 %>
 <div id="<%= comp.id %>"
      class="v-typography mdc-typography--<%= "#{type}#{comp.level}" %>

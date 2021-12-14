@@ -160,6 +160,10 @@ module Coprl
                                          params: params.merge(navigate: navigate, stepper_id: parent(:stepper).id), &block)
           end
 
+          def parallel(&block)
+            self << Actions::ParallelGroup.new(parent: self, &block)
+          end
+
           private
 
           def alias_event(event)

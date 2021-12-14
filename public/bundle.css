@@ -7335,7 +7335,7 @@ svg.mdc-button__icon {
   /* @alternate */
   background-color: var(--mdc-theme-secondary, #E58D36); }
 
-@keyframes mdc-checkbox-fade-in-background-ub7a10a8e {
+@keyframes mdc-checkbox-fade-in-background-u560bc96a {
   0% {
     border-color: rgba(0, 0, 0, 0.54);
     background-color: transparent; }
@@ -7347,7 +7347,7 @@ svg.mdc-button__icon {
     /* @alternate */
     background-color: var(--mdc-theme-secondary, #E58D36); } }
 
-@keyframes mdc-checkbox-fade-out-background-ub7a10a8e {
+@keyframes mdc-checkbox-fade-out-background-u560bc96a {
   0%,
   80% {
     border-color: #E58D36;
@@ -7361,10 +7361,10 @@ svg.mdc-button__icon {
     background-color: transparent; } }
 
 .mdc-checkbox--anim-unchecked-checked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-checkbox--anim-unchecked-indeterminate .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-in-background-ub7a10a8e; }
+  animation-name: mdc-checkbox-fade-in-background-u560bc96a; }
 
 .mdc-checkbox--anim-checked-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-checkbox--anim-indeterminate-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-out-background-ub7a10a8e; }
+  animation-name: mdc-checkbox-fade-out-background-u560bc96a; }
 
 .mdc-checkbox__checkmark {
   color: #fff; }
@@ -14345,7 +14345,7 @@ button.mdc-chip {
   /* @alternate */
   background-color: var(--mdc-theme-primary, #5488b2); }
 
-@keyframes mdc-checkbox-fade-in-background-uf14c7205 {
+@keyframes mdc-checkbox-fade-in-background-u9c178962 {
   0% {
     border-color: rgba(0, 0, 0, 0.54);
     background-color: transparent; }
@@ -14357,7 +14357,7 @@ button.mdc-chip {
     /* @alternate */
     background-color: var(--mdc-theme-primary, #5488b2); } }
 
-@keyframes mdc-checkbox-fade-out-background-uf14c7205 {
+@keyframes mdc-checkbox-fade-out-background-u9c178962 {
   0%,
   80% {
     border-color: #5488b2;
@@ -14373,12 +14373,12 @@ button.mdc-chip {
 .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-unchecked-checked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-unchecked-indeterminate .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-unchecked-checked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-unchecked-indeterminate .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-in-background-uf14c7205; }
+  animation-name: mdc-checkbox-fade-in-background-u9c178962; }
 
 .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-checked-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-indeterminate-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-checked-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-indeterminate-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-out-background-uf14c7205; }
+  animation-name: mdc-checkbox-fade-out-background-u9c178962; }
 
 .mdc-data-table .mdc-list-item__graphic {
   margin-right: 0px; }
@@ -16670,6 +16670,66 @@ i:focus.v-datetime--clear {
 
 .ql-container.ql-snow {
   border: 1px solid #ccc; }
+
+.v-grid--direction-row {
+  grid-auto-flow: row; }
+
+.v-column--direction-row {
+  grid-auto-flow: row; }
+
+.v-grid--direction-column {
+  grid-auto-flow: column; }
+
+.v-column--direction-column {
+  grid-auto-flow: column; }
+
+.v-grid--align-start {
+  justify-items: start !important; }
+
+.v-grid--justify-start {
+  align-items: start !important; }
+
+.v-column--align-start {
+  justify-self: start !important; }
+
+.v-column--justify-start {
+  align-self: start !important; }
+
+.v-grid--align-center {
+  justify-items: center !important; }
+
+.v-grid--justify-center {
+  align-items: center !important; }
+
+.v-column--align-center {
+  justify-self: center !important; }
+
+.v-column--justify-center {
+  align-self: center !important; }
+
+.v-grid--align-end {
+  justify-items: end !important; }
+
+.v-grid--justify-end {
+  align-items: end !important; }
+
+.v-column--align-end {
+  justify-self: end !important; }
+
+.v-column--justify-end {
+  align-self: end !important; }
+
+.v-grid--align-stretch {
+  justify-items: stretch !important; }
+
+.v-grid--justify-stretch {
+  align-items: stretch !important; }
+
+.v-column--align-stretch {
+  justify-self: stretch !important; }
+
+.v-column--justify-stretch {
+  align-self: stretch !important; }
 
 :root {
   --mdc-layout-grid-margin-desktop: 24px;

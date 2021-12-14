@@ -1,3 +1,5 @@
+@import 'node_modules/@material/layout-grid/mixins';
+
 .v-actionable {
     cursor: pointer;
 }
@@ -12,8 +14,25 @@
 }
 
 .v-hidden {
-    display: none;
-    visibility: hidden;
+    display: none !important;
+}
+
+@include mdc-layout-grid-media-query_(phone) {
+    .v-hidden--phone {
+        display: none !important;
+    }
+}
+
+@include mdc-layout-grid-media-query_(tablet) {
+    .v-hidden--tablet {
+        display: none !important;
+    }
+}
+
+@include mdc-layout-grid-media-query_(desktop) {
+    .v-hidden--desktop {
+        display: none !important;
+    }
 }
 
 div.mdc-text-field-helper-text.mdc-text-field-helper-text--persistent.v-hidden {

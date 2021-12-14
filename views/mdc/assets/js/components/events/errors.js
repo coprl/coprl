@@ -175,7 +175,7 @@ export class VErrors {
             return false;
         }
 
-        const helperText = this.root.getElementById(`${currentEl.id}-helper-text`);
+        const helperText = this.root.getElementById(`${currentEl.id}-input-helper-text`);
         if (!helperText) {
             return false;
         }

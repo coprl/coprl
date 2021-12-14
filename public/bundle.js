@@ -6424,7 +6424,7 @@ var VErrors = function () {
                 return false;
             }
 
-            var helperText = this.root.getElementById(currentEl.id + '-helper-text');
+            var helperText = this.root.getElementById(currentEl.id + '-input-helper-text');
             if (!helperText) {
                 return false;
             }

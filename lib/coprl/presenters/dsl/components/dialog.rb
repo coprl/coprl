@@ -2,12 +2,11 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Dialog < EventBase
+        class Dialog < Base
           include Mixins::Common
           include Mixins::Attaches
           include Mixins::Steppers
           include Mixins::Sliders
-          include Mixins::Event
           include Mixins::Progress
 
           attr_accessor :percent_width,

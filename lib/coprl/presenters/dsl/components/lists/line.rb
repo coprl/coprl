@@ -3,7 +3,7 @@ module Coprl
     module DSL
       module Components
         module Lists
-          class Line < EventBase
+          class Line < Base
             extend Gem::Deprecate
             include Mixins::Tooltips
             include Mixins::Dialogs

@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Avatar < EventBase
+        class Avatar < Base
           include Mixins::Tooltips
 
           attr_accessor :avatar, :color, :size, :position

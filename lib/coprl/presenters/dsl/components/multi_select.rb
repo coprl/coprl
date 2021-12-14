@@ -20,7 +20,7 @@ module Coprl
                                     **attribs.delete_if{ |k,v| [:tag, :name, :input_tag].include?(k) }, &block)
           end
 
-          class CheckOption < EventBase
+          class CheckOption < Base
 
             attr_reader :selected, :disabled
 

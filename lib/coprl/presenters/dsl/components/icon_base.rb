@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class IconBase < EventBase
+        class IconBase < Base
           include Mixins::Tooltips
           attr_reader :icon, :color, :size, :position, :hidden
 

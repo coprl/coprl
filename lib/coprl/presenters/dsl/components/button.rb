@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Button < EventBase
+        class Button < Base
           include Mixins::Tooltips
           include Mixins::Padding
 

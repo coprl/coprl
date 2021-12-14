@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Input < EventBase
+        class Input < Base
           include Mixins::Tooltips
 
           attr_reader :name,

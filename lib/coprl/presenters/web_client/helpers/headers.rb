@@ -1,42 +1,70 @@
-module Coprl::Presenters::WebClient::Helpers
-  module Headers
-    include Coprl::Presenters::WebClient::Helpers::HtmlSafe
+module Coprl
+  module Presenters
+    module WebClient
+      module Helpers
+        module Headers
+          include HtmlSafe
 
-    def coprl_headers
-      return unless @pom
+          def coprl_headers
+            return unless @pom
 
-      html_safe (<<~HEADERS)
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-        <link rel="stylesheet" href="#{ @base_url }/#{ request.env['SCRIPT_NAME'] }bundle.css">
-        <script defer src="#{ @base_url }/#{ request.env['SCRIPT_NAME'] }bundle.js"></script>
-        #{plugin_headers(@pom)}
-        #{custom_css(request.env['REQUEST_PATH'], @base_url)}
-        #{@pom.csrf_meta_tags}
-      HEADERS
-    end
+            @bundle_css ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.css")
+            @bundle_js ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.js")
 
-    def plugin_headers(pom)
-      Coprl::Presenters::WebClient::PluginHeaders.new(pom: pom, render: method(:render_partial)).render
-    end
+            html_safe <<~HTML
+              <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700" type="text/css">
+              <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Material+Icons+Outlined">
+              <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+              <link rel="stylesheet" href="#{@bundle_css}">
+              <script defer src="#{@bundle_js}"></script>
+              #{plugin_headers(@pom)}
+              #{custom_css(request.env['REQUEST_PATH'])}
+              #{@pom.csrf_meta_tags}
+            HTML
+          end
 
-    def custom_css(path, host=nil)
-      root = Coprl::Presenters::Settings.config.presenters.root
-      Coprl::Presenters::WebClient::CustomCss.new(path, root: root, host: host).render
-    end
+          private
 
-    def custom_js
-      custom_js_path = Coprl::Presenters::Settings.config.presenters.web_client.custom_js
-      Dir.glob(custom_js_path).map do |file|
-        _build_script_tag_(file)
-      end.join("\n") if custom_js_path
-    end
+          def asset_url(path)
+            asset_host = Settings.config.presenters.web_client.asset_host
+            asset_host = asset_host.call(request) if asset_host.respond_to?(:call)
 
-    def _build_script_tag_(path)
-      (<<~JS)
-            <script defer src="#{env['SCRIPT_NAME']}#{path.sub('public/','')}"></script>
-      JS
+            "#{asset_host}/#{path}"
+          end
+
+          def plugin_headers(pom)
+            PluginHeaders.new(pom: pom, render: method(:render_partial)).render
+          end
+
+          def custom_css(request_path)
+            file_paths = CustomCss.new.call(request_path)
+            pwd = Pathname.new(Dir.pwd)
+
+            file_paths.map do |path|
+              relative_file_path = path.relative_path_from(pwd)
+              url = asset_url(relative_file_path)
+
+              <<~HTML
+                <link rel="stylesheet" type="text/css" href="#{url}">
+              HTML
+            end.join("\n")
+          end
+
+          def custom_js
+            custom_js_path = Settings.config.presenters.web_client.custom_js
+            Dir.glob(custom_js_path).map do |file|
+              _build_script_tag_(file)
+            end.join("\n") if custom_js_path
+          end
+
+          def _build_script_tag_(path)
+            url = asset_url("#{env['SCRIPT_NAME']}#{path.sub('public/','')}")
+            <<~HTML
+              <script defer src="#{url}"></script>
+            HTML
+          end
+        end
+      end
     end
   end
 end

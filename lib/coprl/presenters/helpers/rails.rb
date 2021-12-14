@@ -4,9 +4,9 @@ if defined?(::Rails)
       module Helpers
         module Rails
           include ActionView::Helpers::AssetUrlHelper
-          include Coprl::Presenters::Helpers::Rails::Currency
-          include Coprl::Presenters::Helpers::Rails::ModelTable
-          include Coprl::Presenters::Helpers::Rails::Routes
+          include Currency
+          include ModelTable
+          include Routes
           include Namespace
 
           def presenters_path(presenter, host: false, **params)
@@ -39,13 +39,11 @@ if defined?(::Rails)
 
           alias presenter_url presenters_url
 
-          # Ensure methods called from Rails helpers (e.g. `config.asset_host`
-          # in `ActionView::Helpers::AssetUrlHelper#image_url`) are properly
-          # delegated to Rails:
-          def method_missing(name, *args)
-            if ::Rails.application.respond_to?(name)
-              trace { "delegating ##{name} to Rails.application" }
-              return ::Rails.application.public_send(name, *args)
+          def path_to_asset(source, options = {})
+            unless options[:host]
+              asset_host = Settings.config.presenters.web_client.asset_host
+              asset_host = asset_host.call(request) if asset_host.respond_to?(:call)
+              options[:host] = asset_host
             end
 
             super

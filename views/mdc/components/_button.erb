@@ -4,7 +4,7 @@
   data_attributes = '' unless bound_locals_include?(:data_attributes, binding)
 %>
 <% if comp
-     class_name = "#{class_name} #{comp.full_width ? 'v-button-full-width' : nil}"
+     class_name = "#{class_name} #{comp.css_class.join(' ')} #{comp.full_width ? 'v-button-full-width' : nil}"
 %>
   <% if comp.menu %>
     <div class="mdc-menu-anchor">

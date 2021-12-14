@@ -610,6 +610,7 @@ function hookupComponentsManually(root, selector, fn) {
             }
 
             fn(element);
+            element.dispatchEvent(new Event('V:componentCreated'));
         }
     } catch (err) {
         _didIteratorError = true;
@@ -49116,6 +49117,7 @@ function buildFormData(formData, data, parentKey) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__initialize__ = __webpack_require__(190);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__uninitialize__ = __webpack_require__(537);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__base_component__ = __webpack_require__(2);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -49131,19 +49133,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 var MOUSE_DELAY_AMOUNT = 0; // ms
 var KEYBOARD_DELAY_AMOUNT = 500; // ms
 
-// Create a NodeList from raw HTML.
-// Whitespace is trimmed to avoid creating superfluous text nodes.
+// Create a HTMLCollection from raw HTML.
 function htmlToNodes(html) {
     var root = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document;
 
-    var template = document.createElement('template');
+    var doc = Object(__WEBPACK_IMPORTED_MODULE_4__base_component__["b" /* getRootNode */])(root);
+    var fragment = doc.createRange().createContextualFragment(html);
 
-    template.innerHTML = html.trim();
-
-    return template.content.children;
+    return fragment.children;
 }
 
 function assertXHRSupport() {
@@ -49220,24 +49221,18 @@ var VReplaces = function (_VBase) {
                             if (httpRequest.readyState === XMLHttpRequest.DONE) {
                                 console.debug(httpRequest.status + ':' + this.getResponseHeader('content-type'));
                                 if (httpRequest.status === 200) {
-                                    // NodeList.childNodes is "live", meaning DOM
-                                    // changes to its entries will mutate the list
-                                    // itself.
-                                    // (see: https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
-                                    // Array.from clones the entries, creating a
-                                    // "dead" list.
-                                    var newNodes = Array.from(htmlToNodes(httpRequest.responseText, root));
+                                    var html = httpRequest.responseText.trim();
+                                    var nodes = Array.from(htmlToNodes(html, root));
 
                                     Object(__WEBPACK_IMPORTED_MODULE_3__uninitialize__["a" /* uninitialize */])(nodeToReplace);
-
-                                    nodeToReplace.replaceWith.apply(nodeToReplace, _toConsumableArray(newNodes));
+                                    nodeToReplace.replaceWith.apply(nodeToReplace, _toConsumableArray(nodes));
 
                                     var _iteratorNormalCompletion = true;
                                     var _didIteratorError = false;
                                     var _iteratorError = undefined;
 
                                     try {
-                                        for (var _iterator = newNodes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                        for (var _iterator = nodes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                                             var node = _step.value;
 
                                             Object(__WEBPACK_IMPORTED_MODULE_2__initialize__["initialize"])(node);

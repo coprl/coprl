@@ -1,7 +1,10 @@
+<%
+  base_url = @pom.page&.base_url || '/'
+%>
 <!doctype html>
 <html class="no-js incompatible-browser" lang="en">
 <head>
-  <base href="/">
+  <base href="<%= base_url %>">
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title><%= @pom.page.title if @pom.page %></title>

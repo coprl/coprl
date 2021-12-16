@@ -10,7 +10,8 @@
      class="v-grid mdc-layout-grid
             <%= padding_classes(comp.padding, @grid_nesting) %>
             <%= 'v-grid__wide' if comp.wide %>
-            <%= comp.css_class.join(' ') %>"
+            <%= comp.css_class.join(' ') %>
+            <%= 'v-hidden' if comp.hidden %>"
      style="<%= "background-color: #{comp.color};" if comp.color %><%= "height:#{comp.height};" if comp.height %>"
      <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>>
   <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(top both))%>

@@ -28,9 +28,12 @@ module Coprl
         def call(path)
           return [] unless custom_css_path
 
-          [global_css, global_namespace_css(path), presenter_css(path)]
-            .compact
-            .map { |p| Pathname.new(File.expand_path(p.sub('public/', ''))) }
+          [global_css, global_namespace_css(path), presenter_css(path)].compact.map do |path|
+            path_without_public = path.sub('public/', '')
+            digest = Digest::SHA1.hexdigest(path)
+            pathname = Pathname.new(File.expand_path(path_without_public))
+            {path: pathname, digest: digest}
+          end
         end
 
         private

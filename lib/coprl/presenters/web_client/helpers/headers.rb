@@ -8,8 +8,9 @@ module Coprl
           def coprl_headers
             return unless @pom
 
-            @bundle_css ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.css")
-            @bundle_js ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.js")
+            # TODO: digest file contents.
+            @bundle_css ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.css?v=653a36a9b8a877074d6357c1fa5920eb2b9a9739")
+            @bundle_js ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.js?v=378b7405b4615dc63f7946f8690dbb0c1e425560")
 
             html_safe <<~HTML
               <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700" type="text/css">
@@ -40,12 +41,12 @@ module Coprl
             file_paths = CustomCss.new.call(request_path)
             pwd = Pathname.new(Dir.pwd)
 
-            file_paths.map do |path|
+            file_paths.map do |path:, digest:|
               relative_file_path = path.relative_path_from(pwd)
               url = asset_url(relative_file_path)
 
               <<~HTML
-                <link rel="stylesheet" type="text/css" href="#{url}">
+                <link rel="stylesheet" type="text/css" href="#{url}?v=#{digest}">
               HTML
             end.join("\n")
           end
@@ -58,9 +59,10 @@ module Coprl
           end
 
           def _build_script_tag_(path)
+            diget = Digest::SHA1.hexdigest(File.read(path))
             url = asset_url("#{env['SCRIPT_NAME']}#{path.sub('public/','')}")
             <<~HTML
-              <script defer src="#{url}"></script>
+              <script defer src="#{url}?v=#{digest}"></script>
             HTML
           end
         end

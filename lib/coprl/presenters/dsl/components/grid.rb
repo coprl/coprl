@@ -18,7 +18,8 @@ module Coprl
                       :height,
                       :direction,
                       :align,
-                      :justify
+                      :justify,
+                      :hidden
 
           def initialize(color: nil, **attribs_, &block)
             super(type: :grid, **attribs_, &block)
@@ -33,6 +34,7 @@ module Coprl
             @direction = validate_direction!(attribs.delete(:direction) { :row })
             @align = validate_alignment!(attribs.delete(:align) { :stretch })
             @justify = validate_alignment!(attribs.delete(:justify) { :stretch })
+            @hidden = attribs.delete(:hidden) { false }
 
             expand!
           end

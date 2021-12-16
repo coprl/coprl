@@ -27,9 +27,13 @@ module Coprl
 
           def asset_url(path)
             asset_host = Settings.config.presenters.web_client.asset_host
-            asset_host = asset_host.call(request) if asset_host.respond_to?(:call)
 
-            "#{asset_host}/#{path}"
+            if asset_host
+              asset_host = asset_host.call(request) if asset_host.respond_to?(:call)
+              path = "#{asset_host}/#{path}"
+            end
+
+            path
           end
 
           def plugin_headers(pom)

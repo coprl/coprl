@@ -30,7 +30,7 @@ module Coprl
 
           [global_css, global_namespace_css(path), presenter_css(path)].compact.map do |path|
             path_without_public = path.sub('public/', '')
-            digest = Digest::SHA1.hexdigest(path)
+            digest = Digest::SHA1.file(path).hexdigest
             pathname = Pathname.new(File.expand_path(path_without_public))
             {path: pathname, digest: digest}
           end

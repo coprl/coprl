@@ -8,17 +8,19 @@ if defined?(::Rails)
           include ModelTable
           include Routes
           include Namespace
+          include DetermineHost
 
           def presenters_path(presenter, host: false, **params)
             presenter = _expand_namespace_(presenter, namespace)
             presenter = presenter.gsub(':', '/')
+            host = determine_host(host, default: router.base_url)
 
             path = if defined?(coprl_presenters_rails_engine_url)
-              host ? coprl_presenters_rails_engine_url(params, host: router.base_url) :
-                       coprl_presenters_rails_engine_path(params)
+              host ? coprl_presenters_rails_engine_url(**params, host: host) :
+                       coprl_presenters_rails_engine_path(**params)
             else
-              host ? coprl_presenters_web_client_app_url(params, host: router.base_url) :
-                       coprl_presenters_web_client_app_path(params)
+              host ? coprl_presenters_web_client_app_url(**params, host: host) :
+                       coprl_presenters_web_client_app_path(**params)
             end
 
             if path.include?('?')

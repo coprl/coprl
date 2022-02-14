@@ -1,4 +1,5 @@
 import Quill from "quill";
+import ImageCompress from 'quill-image-compress';
 import {HorizontalRuleBlot} from './rich-text-area/horizontal-rule-blot';
 import {hookupComponents, VBaseComponent} from "./base-component";
 import {eventHandlerMixin} from "./mixins/event-handler";
@@ -6,7 +7,7 @@ import {dirtyableMixin} from './mixins/dirtyable';
 
 // These Blots will be registered with Quill.
 const blots = [
-    HorizontalRuleBlot,
+    HorizontalRuleBlot
 ];
 const EMPTY_VALUE = '';
 
@@ -22,9 +23,21 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
         configureQuill();
         registerBlots();
 
+        Quill.register('modules/imageCompress', ImageCompress);
         this.quillWrapper = element.querySelector('.v-rich-text-area');
         this.quill = new Quill(this.quillWrapper, {
-            modules: {toolbar: this.toolbarOptions(this.quillWrapper.dataset.toolbar)},
+            modules: {
+                toolbar: this.toolbarOptions(this.quillWrapper.dataset.toolbar),
+                imageCompress: {
+                    quality: Number(this.quillWrapper.dataset.imgCompression),
+                    maxWidth: Number(this.quillWrapper.dataset.imgMaxWidth),
+                    maxHeight: Number(this.quillWrapper.dataset.imgMaxHeight),
+                    keepImageTypes:  ['image/jpeg', 'image/png'], // preserve these files type
+                    imageType: 'image/jpeg', // convert others to jpeg
+                    debug: true,
+                    suppressErrorLogging: false
+                }
+            },
             bounds: this.quillWrapper,
             theme: 'snow',
             placeholder: this.quillWrapper.dataset.placeholder

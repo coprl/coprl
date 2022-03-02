@@ -35,6 +35,16 @@ Coprl::Presenters.define(:text_areas) do
         hint 'Default is links, images and video embeds enabled'
       end
 
+      rich_text_area name: :notes,
+                     placeholder: 'Text entered here is saved as HTML',
+                     rows: 10,
+                     img_compression: 0.5,
+                     img_max_width: 500,
+                     img_max_height: 300 do
+        label 'Rich Text Area - control external content options'
+        hint 'When embedded images are enabled you can set a compression factor (0.0 - 1.0, default is 0.7) and a max height and width'
+      end
+
       button 'Submit' do
         event :click do
           posts '/_echo_'

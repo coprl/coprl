@@ -32903,15 +32903,34 @@ document.addEventListener('DOMContentLoaded', function () {
     __webpack_require__(284);
     __webpack_require__(285);
     __webpack_require__(286);
-
     __webpack_require__(190).initialize(document, true);
 
     // Focus first valid input control
     var focusable = document.querySelectorAll('.v-focusable');
-    for (var i = 0; i < focusable.length; i++) {
-        if (focusable[i] && focusable[i].vComponent) {
-            if (focusable[i].vComponent.focus()) {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _iterator = focusable[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var element = _step.value;
+
+            var comp = element.vComponent;
+            if (comp && comp.respondTo('focus') && comp.focus()) {
                 break;
+            }
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
             }
         }
     }

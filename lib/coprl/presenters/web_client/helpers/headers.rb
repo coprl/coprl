@@ -10,7 +10,7 @@ module Coprl
 
             # TODO: digest file contents.
             @bundle_css ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.css?v=653a36a9b8a877074d6357c1fa5920eb2b9a9739")
-            @bundle_js ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.js?v=378b7405b4615dc63f7946f8690dbb0c1e425560")
+            @bundle_js ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.js?v=87618f772b7c9c5212ecff20204c47e0c0329a89")
 
             html_safe <<~HTML
               <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700" type="text/css">

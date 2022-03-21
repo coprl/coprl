@@ -27,20 +27,7 @@ module Coprl
 
           def content(**attribs, &block)
             return @content if locked?
-            @content = Content.new(parent: self, **attribs, &block)
-          end
-
-          class Content < Base
-            include Mixins::Common
-            include Mixins::Attaches
-
-            attr_accessor :components
-
-            def initialize(**attribs_, &block)
-              super(type: :content, **attribs_, &block)
-              @components = []
-              expand!
-            end
+            @content = Components::Content.new(parent: self, **attribs, &block)
           end
         end
       end

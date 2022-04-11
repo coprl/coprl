@@ -22,7 +22,7 @@ module Coprl
         include Coprl::Trace
 
         attr_reader :router, :context, :components, :name, :namespace
-        private :context, :router, :namespace
+        private :router, :namespace
         alias params context
 
         def initialize(context:, parent: nil, router: nil, name: nil, plugins: [], namespace: [], &block)

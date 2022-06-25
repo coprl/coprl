@@ -60,8 +60,8 @@ export class VBase extends VUrls {
         // Collect tagged components, if applicable:
         if (this.options.input_tag) {
             const taggedComponents = Array.from(this.taggedInputs())
-                .filter((element) => element.vComponent)
-                .map((element) => element.vComponent);
+                .filter((element) => element.vComponent || element.vPlugin)
+                .map((element) => element.vComponent || element.vPlugin);
 
             components.push(taggedComponents);
         }
@@ -113,8 +113,8 @@ export class VBase extends VUrls {
      */
     inputComponents() {
         return this.inputs()
-            .filter((element) => element.vComponent)
-            .map((element) => element.vComponent);
+            .filter((element) => element.vComponent || element.vPlugin)
+            .map((element) => element.vComponent || element.vPlugin);
     }
 
     /**
@@ -135,7 +135,11 @@ export class VBase extends VUrls {
     component() {
         const parent = this.parentElement();
 
-        return parent ? parent.vComponent : null;
+        if (!parent) {
+            return null;
+        }
+
+        return parent.vComponent || parent.vPlugin;
     }
 
     validate(formData) {
@@ -152,7 +156,7 @@ export class VBase extends VUrls {
             return null;
         }
 
-        return element.vComponent;
+        return element.vComponent || element.vPlugin;
     }
 
     closestContainerElement() {

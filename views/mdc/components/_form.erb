@@ -8,7 +8,7 @@
       onsubmit="javascript:void(0);return false;"
       <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id: comp.id} if comp.events&.any? %>
       data-is-container>
-  <div class="v-errors">
+  <div class="<% if comp.shows_errors %>v-errors<% end %>">
     <%= partial "components/render", :locals => {:components => comp.components, :scope => nil} if comp.components.any? %>
   </div>
 </form>

@@ -202,9 +202,14 @@ export class VErrors {
         }
 
         const newDiv = document.createElement('div');
-
         newDiv.classList.add('v-error-message');
-        newDiv.insertAdjacentHTML('beforeend', messages.join('<br>'));
+        const fragment = document.createDocumentFragment();
+
+        for (const message of messages) {
+            fragment.appendChild(document.createTextNode(message));
+        }
+
+        newDiv.appendChild(fragment);
 
         // add the newly created element and its content into the DOM
         errorsDiv.insertAdjacentElement('beforebegin', newDiv);

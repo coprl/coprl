@@ -17428,11 +17428,13 @@ i:focus.v-datetime--clear {
 
 .v-error-message {
   color: #d50000;
-  padding: 20px;
+  background: #ffd5d5;
+  padding: var(--v-padding2);
   border: 1px solid #d50000;
-  font-weight: bold;
-  border-radius: 5px;
-  margin-bottom: 5px; }
+  font-weight: 600;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  word-wrap: break-word; }
 
 .v-hidden {
   display: none !important; }

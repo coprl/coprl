@@ -13,6 +13,15 @@ export class VBaseToggle extends dirtyableMixin(eventHandlerMixin(VBaseComponent
             this.mdcComponent.checked = !this.mdcComponent.checked;
         });
 
+        element.addEventListener('change', event => {
+            if (this.input.checked) {
+                this.input.dispatchEvent(new Event('check', { composed: true, bubbles: true }));
+            }
+            else {
+                this.input.dispatchEvent(new Event('uncheck', { composed: true, bubbles: true }));
+            }
+        });
+
         this.originalValue = this.input.checked;
     }
 

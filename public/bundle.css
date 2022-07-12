@@ -14869,24 +14869,24 @@ button.mdc-chip {
 .v-image--fit-fit {
   object-fit: scale-down; }
 
+.v-icon--positioned {
+  position: absolute;
+  z-index: 1; }
+
 .v-icon-position-left {
-  float: left;
-  padding-right: 16px; }
+  left: var(--v-padding1); }
 
 .v-icon-position-top {
-  top: 0; }
+  top: var(--v-padding1); }
 
 .v-icon-position-right {
-  float: right;
-  padding-left: 16px;
-  right: 8px; }
+  right: var(--v-padding1); }
 
 .v-icon-position-bottom {
-  position: absolute;
-  bottom: 8px; }
+  bottom: var(--v-padding1); }
 
 .v-icon-position-center {
-  line-height: 4; }
+  top: calc(50% - 1em/2); }
 
 .v-icon__fa {
   font-size: 24px; }

@@ -7,8 +7,9 @@
      events = comp.events unless bound_locals_include?(:events, binding)
      position = comp.position unless bound_locals_include?(:position, binding)
      position ||= []
-     position_classes = position.map {|p| "v-icon-position-#{p}"}.join(' ')
-     class_name= "#{class_name} #{position_classes}"
+     position_classes = position.map { |p| "v-icon-position-#{p}" }.join(' ')
+     position_classes = "#{position_classes} v-icon--positioned" if position.any?
+     class_name = "#{class_name} #{position_classes}"
      if icon_name =~ /^(fa[srlb]\s)*fa-/
        icon_class_name = "#{icon_name} v-icon__fa"
        icon_class_name = "fas #{icon_class_name}" unless icon_class_name=~ /^(fas)|(fal)|(fab)/

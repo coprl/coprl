@@ -4,6 +4,7 @@ module Coprl
       module Components
         class Content < Base
           include Mixins::Common
+          include Mixins::Alignment
           include Mixins::Attaches
           include Mixins::TextFields
           include Mixins::DateTimeFields
@@ -28,7 +29,8 @@ module Coprl
                       :text_align,
                       :padding,
                       :inline,
-                      :background_color
+                      :background_color,
+                      :direction
 
           def initialize(**attribs_, &block)
             super(type: :content, **attribs_, &block)
@@ -44,6 +46,9 @@ module Coprl
             @padding = validate_padding!(coerce_padding(padding)).uniq if padding != nil
             @inline = attribs.delete(:inline){false}
             @background_color = attribs.delete(:background_color)
+            @direction = validate_direction!(attribs.delete(:direction)) if attribs[:direction]
+            @align = validate_alignment!(attribs.delete(:align)) if attribs[:align]
+            @justify = validate_alignment!(attribs.delete(:justify)) if attribs[:justify]
             expand!
           end
 

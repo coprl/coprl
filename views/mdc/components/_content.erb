@@ -1,36 +1,40 @@
 <%
-  if comp
-     position_classes = comp.position.map {|p| "v-content-position-#{p}"}.join(' ')
+  position_classes = comp.position.map { |p| "v-content-position-#{p}" }.join(' ')
+  direction_class = comp.direction ? "v-content--direction-#{comp.direction}" : nil
+  align_class = comp.align ? "v-content--align-#{comp.align}" : nil
+  justify_class = comp.justify ? "v-content--justify-#{comp.justify}" : nil
 %>
-  <div id="<%= comp.id %>"
-       <% if comp.input_tag %>
-       data-input-tag="<%= comp.input_tag %>"
-       <% end %>
-       <%= draggable_attributes(comp) %>
-       <%= drop_zone_attributes(comp) %>
-       class="v-content
-            <%= position_classes %>
-            <%= padding_classes(comp.padding) %>
-            <%= 'v-hidden' if comp.hidden %>
-            <%= 'v-dnd-draggable' if comp.draggable %>
-            <%= comp.float  ? 'v-content--float' : 'v-content--relative' %>
-            <%= comp.css_class.join(' ') %>
-            <%= color_classname(comp, 'background-', :background_color) %>"
-     <%= partial "components/event", locals: {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>
-       style="<% if comp.text_align %>text-align: <%= comp.text_align %>;<% end %>
-              <%= "display: inline-block;" if comp.inline %>
-              <%= "width: #{comp.width};" if comp.width %>
-              <%= "height: #{comp.height };" if comp.height %>
-              <%= color_style(comp, 'background-', :background_color) %>"
-       data-is-container>
-    <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(top both)) %>
-    <% if comp.shows_errors %>
-      <div class="v-errors">
-    <% end %>
-    <%= partial "components/render", :locals => {:components => comp.components, :scope => nil} if comp.components.any? %>
-    <% if comp.shows_errors %>
-      </div>
-    <% end %>
-    <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(bottom both)) %>
-  </div>
-<% end %>
+<div id="<%= comp.id %>"
+     <% if comp.input_tag %>
+     data-input-tag="<%= comp.input_tag %>"
+     <% end %>
+     <%= draggable_attributes(comp) %>
+     <%= drop_zone_attributes(comp) %>
+     class="v-content
+          <%= position_classes %>
+          <%= padding_classes(comp.padding) %>
+          <%= 'v-hidden' if comp.hidden %>
+          <%= 'v-dnd-draggable' if comp.draggable %>
+          <%= comp.float  ? 'v-content--float' : 'v-content--relative' %>
+          <%= comp.css_class.join(' ') %>
+          <%= color_classname(comp, 'background-', :background_color) %>
+          <%= direction_class %>
+          <%= align_class %>
+          <%= justify_class %>"
+   <%= partial "components/event", locals: {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>
+     style="<% if comp.text_align %>text-align: <%= comp.text_align %>;<% end %>
+            <%= "display: inline-block;" if comp.inline %>
+            <%= "width: #{comp.width};" if comp.width %>
+            <%= "height: #{comp.height };" if comp.height %>
+            <%= color_style(comp, 'background-', :background_color) %>"
+     data-is-container>
+  <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(top both)) %>
+  <% if comp.shows_errors %>
+    <div class="v-errors">
+  <% end %>
+  <%= partial "components/render", :locals => {:components => comp.components, :scope => nil} if comp.components.any? %>
+  <% if comp.shows_errors %>
+    </div>
+  <% end %>
+  <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(bottom both)) %>
+</div>

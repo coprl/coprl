@@ -9,6 +9,11 @@ $alignments: (start, center, end, stretch);
   .v-column--direction-#{$direction} {
     grid-auto-flow: $direction;
   }
+
+  .v-content--direction-#{$direction} {
+    display: flex;
+    flex-direction: $direction;
+  }
 }
 
 @each $value in $alignments {
@@ -33,5 +38,15 @@ $alignments: (start, center, end, stretch);
 
   .v-column--justify-#{$value} {
     align-self: $value !important;
+  }
+
+  .v-content--align-#{$value} {
+    display: flex;
+    justify-content: $value !important;
+  }
+
+  .v-content--justify-#{$value} {
+    display: flex;
+    align-items: $value !important;
   }
 }

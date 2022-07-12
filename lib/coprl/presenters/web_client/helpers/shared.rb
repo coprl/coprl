@@ -14,6 +14,5 @@ module Coprl::Presenters::WebClient::Helpers
     include SnakeToCamel
     include DragAndDrop
     include TransformHash
-    include AlignmentHelpers
   end
 end

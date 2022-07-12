@@ -17,8 +17,6 @@ module Coprl
                       :gutter,
                       :height,
                       :direction,
-                      :align,
-                      :justify,
                       :hidden
 
           def initialize(color: nil, **attribs_, &block)
@@ -88,8 +86,6 @@ module Coprl
                         :components,
                         :padding,
                         :direction,
-                        :align,
-                        :justify,
                         :overflow,
                         :height
 

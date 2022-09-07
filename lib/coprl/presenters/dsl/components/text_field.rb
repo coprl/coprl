@@ -8,7 +8,8 @@ module Coprl
                       :full_width,
                       :auto_complete,
                       :case_type,
-                      :behavior
+                      :behavior,
+                      :default_value
 
           VALID_CASE_TYPES = %i[mixed upper lower].freeze
 
@@ -19,6 +20,7 @@ module Coprl
             @case_type = validate_case_type(attribs.delete(:case_type) { :mixed })
             @auto_complete = validate_auto_complete(attribs.delete(:auto_complete) { :off })
             @behavior = determine_behavior(attribs.delete(:password), attribs.delete(:behavior))
+            @default_value = attribs.delete(:default_value) if attribs.key?(:default_value)
             label(attribs.delete(:label))if attribs.key?(:label)
             value(attribs.delete(:value))if attribs.key?(:value)
             expand!

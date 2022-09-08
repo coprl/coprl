@@ -47,6 +47,15 @@ export class VTextField extends dirtyableMixin(
             });
         }
 
+        const maxLength = element.dataset.max_length;
+        if (maxLength) {
+            this.input.addEventListener('keyup', () => {
+                if (this.input.value.length > maxLength) {
+                    this.input.value = this.input.value.slice(0, maxLength);
+                }
+            });
+        }
+
         const caseType = element.dataset.case_type;
         if (caseType !== 'mixed') {
             this.input.addEventListener('keyup', (e) => {

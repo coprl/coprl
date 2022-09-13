@@ -57,8 +57,12 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
 
         adjustEditorStyles(this);
         this.originalValue = this.value();
+
+        this.quill.on('text-change',  async () => await this.enableServerImageUpload());
     }
 
+    prepareQuillOptions() {}
+    
     prepareSubmit(params) {
         params.push(['rich_text_payload', 'true']);
         params.push([this.name(), this.value()]);
@@ -118,6 +122,17 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
             filteredOpts,
             ['clean']
         ];
+    }
+
+    async enableServerImageUpload() {
+        const imgs = Array.from(
+          this.quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
+        );
+        for (const img of imgs) {
+            img.classList.add("loading");
+            img.setAttribute("src", await uploadBase64Img(img.getAttribute("src")));
+            img.classList.remove("loading");
+        }
     }
 }
 
@@ -245,4 +260,76 @@ function convertLists(richtext) {
 function getListLevel(el) {
     const className = el.className || '0';
     return +className.replace(/[^\d]/g, '');
+}
+
+// Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509
+
+async function uploadBase64Img(base64Str) {
+    if (typeof base64Str !== 'string' || base64Str.length < 100) {
+        return base64Str;
+    }
+    const url = await b64ToUrl(base64Str);
+    return url;
+}
+
+/**
+ * Convert a base64 string in a Blob according to the data and contentType.
+ *
+ * @param b64Data {String} Pure base64 string without contentType
+ * @param contentType {String} the content type of the file i.e (image/jpeg - image/png - text/plain)
+ * @param sliceSize {Int} SliceSize to process the byteCharacters
+ * @see http://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+ * @return Blob
+ */
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+}
+
+// Based on https://ourcodeworld.com/articles/read/322/how-to-convert-a-base64-image-into-a-image-file-and-upload-it-with-an-asynchronous-form-using-jquery
+function b64ToUrl(base64) {
+    return new Promise(resolve => {
+        // Split the base64 string in data and contentType
+        var block = base64.split(";");
+        // Get the content type of the image
+        var contentType = block[0].split(":")[1];
+        // get the real base64 content of the file
+        var realData = block[1].split(",")[1];
+        // Convert it to a blob to upload
+        var blob = b64toBlob(realData, contentType);
+        // create form data
+        const fd = new FormData();
+        // replace "file_upload" with whatever form field you expect the file to be uploaded to
+        fd.append('file', blob);
+
+        const xhr = new XMLHttpRequest();
+        // replace "/upload" with whatever the path is to your upload handler
+        xhr.open('POST', '/attachments', true);
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const url = JSON.parse(xhr.responseText).data.url;
+                resolve(url);
+            }
+        };
+        xhr.send(fd);
+    });
 }

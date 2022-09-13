@@ -60,6 +60,7 @@ unless defined?(Coprl::Presenters::Settings)
               end
               setting :rich_text_area do
                 setting :rows, 6
+                setting :server_upload_path
               end
               setting :padding do
                 setting :default_size, 2

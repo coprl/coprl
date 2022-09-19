@@ -85,7 +85,7 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
     }
 
     hasServerUpload() {
-        return !!this.quillWrapper.dataset.serverUploadPath;
+        return !!(this.quillWrapper.dataset.serverUploadPath && this.quillWrapper.dataset.serverUploadEnabled);
     }
 
     value() {
@@ -142,15 +142,25 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
 
     async enableServerImageUpload() {
         const imgs = Array.from(
-          this.quill.container.querySelectorAll('img[src^="data:"]:not(.loading)')
+          this.quill.container.querySelectorAll('img[src^="data:"]:not(.uploading)')
         );
 
-        const serverUploadPath = this.quillWrapper.dataset.serverUploadPath;
         for (const img of imgs) {
-            img.classList.add("loading");
-            img.setAttribute("src", await uploadBase64Img(img.getAttribute("src"), serverUploadPath));
-            img.classList.remove("loading");
+            img.classList.add("uploading");
+            const result = await this.uploadBase64Img(img.getAttribute("src"));
+            img.setAttribute("src", result.url);
+            img.dataset.evvntUploadKey = result.upload_key;
+            img.classList.remove("uploading");
         }
+    }
+
+    // Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509
+    async uploadBase64Img(base64Str) {
+        if (typeof base64Str !== 'string' || base64Str.length < 100) {
+            return base64Str;
+        }
+
+        return await postToServer(base64Str, this.quillWrapper.dataset.serverUploadPath, this.quillWrapper.dataset.serverUploadKey);
     }
 }
 
@@ -280,17 +290,7 @@ function getListLevel(el) {
     return +className.replace(/[^\d]/g, '');
 }
 
-// Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509
-async function uploadBase64Img(base64Str, serverUploadPath) {
-    if (typeof base64Str !== 'string' || base64Str.length < 100) {
-        return base64Str;
-    }
-    const url = await postToServer(base64Str, serverUploadPath);
-    return url;
-}
-
 // See https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-
 function b64toBlob(b64Data, contentType, sliceSize) {
     contentType = contentType || '';
     sliceSize = sliceSize || 512;
@@ -315,27 +315,28 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 }
 
 // Based on https://ourcodeworld.com/articles/read/322/how-to-convert-a-base64-image-into-a-image-file-and-upload-it-with-an-asynchronous-form-using-jquery
-function postToServer(base64, serverUploadPath) {
+function postToServer(base64, serverUploadPath, serverUploadKey) {
     return new Promise(resolve => {
         // Split the base64 string in data and contentType
-        var block = base64.split(";");
+        const block = base64.split(";");
         // Get the content type of the image
-        var contentType = block[0].split(":")[1];
-        // get the real base64 content of the file
-        var realData = block[1].split(",")[1];
-        // Convert it to a blob to upload
-        var blob = b64toBlob(realData, contentType);
-        // create form data
-        const fd = new FormData();
-        // replace "file_upload" with whatever form field you expect the file to be uploaded to
-        fd.append('file', blob);
+        const contentType = block[0].split(":")[1];
 
+        // Get the real base64 content of the file
+        const realData = block[1].split(",")[1];
+        // Convert it to a blob to upload
+        const blob = b64toBlob(realData, contentType);
+
+        const fd = new FormData();
+
+        fd.append('file', blob);
+        fd.append('upload_key', serverUploadKey)
         const xhr = new XMLHttpRequest();
         xhr.open('POST', serverUploadPath, true);
         xhr.onload = () => {
             if (xhr.status === 200) {
-                const url = JSON.parse(xhr.responseText).data.url;
-                resolve(url);
+                const data = JSON.parse(xhr.responseText).data;
+                resolve(data);
             }
         };
         xhr.send(fd);

@@ -39028,44 +39028,6 @@ var MDCSwitch = /** @class */function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__mixins_dirtyable__ = __webpack_require__(12);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-// Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509
-var uploadBase64Img = function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(base64Str, serverUploadPath) {
-        var url;
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
-            while (1) {
-                switch (_context3.prev = _context3.next) {
-                    case 0:
-                        if (!(typeof base64Str !== 'string' || base64Str.length < 100)) {
-                            _context3.next = 2;
-                            break;
-                        }
-
-                        return _context3.abrupt('return', base64Str);
-
-                    case 2:
-                        _context3.next = 4;
-                        return postToServer(base64Str, serverUploadPath);
-
-                    case 4:
-                        url = _context3.sent;
-                        return _context3.abrupt('return', url);
-
-                    case 6:
-                    case 'end':
-                        return _context3.stop();
-                }
-            }
-        }, _callee3, this);
-    }));
-
-    return function uploadBase64Img(_x, _x2) {
-        return _ref3.apply(this, arguments);
-    };
-}();
-
-// See https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39191,7 +39153,7 @@ var VRichTextArea = function (_dirtyableMixin) {
     }, {
         key: 'hasServerUpload',
         value: function hasServerUpload() {
-            return !!this.quillWrapper.dataset.serverUploadPath;
+            return !!(this.quillWrapper.dataset.serverUploadPath && this.quillWrapper.dataset.serverUploadEnabled);
         }
     }, {
         key: 'value',
@@ -39243,85 +39205,83 @@ var VRichTextArea = function (_dirtyableMixin) {
         key: 'enableServerImageUpload',
         value: function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-                var imgs, serverUploadPath, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, img;
+                var imgs, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, img, result;
 
                 return regeneratorRuntime.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
-                                imgs = Array.from(this.quill.container.querySelectorAll('img[src^="data:"]:not(.loading)'));
-                                serverUploadPath = this.quillWrapper.dataset.serverUploadPath;
+                                imgs = Array.from(this.quill.container.querySelectorAll('img[src^="data:"]:not(.uploading)'));
                                 _iteratorNormalCompletion = true;
                                 _didIteratorError = false;
                                 _iteratorError = undefined;
-                                _context2.prev = 5;
+                                _context2.prev = 4;
                                 _iterator = imgs[Symbol.iterator]();
 
-                            case 7:
+                            case 6:
                                 if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                                    _context2.next = 19;
+                                    _context2.next = 18;
                                     break;
                                 }
 
                                 img = _step.value;
 
-                                img.classList.add("loading");
-                                _context2.t0 = img;
-                                _context2.next = 13;
-                                return uploadBase64Img(img.getAttribute("src"), serverUploadPath);
+                                img.classList.add("uploading");
+                                _context2.next = 11;
+                                return this.uploadBase64Img(img.getAttribute("src"));
 
-                            case 13:
-                                _context2.t1 = _context2.sent;
+                            case 11:
+                                result = _context2.sent;
 
-                                _context2.t0.setAttribute.call(_context2.t0, "src", _context2.t1);
+                                img.setAttribute("src", result.url);
+                                img.dataset.evvntUploadKey = result.upload_key;
+                                img.classList.remove("uploading");
 
-                                img.classList.remove("loading");
-
-                            case 16:
+                            case 15:
                                 _iteratorNormalCompletion = true;
-                                _context2.next = 7;
+                                _context2.next = 6;
                                 break;
 
-                            case 19:
-                                _context2.next = 25;
+                            case 18:
+                                _context2.next = 24;
                                 break;
 
-                            case 21:
-                                _context2.prev = 21;
-                                _context2.t2 = _context2['catch'](5);
+                            case 20:
+                                _context2.prev = 20;
+                                _context2.t0 = _context2['catch'](4);
                                 _didIteratorError = true;
-                                _iteratorError = _context2.t2;
+                                _iteratorError = _context2.t0;
 
-                            case 25:
+                            case 24:
+                                _context2.prev = 24;
                                 _context2.prev = 25;
-                                _context2.prev = 26;
 
                                 if (!_iteratorNormalCompletion && _iterator.return) {
                                     _iterator.return();
                                 }
 
-                            case 28:
-                                _context2.prev = 28;
+                            case 27:
+                                _context2.prev = 27;
 
                                 if (!_didIteratorError) {
-                                    _context2.next = 31;
+                                    _context2.next = 30;
                                     break;
                                 }
 
                                 throw _iteratorError;
 
+                            case 30:
+                                return _context2.finish(27);
+
                             case 31:
-                                return _context2.finish(28);
+                                return _context2.finish(24);
 
                             case 32:
-                                return _context2.finish(25);
-
-                            case 33:
                             case 'end':
                                 return _context2.stop();
                         }
                     }
-                }, _callee2, this, [[5, 21, 25, 33], [26,, 28, 32]]);
+                }, _callee2, this, [[4, 20, 24, 32], [25,, 27, 31]]);
             }));
 
             function enableServerImageUpload() {
@@ -39329,6 +39289,45 @@ var VRichTextArea = function (_dirtyableMixin) {
             }
 
             return enableServerImageUpload;
+        }()
+
+        // Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509
+
+    }, {
+        key: 'uploadBase64Img',
+        value: function () {
+            var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(base64Str) {
+                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    while (1) {
+                        switch (_context3.prev = _context3.next) {
+                            case 0:
+                                if (!(typeof base64Str !== 'string' || base64Str.length < 100)) {
+                                    _context3.next = 2;
+                                    break;
+                                }
+
+                                return _context3.abrupt('return', base64Str);
+
+                            case 2:
+                                _context3.next = 4;
+                                return postToServer(base64Str, this.quillWrapper.dataset.serverUploadPath, this.quillWrapper.dataset.serverUploadKey);
+
+                            case 4:
+                                return _context3.abrupt('return', _context3.sent);
+
+                            case 5:
+                            case 'end':
+                                return _context3.stop();
+                        }
+                    }
+                }, _callee3, this);
+            }));
+
+            function uploadBase64Img(_x) {
+                return _ref3.apply(this, arguments);
+            }
+
+            return uploadBase64Img;
         }()
     }]);
 
@@ -39538,7 +39537,10 @@ function convertLists(richtext) {
 function getListLevel(el) {
     var className = el.className || '0';
     return +className.replace(/[^\d]/g, '');
-}function b64toBlob(b64Data, contentType, sliceSize) {
+}
+
+// See https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+function b64toBlob(b64Data, contentType, sliceSize) {
     contentType = contentType || '';
     sliceSize = sliceSize || 512;
 
@@ -39562,27 +39564,28 @@ function getListLevel(el) {
 }
 
 // Based on https://ourcodeworld.com/articles/read/322/how-to-convert-a-base64-image-into-a-image-file-and-upload-it-with-an-asynchronous-form-using-jquery
-function postToServer(base64, serverUploadPath) {
+function postToServer(base64, serverUploadPath, serverUploadKey) {
     return new Promise(function (resolve) {
         // Split the base64 string in data and contentType
         var block = base64.split(";");
         // Get the content type of the image
         var contentType = block[0].split(":")[1];
-        // get the real base64 content of the file
+
+        // Get the real base64 content of the file
         var realData = block[1].split(",")[1];
         // Convert it to a blob to upload
         var blob = b64toBlob(realData, contentType);
-        // create form data
-        var fd = new FormData();
-        // replace "file_upload" with whatever form field you expect the file to be uploaded to
-        fd.append('file', blob);
 
+        var fd = new FormData();
+
+        fd.append('file', blob);
+        fd.append('upload_key', serverUploadKey);
         var xhr = new XMLHttpRequest();
         xhr.open('POST', serverUploadPath, true);
         xhr.onload = function () {
             if (xhr.status === 200) {
-                var url = JSON.parse(xhr.responseText).data.url;
-                resolve(url);
+                var data = JSON.parse(xhr.responseText).data;
+                resolve(data);
             }
         };
         xhr.send(fd);

@@ -39220,7 +39220,7 @@ var VRichTextArea = function (_dirtyableMixin) {
 
                             case 6:
                                 if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                                    _context2.next = 18;
+                                    _context2.next = 19;
                                     break;
                                 }
 
@@ -39234,54 +39234,55 @@ var VRichTextArea = function (_dirtyableMixin) {
                                 result = _context2.sent;
 
                                 img.setAttribute("src", result.url);
+                                img.dataset.evvntBlobId = result.id;
                                 img.dataset.evvntUploadKey = result.upload_key;
                                 img.classList.remove("uploading");
 
-                            case 15:
+                            case 16:
                                 _iteratorNormalCompletion = true;
                                 _context2.next = 6;
                                 break;
 
-                            case 18:
-                                _context2.next = 24;
+                            case 19:
+                                _context2.next = 25;
                                 break;
 
-                            case 20:
-                                _context2.prev = 20;
+                            case 21:
+                                _context2.prev = 21;
                                 _context2.t0 = _context2['catch'](4);
                                 _didIteratorError = true;
                                 _iteratorError = _context2.t0;
 
-                            case 24:
-                                _context2.prev = 24;
+                            case 25:
                                 _context2.prev = 25;
+                                _context2.prev = 26;
 
                                 if (!_iteratorNormalCompletion && _iterator.return) {
                                     _iterator.return();
                                 }
 
-                            case 27:
-                                _context2.prev = 27;
+                            case 28:
+                                _context2.prev = 28;
 
                                 if (!_didIteratorError) {
-                                    _context2.next = 30;
+                                    _context2.next = 31;
                                     break;
                                 }
 
                                 throw _iteratorError;
 
-                            case 30:
-                                return _context2.finish(27);
-
                             case 31:
-                                return _context2.finish(24);
+                                return _context2.finish(28);
 
                             case 32:
+                                return _context2.finish(25);
+
+                            case 33:
                             case 'end':
                                 return _context2.stop();
                         }
                     }
-                }, _callee2, this, [[4, 20, 24, 32], [25,, 27, 31]]);
+                }, _callee2, this, [[4, 21, 25, 33], [26,, 28, 32]]);
             }));
 
             function enableServerImageUpload() {

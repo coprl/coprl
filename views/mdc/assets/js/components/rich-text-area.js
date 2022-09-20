@@ -149,6 +149,7 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
             img.classList.add("uploading");
             const result = await this.uploadBase64Img(img.getAttribute("src"));
             img.setAttribute("src", result.url);
+            img.dataset.evvntBlobId = result.id;
             img.dataset.evvntUploadKey = result.upload_key;
             img.classList.remove("uploading");
         }

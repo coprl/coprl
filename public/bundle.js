@@ -53691,7 +53691,7 @@ var VRichTextArea = function (_dirtyableMixin) {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 _context.next = 2;
-                                return _this.enableServerImageUpload();
+                                return _this.performServerImageUpload();
 
                             case 2:
                                 return _context.abrupt('return', _context.sent);
@@ -53796,7 +53796,7 @@ var VRichTextArea = function (_dirtyableMixin) {
             return [['bold', 'italic', 'underline', 'strike'], [{ 'color': [] }], [{ 'align': [] }], ['blockquote', 'horizontal-rule'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], [{ 'script': 'sub' }, { 'script': 'super' }], [{ 'direction': 'rtl' }], [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'size': ['xx-small', false, 'large', 'x-large'] }], filteredOpts, ['clean']];
         }
     }, {
-        key: 'enableServerImageUpload',
+        key: 'performServerImageUpload',
         value: function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
                 var imgs, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, img, result;
@@ -53879,11 +53879,11 @@ var VRichTextArea = function (_dirtyableMixin) {
                 }, _callee2, this, [[4, 21, 25, 33], [26,, 28, 32]]);
             }));
 
-            function enableServerImageUpload() {
+            function performServerImageUpload() {
                 return _ref2.apply(this, arguments);
             }
 
-            return enableServerImageUpload;
+            return performServerImageUpload;
         }()
 
         // Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509

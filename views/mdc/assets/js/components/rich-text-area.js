@@ -46,7 +46,7 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
         this.originalValue = this.value();
 
         if (this.hasServerUpload()) {
-            this.quill.on('text-change',  async () => await this.enableServerImageUpload());
+            this.quill.on('text-change',  async () => await this.performServerImageUpload());
         }
     }
 
@@ -140,7 +140,7 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
         ];
     }
 
-    async enableServerImageUpload() {
+    async performServerImageUpload() {
         const imgs = Array.from(
           this.quill.container.querySelectorAll('img[src^="data:"]:not(.uploading)')
         );

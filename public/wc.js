@@ -9638,15 +9638,6 @@ var VTextField = function (_dirtyableMixin) {
                 });
             }
 
-            var maxLength = element.dataset.max_length;
-            if (maxLength) {
-                this.input.addEventListener('keyup', function () {
-                    if (_this2.input.value.length > maxLength) {
-                        _this2.input.value = _this2.input.value.slice(0, maxLength);
-                    }
-                });
-            }
-
             var caseType = element.dataset.case_type;
             if (caseType !== 'mixed') {
                 this.input.addEventListener('keyup', function (e) {

@@ -31,6 +31,7 @@
            aria-controls="<%= comp.id %>-input-helper-text"
            <% if comp.disabled %>disabled<% end %>
            <%= 'required' if comp.required %>
+           <%= "maxLength='#{comp.max_length}'" if comp.max_length %>
            <%= "pattern='#{comp.pattern}'" if comp.pattern %>
            autocomplete="<%= auto_complete %>"
            list="<%= comp.id %>-list"

@@ -6,4 +6,7 @@
        <% if comp.validation_error %>data-validation-error="<%= comp.validation_error %>"<% end %>>
       <%= comp.hint %>
   </div>
+  <% if comp.max_length %>
+    <div class="mdc-text-field-character-counter"></div>
+  <% end %>
 </div>

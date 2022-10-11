@@ -9605,38 +9605,61 @@ var VTextField = function (_dirtyableMixin) {
         var _this = _possibleConstructorReturn(this, (VTextField.__proto__ || Object.getPrototypeOf(VTextField)).call(this, element, mdcComponent));
 
         _this.input = element.querySelector('input,textarea');
+        _this.label = element.querySelector('label');
         _this.input.vComponent = _this;
         _this.afterInputTimeout = null;
         _this.helperDisplay = _this.root.getElementById(element.id + '-input-helper-text');
         _this.origHelperText = _this.helperDisplay.innerHTML.trim();
 
         _this.recalcWhenVisible(_this);
-
-        _this.input.addEventListener('input', function (event) {
-            clearTimeout(_this.afterInputTimeout);
-            _this.afterInputTimeout = setTimeout(function () {
-                _this.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, { bubbles: true, composed: true }));
-            }, AFTER_INPUT_TIMEOUT);
-        });
-
-        var caseType = element.dataset.case_type;
-        if (caseType !== 'mixed') {
-            _this.input.addEventListener('keyup', function (e) {
-                _this.forceCase(caseType);
-            });
-        }
+        _this.setupEventListeners(element);
         _this.originalValue = _this.value();
         return _this;
     }
 
-    // Called whenever a form is about to be submitted.
-    // returns true on success
-    // returns on failure return an error object that can be processed by VErrors:
-    //    { email: ["email must be filled", "email must be from your domain"] }
-    //    { :page: ["must be filled"] }
-
-
     _createClass(VTextField, [{
+        key: 'setupEventListeners',
+        value: function setupEventListeners(element) {
+            var _this2 = this;
+
+            this.input.addEventListener('input', function (event) {
+                clearTimeout(_this2.afterInputTimeout);
+                _this2.afterInputTimeout = setTimeout(function () {
+                    _this2.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, { bubbles: true, composed: true }));
+                }, AFTER_INPUT_TIMEOUT);
+            });
+
+            var defaultValue = element.dataset.default_value;
+            if (defaultValue) {
+                ['blur', 'change'].forEach(function (key) {
+                    _this2.input.addEventListener(key, function () {
+                        _this2.setDefaultValueIfBlank(defaultValue);
+                    });
+                });
+            }
+
+            var caseType = element.dataset.case_type;
+            if (caseType !== 'mixed') {
+                this.input.addEventListener('keyup', function (e) {
+                    _this2.forceCase(caseType);
+                });
+            }
+        }
+    }, {
+        key: 'setDefaultValueIfBlank',
+        value: function setDefaultValueIfBlank(defaultValue) {
+            if (this.value().trim().length === 0) {
+                this.setValue(defaultValue);
+            }
+        }
+
+        // Called whenever a form is about to be submitted.
+        // returns true on success
+        // returns on failure return an error object that can be processed by VErrors:
+        //    { email: ["email must be filled", "email must be from your domain"] }
+        //    { :page: ["must be filled"] }
+
+    }, {
         key: 'validate',
         value: function validate(formData) {
             console.debug('TextField validate', formData);

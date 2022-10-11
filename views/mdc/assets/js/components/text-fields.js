@@ -19,13 +19,18 @@ export class VTextField extends dirtyableMixin(
         super(element, mdcComponent);
 
         this.input = element.querySelector('input,textarea');
+        this.label = element.querySelector('label');
         this.input.vComponent = this;
         this.afterInputTimeout = null;
         this.helperDisplay = this.root.getElementById(`${element.id}-input-helper-text`);
         this.origHelperText = this.helperDisplay.innerHTML.trim();
 
         this.recalcWhenVisible(this);
+        this.setupEventListeners(element);
+        this.originalValue = this.value();
+    }
 
+    setupEventListeners(element) {
         this.input.addEventListener('input', (event) => {
             clearTimeout(this.afterInputTimeout);
             this.afterInputTimeout = setTimeout(() => {
@@ -33,13 +38,27 @@ export class VTextField extends dirtyableMixin(
             }, AFTER_INPUT_TIMEOUT);
         });
 
+        const defaultValue = element.dataset.default_value;
+        if (defaultValue) {
+            ['blur', 'change'].forEach((key) => {
+                this.input.addEventListener(key, () => {
+                    this.setDefaultValueIfBlank(defaultValue);
+                });
+            });
+        }
+
         const caseType = element.dataset.case_type;
         if (caseType !== 'mixed') {
             this.input.addEventListener('keyup', (e) => {
                 this.forceCase(caseType);
             });
         }
-        this.originalValue = this.value();
+    }
+
+    setDefaultValueIfBlank(defaultValue) {
+        if (this.value().trim().length === 0) {
+            this.setValue(defaultValue);
+        }
     }
 
     // Called whenever a form is about to be submitted.
@@ -147,10 +166,11 @@ export class VTextField extends dirtyableMixin(
         return (style.display === 'none');
     }
 
-    forceCase(caseType){
+    forceCase(caseType) {
         if (caseType === 'upper') {
             this.input.value = this.input.value.toUpperCase();
-        } else if (caseType === 'lower') {
+        }
+        else if (caseType === 'lower') {
             this.input.value = this.input.value.toLowerCase();
         }
     }

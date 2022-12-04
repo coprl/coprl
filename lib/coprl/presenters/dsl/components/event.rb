@@ -90,18 +90,18 @@ module Coprl
             toggle_visibility(component_id, **params.merge(action: :hide), &block)
           end
 
-          def toggle_disabled(component_id, **params, &block)
+          def toggle_disabled(css_selector, **params, &block)
             self << Actions::ToggleDisabled.new(parent: self,
-                                                target: component_id,
+                                                target: css_selector,
                                                 params: params, &block)
           end
 
-          def disable(component_id, **params, &block)
-            toggle_disabled(component_id, **params.merge(action: :disable), &block)
+          def disable(css_selector, **params, &block)
+            toggle_disabled(css_selector, **params.merge(action: :disable), &block)
           end
 
-          def enable(component_id, **params, &block)
-            toggle_disabled(component_id, **params.merge(action: :enable), &block)
+          def enable(css_selector, **params, &block)
+            toggle_disabled(css_selector, **params.merge(action: :enable), &block)
           end
 
           def prompt_if_dirty(dialog_id, input_tag: nil, **params, &block)

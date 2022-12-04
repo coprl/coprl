@@ -35145,7 +35145,7 @@ var VToggleDisabled = function () {
   function VToggleDisabled(options, params, event, root) {
     _classCallCheck(this, VToggleDisabled);
 
-    this.targetId = options.target;
+    this.cssSelector = options.target;
     this.params = params;
     this.event = event;
     this.root = root;
@@ -35154,35 +35154,24 @@ var VToggleDisabled = function () {
   _createClass(VToggleDisabled, [{
     key: 'call',
     value: function call(results) {
-      var targetId = this.targetId;
+      var cssSelector = this.cssSelector;
       var action = this.params.action;
       var delayAmt = this.event instanceof FocusEvent ? 500 : 0;
-      var elem = this.root.getElementById(targetId);
+      var selectedElements = this.root.querySelectorAll(cssSelector);
 
-      if (!elem) {
-        var err = new Error('Unable to locate node ' + targetId + '!' + ' Did you forget to attach it?');
-
-        results.push({
-          action: 'toggle_disabled',
-          contentType: 'v/errors',
-          content: { exception: err.message }
+      var promises = Array.from(selectedElements).map(function (elem) {
+        return new Promise(function (resolve) {
+          clearTimeout(elem.vTimeout);
+          elem.vTimeout = setTimeout(function () {
+            console.debug('Toggling disabled on: ' + elem.id);
+            elem.disabled = action === 'disable';
+            results.push({ action: 'toggle_disabled', statusCode: 200 });
+            resolve(results);
+          }, delayAmt);
         });
-
-        return new Promise(function (_, reject) {
-          return reject(results);
-        });
-      }
-
-      var promiseObj = new Promise(function (resolve) {
-        clearTimeout(elem.vTimeout);
-        elem.vTimeout = setTimeout(function () {
-          console.debug('Toggling disabled on: ' + targetId);
-          elem.disabled = action === 'disable';
-          results.push({ action: 'toggle_disabled', statusCode: 200 });
-          resolve(results);
-        }, delayAmt);
       });
-      return promiseObj;
+
+      return Promise.all(promises);
     }
   }]);
 

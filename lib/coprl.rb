@@ -11,7 +11,7 @@ class MyInflector < Zeitwerk::GemInflector
   end
 end
 
-loader = Zeitwerk::Loader.for_gem
+loader = Zeitwerk::Loader.for_gem(warn_on_extra_files: false)
 loader.inflector = MyInflector.new(__FILE__)
 #loader.logger = Logger.new($stderr)
 loader.setup

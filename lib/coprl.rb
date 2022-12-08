@@ -11,10 +11,12 @@ class MyInflector < Zeitwerk::GemInflector
   end
 end
 
-loader = Zeitwerk::Loader.for_gem(warn_on_extra_files: false)
+loader = Zeitwerk::Loader.for_gem
 loader.inflector = MyInflector.new(__FILE__)
+#loader.logger = Logger.new($stderr)
 loader.setup
-loader.ignore("#{__dir__}/generators")
+generators = File.join(__dir__,'generators')
+loader.do_not_eager_load(generators)
 
 module Coprl
 end

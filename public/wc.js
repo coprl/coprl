@@ -39051,6 +39051,8 @@ var MDCSwitch = /** @class */function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__mixins_dirtyable__ = __webpack_require__(12);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -39077,32 +39079,22 @@ var VRichTextArea = function (_dirtyableMixin) {
     _inherits(VRichTextArea, _dirtyableMixin);
 
     function VRichTextArea(element, mdcComponent) {
+        var _this2 = this;
+
         _classCallCheck(this, VRichTextArea);
 
         var _this = _possibleConstructorReturn(this, (VRichTextArea.__proto__ || Object.getPrototypeOf(VRichTextArea)).call(this, element, mdcComponent));
 
+        _this.quillWrapper = element.querySelector('.v-rich-text-area');
+
+        if (!_this.hasServerUpload()) {
+            __WEBPACK_IMPORTED_MODULE_0_quill___default.a.register('modules/imageCompress', __WEBPACK_IMPORTED_MODULE_1_quill_image_compress___default.a);
+        }
+
         configureQuill();
         registerBlots();
 
-        __WEBPACK_IMPORTED_MODULE_0_quill___default.a.register('modules/imageCompress', __WEBPACK_IMPORTED_MODULE_1_quill_image_compress___default.a);
-        _this.quillWrapper = element.querySelector('.v-rich-text-area');
-        _this.quill = new __WEBPACK_IMPORTED_MODULE_0_quill___default.a(_this.quillWrapper, {
-            modules: {
-                toolbar: _this.toolbarOptions(_this.quillWrapper.dataset.toolbar),
-                imageCompress: {
-                    quality: Number(_this.quillWrapper.dataset.imgCompression),
-                    maxWidth: Number(_this.quillWrapper.dataset.imgMaxWidth),
-                    maxHeight: Number(_this.quillWrapper.dataset.imgMaxHeight),
-                    keepImageTypes: ['image/jpeg', 'image/png'], // preserve these files type
-                    imageType: 'image/jpeg', // convert others to jpeg
-                    debug: true,
-                    suppressErrorLogging: false
-                }
-            },
-            bounds: _this.quillWrapper,
-            theme: 'snow',
-            placeholder: _this.quillWrapper.dataset.placeholder
-        });
+        _this.quill = _this.createQuillComponent();
         _this.fixedUpContentElement = element.querySelector('.v-rich-text-area--fixed-up-content');
         _this.quillEditor = _this.quillWrapper.querySelector('.ql-editor');
 
@@ -39120,10 +39112,57 @@ var VRichTextArea = function (_dirtyableMixin) {
 
         adjustEditorStyles(_this);
         _this.originalValue = _this.value();
+
+        if (_this.hasServerUpload()) {
+            _this.quill.on('text-change', _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                _context.next = 2;
+                                return _this.performServerImageUpload();
+
+                            case 2:
+                                return _context.abrupt('return', _context.sent);
+
+                            case 3:
+                            case 'end':
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, _this2);
+            })));
+        }
         return _this;
     }
 
     _createClass(VRichTextArea, [{
+        key: 'createQuillComponent',
+        value: function createQuillComponent() {
+            var config = {
+                modules: {
+                    toolbar: this.toolbarOptions(this.quillWrapper.dataset.toolbar)
+                },
+                bounds: this.quillWrapper,
+                theme: 'snow',
+                placeholder: this.quillWrapper.dataset.placeholder
+            };
+
+            if (!this.hasServerUpload()) {
+                config.modules.imageCompress = {
+                    quality: Number(this.quillWrapper.dataset.imgCompression),
+                    maxWidth: Number(this.quillWrapper.dataset.imgMaxWidth),
+                    maxHeight: Number(this.quillWrapper.dataset.imgMaxHeight),
+                    keepImageTypes: ['image/jpeg', 'image/png'], // preserve these files type
+                    imageType: 'image/jpeg', // convert others to jpeg
+                    debug: true,
+                    suppressErrorLogging: false
+                };
+            }
+
+            return new __WEBPACK_IMPORTED_MODULE_0_quill___default.a(this.quillWrapper, config);
+        }
+    }, {
         key: 'prepareSubmit',
         value: function prepareSubmit(params) {
             params.push(['rich_text_payload', 'true']);
@@ -39133,6 +39172,11 @@ var VRichTextArea = function (_dirtyableMixin) {
         key: 'name',
         value: function name() {
             return this.quillWrapper.dataset.name;
+        }
+    }, {
+        key: 'hasServerUpload',
+        value: function hasServerUpload() {
+            return !!(this.quillWrapper.dataset.serverUploadPath && this.quillWrapper.dataset.serverUploadEnabled);
         }
     }, {
         key: 'value',
@@ -39180,6 +39224,135 @@ var VRichTextArea = function (_dirtyableMixin) {
             });
             return [['bold', 'italic', 'underline', 'strike'], [{ 'color': [] }], [{ 'align': [] }], ['blockquote', 'horizontal-rule'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], [{ 'script': 'sub' }, { 'script': 'super' }], [{ 'direction': 'rtl' }], [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'size': ['xx-small', false, 'large', 'x-large'] }], filteredOpts, ['clean']];
         }
+    }, {
+        key: 'performServerImageUpload',
+        value: function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+                var imgs, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, img, result;
+
+                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                    while (1) {
+                        switch (_context2.prev = _context2.next) {
+                            case 0:
+                                imgs = Array.from(this.quill.container.querySelectorAll('img[src^="data:"]:not(.uploading)'));
+                                _iteratorNormalCompletion = true;
+                                _didIteratorError = false;
+                                _iteratorError = undefined;
+                                _context2.prev = 4;
+                                _iterator = imgs[Symbol.iterator]();
+
+                            case 6:
+                                if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+                                    _context2.next = 19;
+                                    break;
+                                }
+
+                                img = _step.value;
+
+                                img.classList.add("uploading");
+                                _context2.next = 11;
+                                return this.uploadBase64Img(img.getAttribute("src"));
+
+                            case 11:
+                                result = _context2.sent;
+
+                                img.setAttribute("src", result.url);
+                                img.dataset.evvntBlobId = result.id;
+                                img.dataset.evvntUploadKey = result.upload_key;
+                                img.classList.remove("uploading");
+
+                            case 16:
+                                _iteratorNormalCompletion = true;
+                                _context2.next = 6;
+                                break;
+
+                            case 19:
+                                _context2.next = 25;
+                                break;
+
+                            case 21:
+                                _context2.prev = 21;
+                                _context2.t0 = _context2['catch'](4);
+                                _didIteratorError = true;
+                                _iteratorError = _context2.t0;
+
+                            case 25:
+                                _context2.prev = 25;
+                                _context2.prev = 26;
+
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
+                                }
+
+                            case 28:
+                                _context2.prev = 28;
+
+                                if (!_didIteratorError) {
+                                    _context2.next = 31;
+                                    break;
+                                }
+
+                                throw _iteratorError;
+
+                            case 31:
+                                return _context2.finish(28);
+
+                            case 32:
+                                return _context2.finish(25);
+
+                            case 33:
+                            case 'end':
+                                return _context2.stop();
+                        }
+                    }
+                }, _callee2, this, [[4, 21, 25, 33], [26,, 28, 32]]);
+            }));
+
+            function performServerImageUpload() {
+                return _ref2.apply(this, arguments);
+            }
+
+            return performServerImageUpload;
+        }()
+
+        // Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509
+
+    }, {
+        key: 'uploadBase64Img',
+        value: function () {
+            var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(base64Str) {
+                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                    while (1) {
+                        switch (_context3.prev = _context3.next) {
+                            case 0:
+                                if (!(typeof base64Str !== 'string' || base64Str.length < 100)) {
+                                    _context3.next = 2;
+                                    break;
+                                }
+
+                                return _context3.abrupt('return', base64Str);
+
+                            case 2:
+                                _context3.next = 4;
+                                return postToServer(base64Str, this.quillWrapper.dataset.serverUploadPath, this.quillWrapper.dataset.serverUploadKey);
+
+                            case 4:
+                                return _context3.abrupt('return', _context3.sent);
+
+                            case 5:
+                            case 'end':
+                                return _context3.stop();
+                        }
+                    }
+                }, _callee3, this);
+            }));
+
+            function uploadBase64Img(_x) {
+                return _ref3.apply(this, arguments);
+            }
+
+            return uploadBase64Img;
+        }()
     }]);
 
     return VRichTextArea;
@@ -39197,13 +39370,13 @@ function adjustEditorStyles(richTextArea) {
 var blotRegistry = new WeakSet();
 
 function registerBlots() {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
 
     try {
-        for (var _iterator = blots[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var blot = _step.value;
+        for (var _iterator2 = blots[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var blot = _step2.value;
 
             if (blotRegistry.has(blot)) {
                 continue;
@@ -39215,68 +39388,6 @@ function registerBlots() {
 
             __WEBPACK_IMPORTED_MODULE_0_quill___default.a.register(blot);
             blotRegistry.add(blot);
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-            }
-        } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
-            }
-        }
-    }
-}
-
-function hookupCustomToolbarButtons(vRichTextArea) {
-    var _loop = function _loop(blotClass) {
-        var name = blotClass.name,
-            action = blotClass.action;
-
-        var buttons = vRichTextArea.element.querySelectorAll('.ql-' + name);
-
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
-
-        try {
-            for (var _iterator3 = buttons[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var button = _step3.value;
-
-                // Invoke the Blot's action when button is clicked:
-                button.addEventListener('click', function (event) {
-                    action(vRichTextArea.quill, event);
-                });
-            }
-        } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                    _iterator3.return();
-                }
-            } finally {
-                if (_didIteratorError3) {
-                    throw _iteratorError3;
-                }
-            }
-        }
-    };
-
-    var _iteratorNormalCompletion2 = true;
-    var _didIteratorError2 = false;
-    var _iteratorError2 = undefined;
-
-    try {
-        for (var _iterator2 = blots[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var blotClass = _step2.value;
-
-            _loop(blotClass);
         }
     } catch (err) {
         _didIteratorError2 = true;
@@ -39294,6 +39405,68 @@ function hookupCustomToolbarButtons(vRichTextArea) {
     }
 }
 
+function hookupCustomToolbarButtons(vRichTextArea) {
+    var _loop = function _loop(blotClass) {
+        var name = blotClass.name,
+            action = blotClass.action;
+
+        var buttons = vRichTextArea.element.querySelectorAll('.ql-' + name);
+
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
+
+        try {
+            for (var _iterator4 = buttons[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var button = _step4.value;
+
+                // Invoke the Blot's action when button is clicked:
+                button.addEventListener('click', function (event) {
+                    action(vRichTextArea.quill, event);
+                });
+            }
+        } catch (err) {
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                    _iterator4.return();
+                }
+            } finally {
+                if (_didIteratorError4) {
+                    throw _iteratorError4;
+                }
+            }
+        }
+    };
+
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
+
+    try {
+        for (var _iterator3 = blots[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var blotClass = _step3.value;
+
+            _loop(blotClass);
+        }
+    } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
+            }
+        } finally {
+            if (_didIteratorError3) {
+                throw _iteratorError3;
+            }
+        }
+    }
+}
+
 function configureQuill() {
     // Inform Quill that it should decorate text objects with inline styles
     // instead of Quill CSS classes when modifying text:
@@ -39302,27 +39475,27 @@ function configureQuill() {
 
     var styleAttributors = [sizeAttributor, __WEBPACK_IMPORTED_MODULE_0_quill___default.a.import('attributors/style/align'), __WEBPACK_IMPORTED_MODULE_0_quill___default.a.import('attributors/style/direction')];
 
-    var _iteratorNormalCompletion4 = true;
-    var _didIteratorError4 = false;
-    var _iteratorError4 = undefined;
+    var _iteratorNormalCompletion5 = true;
+    var _didIteratorError5 = false;
+    var _iteratorError5 = undefined;
 
     try {
-        for (var _iterator4 = styleAttributors[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-            var attributor = _step4.value;
+        for (var _iterator5 = styleAttributors[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+            var attributor = _step5.value;
 
             __WEBPACK_IMPORTED_MODULE_0_quill___default.a.register(attributor, true);
         }
     } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
     } finally {
         try {
-            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                _iterator4.return();
+            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                _iterator5.return();
             }
         } finally {
-            if (_didIteratorError4) {
-                throw _iteratorError4;
+            if (_didIteratorError5) {
+                throw _iteratorError5;
             }
         }
     }
@@ -39388,6 +39561,59 @@ function convertLists(richtext) {
 function getListLevel(el) {
     var className = el.className || '0';
     return +className.replace(/[^\d]/g, '');
+}
+
+// See https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: contentType });
+}
+
+// Based on https://ourcodeworld.com/articles/read/322/how-to-convert-a-base64-image-into-a-image-file-and-upload-it-with-an-asynchronous-form-using-jquery
+function postToServer(base64, serverUploadPath, serverUploadKey) {
+    return new Promise(function (resolve) {
+        // Split the base64 string in data and contentType
+        var block = base64.split(";");
+        // Get the content type of the image
+        var contentType = block[0].split(":")[1];
+
+        // Get the real base64 content of the file
+        var realData = block[1].split(",")[1];
+        // Convert it to a blob to upload
+        var blob = b64toBlob(realData, contentType);
+
+        var fd = new FormData();
+
+        fd.append('file', blob);
+        fd.append('upload_key', serverUploadKey);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', serverUploadPath, true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText).data;
+                resolve(data);
+            }
+        };
+        xhr.send(fd);
+    });
 }
 
 /***/ }),

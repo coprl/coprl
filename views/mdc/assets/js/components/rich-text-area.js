@@ -1,9 +1,9 @@
-import Quill from "quill";
-import ImageCompress from 'quill-image-compress';
-import {HorizontalRuleBlot} from './rich-text-area/horizontal-rule-blot';
-import {hookupComponents, VBaseComponent} from "./base-component";
-import {eventHandlerMixin} from "./mixins/event-handler";
-import {dirtyableMixin} from './mixins/dirtyable';
+import Quill from 'quill'
+import ImageCompress from 'quill-image-compress'
+import { HorizontalRuleBlot } from './rich-text-area/horizontal-rule-blot'
+import { hookupComponents, VBaseComponent } from './base-component'
+import { eventHandlerMixin } from './mixins/event-handler'
+import { dirtyableMixin } from './mixins/dirtyable'
 
 // These Blots will be registered with Quill.
 const blots = [
@@ -19,29 +19,16 @@ export function initRichTextArea(e) {
 export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseComponent)) {
     constructor(element, mdcComponent) {
         super(element, mdcComponent);
+        this.quillWrapper = element.querySelector('.v-rich-text-area');
+
+        if (!this.hasServerUpload()) {
+            Quill.register('modules/imageCompress', ImageCompress);
+        }
 
         configureQuill();
         registerBlots();
 
-        Quill.register('modules/imageCompress', ImageCompress);
-        this.quillWrapper = element.querySelector('.v-rich-text-area');
-        this.quill = new Quill(this.quillWrapper, {
-            modules: {
-                toolbar: this.toolbarOptions(this.quillWrapper.dataset.toolbar),
-                imageCompress: {
-                    quality: Number(this.quillWrapper.dataset.imgCompression),
-                    maxWidth: Number(this.quillWrapper.dataset.imgMaxWidth),
-                    maxHeight: Number(this.quillWrapper.dataset.imgMaxHeight),
-                    keepImageTypes:  ['image/jpeg', 'image/png'], // preserve these files type
-                    imageType: 'image/jpeg', // convert others to jpeg
-                    debug: true,
-                    suppressErrorLogging: false
-                }
-            },
-            bounds: this.quillWrapper,
-            theme: 'snow',
-            placeholder: this.quillWrapper.dataset.placeholder
-        });
+        this.quill = this.createQuillComponent();
         this.fixedUpContentElement = element.querySelector('.v-rich-text-area--fixed-up-content')
         this.quillEditor = this.quillWrapper.querySelector('.ql-editor');
 
@@ -57,8 +44,37 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
 
         adjustEditorStyles(this);
         this.originalValue = this.value();
+
+        if (this.hasServerUpload()) {
+            this.quill.on('text-change',  async () => await this.performServerImageUpload());
+        }
     }
 
+    createQuillComponent() {
+        let config = {
+            modules: {
+                toolbar: this.toolbarOptions(this.quillWrapper.dataset.toolbar)
+            },
+            bounds: this.quillWrapper,
+            theme: 'snow',
+            placeholder: this.quillWrapper.dataset.placeholder
+        }
+
+        if (!this.hasServerUpload()){
+            config.modules.imageCompress = {
+                quality: Number(this.quillWrapper.dataset.imgCompression),
+                maxWidth: Number(this.quillWrapper.dataset.imgMaxWidth),
+                maxHeight: Number(this.quillWrapper.dataset.imgMaxHeight),
+                keepImageTypes:  ['image/jpeg', 'image/png'], // preserve these files type
+                imageType: 'image/jpeg', // convert others to jpeg
+                debug: true,
+                suppressErrorLogging: false
+            }
+        }
+
+        return new Quill(this.quillWrapper, config);
+    }
+    
     prepareSubmit(params) {
         params.push(['rich_text_payload', 'true']);
         params.push([this.name(), this.value()]);
@@ -66,6 +82,10 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
 
     name() {
         return this.quillWrapper.dataset.name;
+    }
+
+    hasServerUpload() {
+        return !!(this.quillWrapper.dataset.serverUploadPath && this.quillWrapper.dataset.serverUploadEnabled);
     }
 
     value() {
@@ -118,6 +138,30 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
             filteredOpts,
             ['clean']
         ];
+    }
+
+    async performServerImageUpload() {
+        const imgs = Array.from(
+          this.quill.container.querySelectorAll('img[src^="data:"]:not(.uploading)')
+        );
+
+        for (const img of imgs) {
+            img.classList.add("uploading");
+            const result = await this.uploadBase64Img(img.getAttribute("src"));
+            img.setAttribute("src", result.url);
+            img.dataset.evvntBlobId = result.id;
+            img.dataset.evvntUploadKey = result.upload_key;
+            img.classList.remove("uploading");
+        }
+    }
+
+    // Implement server upload instead of base64, see: https://github.com/quilljs/quill/issues/1089#issuecomment-614313509
+    async uploadBase64Img(base64Str) {
+        if (typeof base64Str !== 'string' || base64Str.length < 100) {
+            return base64Str;
+        }
+
+        return await postToServer(base64Str, this.quillWrapper.dataset.serverUploadPath, this.quillWrapper.dataset.serverUploadKey);
     }
 }
 
@@ -245,4 +289,57 @@ function convertLists(richtext) {
 function getListLevel(el) {
     const className = el.className || '0';
     return +className.replace(/[^\d]/g, '');
+}
+
+// See https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    return new Blob(byteArrays, { type: contentType });
+}
+
+// Based on https://ourcodeworld.com/articles/read/322/how-to-convert-a-base64-image-into-a-image-file-and-upload-it-with-an-asynchronous-form-using-jquery
+function postToServer(base64, serverUploadPath, serverUploadKey) {
+    return new Promise(resolve => {
+        // Split the base64 string in data and contentType
+        const block = base64.split(";");
+        // Get the content type of the image
+        const contentType = block[0].split(":")[1];
+
+        // Get the real base64 content of the file
+        const realData = block[1].split(",")[1];
+        // Convert it to a blob to upload
+        const blob = b64toBlob(realData, contentType);
+
+        const fd = new FormData();
+
+        fd.append('file', blob);
+        fd.append('upload_key', serverUploadKey)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', serverUploadPath, true);
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const data = JSON.parse(xhr.responseText).data;
+                resolve(data);
+            }
+        };
+        xhr.send(fd);
+    });
 }

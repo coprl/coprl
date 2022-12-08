@@ -1,5 +1,6 @@
-# [3.0.0-beta.1](https://github.com/coprl/coprl/compare/v2.1.1...v3.0.0-beta.1) (2021-09-27)
+# Changelog
 
+## [2.1.2](https://github.com/rx/presenters/compare/v2.1.1...v2.1.2) (2021-06-18)
 
 ### Bug Fixes
 

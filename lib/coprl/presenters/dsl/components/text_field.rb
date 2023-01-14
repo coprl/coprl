@@ -9,7 +9,9 @@ module Coprl
                       :auto_complete,
                       :case_type,
                       :behavior,
-                      :default_value
+                      :default_value,
+                      :tab_index
+                      :behavior
 
           VALID_CASE_TYPES = %i[mixed upper lower].freeze
 
@@ -19,8 +21,9 @@ module Coprl
             @full_width = attribs.delete(:full_width){ true }
             @case_type = validate_case_type(attribs.delete(:case_type) { :mixed })
             @auto_complete = validate_auto_complete(attribs.delete(:auto_complete) { :off })
-            @behavior = determine_behavior(attribs.delete(:password), attribs.delete(:behavior))
             @default_value = attribs.delete(:default_value) if attribs.key?(:default_value)
+            @tab_index = validate_tab_index(attribs.delete(:tab_index)) if attribs.key?(:tab_index)
+            @behavior = determine_behavior(attribs.delete(:password), attribs.delete(:behavior))
 
             label(attribs.delete(:label))if attribs.key?(:label)
             value(attribs.delete(:value))if attribs.key?(:value)
@@ -85,6 +88,13 @@ module Coprl
 
             raise Errors::ParameterValidation, "Invalid case type specified: #{case_type}" unless VALID_CASE_TYPES.include?(case_type)
             case_type
+          end
+
+          def validate_tab_index(tab_index)
+            return unless tab_index
+
+            raise Errors::ParameterValidation, "Tab Index needs to be an int" unless tab_index.is_a?(Integer)
+            tab_index
           end
 
           def determine_behavior(password, behavior)

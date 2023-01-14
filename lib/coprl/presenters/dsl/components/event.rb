@@ -90,18 +90,22 @@ module Coprl
             toggle_visibility(component_id, **params.merge(action: :hide), &block)
           end
 
-          def toggle_disabled(css_selector, **params, &block)
+          def toggle_disabled(component_id = nil, **params, &block)
+            if component_id.nil? && params[:selector].nil?
+              raise ArgumentError "Must specify an ID as the first parameter or pass a CSS selector in the params hash"
+            end
+
             self << Actions::ToggleDisabled.new(parent: self,
-                                                target: css_selector,
+                                                target: component_id,
                                                 params: params, &block)
           end
 
-          def disable(css_selector, **params, &block)
-            toggle_disabled(css_selector, **params.merge(action: :disable), &block)
+          def disable(component_id = nil, **params, &block)
+            toggle_disabled(component_id, **params.merge(action: :disable), &block)
           end
 
-          def enable(css_selector, **params, &block)
-            toggle_disabled(css_selector, **params.merge(action: :enable), &block)
+          def enable(component_id, **params, &block)
+            toggle_disabled(component_id, **params.merge(action: :enable), &block)
           end
 
           def prompt_if_dirty(dialog_id, input_tag: nil, **params, &block)

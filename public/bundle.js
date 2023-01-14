@@ -49736,40 +49736,92 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var VToggleDisabled = function () {
-  function VToggleDisabled(options, params, event, root) {
-    _classCallCheck(this, VToggleDisabled);
+    function VToggleDisabled(options, params, event, root) {
+        _classCallCheck(this, VToggleDisabled);
 
-    this.cssSelector = options.target;
-    this.params = params;
-    this.event = event;
-    this.root = root;
-  }
-
-  _createClass(VToggleDisabled, [{
-    key: 'call',
-    value: function call(results) {
-      var cssSelector = this.cssSelector;
-      var action = this.params.action;
-      var delayAmt = this.event instanceof FocusEvent ? 500 : 0;
-      var selectedElements = this.root.querySelectorAll(cssSelector);
-
-      var promises = Array.from(selectedElements).map(function (elem) {
-        return new Promise(function (resolve) {
-          clearTimeout(elem.vTimeout);
-          elem.vTimeout = setTimeout(function () {
-            console.debug('Toggling disabled on: ' + elem.id);
-            elem.disabled = action === 'disable';
-            results.push({ action: 'toggle_disabled', statusCode: 200 });
-            resolve(results);
-          }, delayAmt);
-        });
-      });
-
-      return Promise.all(promises);
+        this.targetId = options.target;
+        this.targetSelector = params.selector;
+        this.params = params;
+        this.event = event;
+        this.root = root;
     }
-  }]);
 
-  return VToggleDisabled;
+    _createClass(VToggleDisabled, [{
+        key: 'call',
+        value: function call(results) {
+            var targetId = this.targetId;
+            var targetSelector = this.targetSelector;
+            var action = this.params.action;
+            var delayAmt = this.event instanceof FocusEvent ? 500 : 0;
+
+            if (targetId) {
+                return this.toggleDisabledbyId(targetId, action, delayAmt, results);
+            } else if (targetSelector) {
+                return this.toggleDisabledBySelector(targetSelector, action, delayAmt, results);
+            } else {
+                throw new Error('No targetId or targetSelector specified!');
+            }
+        }
+    }, {
+        key: 'toggleDisabledbyId',
+        value: function toggleDisabledbyId(targetId, action, delayAmt, results) {
+            var elem = this.root.getElementById(targetId);
+
+            if (!elem) {
+                return this.notFoundError('Id: ' + targetId, results);
+            }
+
+            return new Promise(function (resolve) {
+                clearTimeout(elem.vTimeout);
+
+                elem.vTimeout = setTimeout(function () {
+                    console.debug('Toggling disabled on: ' + targetId);
+                    elem.disabled = action === 'disable';
+                    results.push({ action: 'toggle_disabled', statusCode: 200 });
+                    resolve(results);
+                }, delayAmt);
+            });
+        }
+    }, {
+        key: 'toggleDisabledBySelector',
+        value: function toggleDisabledBySelector(targetSelector, action, delayAmt, results) {
+            var selectedElements = this.root.querySelectorAll(targetSelector);
+
+            if (!selectedElements.length) {
+                return this.notFoundError(targetSelector, results);
+            }
+
+            var promises = Array.from(selectedElements).map(function (elem) {
+                return new Promise(function (resolve) {
+                    clearTimeout(elem.vTimeout);
+                    elem.vTimeout = setTimeout(function () {
+                        elem.disabled = action === 'disable';
+                        results.push({ action: 'toggle_disabled', statusCode: 200 });
+                        resolve(results);
+                    }, delayAmt);
+                });
+            });
+
+            return Promise.all(promises);
+        }
+    }, {
+        key: 'notFoundError',
+        value: function notFoundError(selector, results) {
+            var err = new Error('Unable to locate element(s) with ' + selector + '!');
+
+            results.push({
+                action: 'toggle_disabled',
+                contentType: 'v/errors',
+                content: { exception: err.message }
+            });
+
+            return new Promise(function (_, reject) {
+                return reject(results);
+            });
+        }
+    }]);
+
+    return VToggleDisabled;
 }();
 
 /***/ }),

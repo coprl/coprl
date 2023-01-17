@@ -90,13 +90,17 @@ module Coprl
             toggle_visibility(component_id, **params.merge(action: :hide), &block)
           end
 
-          def toggle_disabled(component_id, **params, &block)
+          def toggle_disabled(component_id = nil, **params, &block)
+            if component_id.nil? && params[:selector].nil?
+              raise ArgumentError "Must specify an ID as the first parameter or pass a CSS selector in the params hash"
+            end
+
             self << Actions::ToggleDisabled.new(parent: self,
                                                 target: component_id,
                                                 params: params, &block)
           end
 
-          def disable(component_id, **params, &block)
+          def disable(component_id = nil, **params, &block)
             toggle_disabled(component_id, **params.merge(action: :disable), &block)
           end
 

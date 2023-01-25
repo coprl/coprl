@@ -10,7 +10,7 @@ module Coprl
                       :case_type,
                       :behavior,
                       :default_value,
-                      :tab_index
+                      :tab_index,
                       :behavior
 
           VALID_CASE_TYPES = %i[mixed upper lower].freeze
@@ -24,7 +24,6 @@ module Coprl
             @default_value = attribs.delete(:default_value) if attribs.key?(:default_value)
             @tab_index = validate_tab_index(attribs.delete(:tab_index)) if attribs.key?(:tab_index)
             @behavior = determine_behavior(attribs.delete(:password), attribs.delete(:behavior))
-
             label(attribs.delete(:label))if attribs.key?(:label)
             value(attribs.delete(:value))if attribs.key?(:value)
             expand!

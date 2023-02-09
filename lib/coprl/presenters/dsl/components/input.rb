@@ -8,7 +8,8 @@ module Coprl
           attr_reader :name,
                       :dirtyable,
                       :disabled,
-                      :max_length
+                      :max_length,
+                      :focusable
 
           def initialize(**attribs_, &block)
             super(**attribs_, &block)
@@ -16,6 +17,7 @@ module Coprl
             @dirtyable = attribs.delete(:dirtyable) { true }
             @disabled = attribs.delete(:disabled) { false }
             @max_length = attribs.delete(:max_length)
+            @focusable = attribs.delete(:focusable) { true }
           end
 
           # If present this error message will be displayed in place of the validation message produced by the

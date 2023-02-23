@@ -3412,6 +3412,14 @@ var VBaseToggle = function (_dirtyableMixin) {
             _this.mdcComponent.checked = !_this.mdcComponent.checked;
         });
 
+        element.addEventListener('change', function (event) {
+            if (_this.input.checked) {
+                _this.input.dispatchEvent(new Event('check', { composed: true, bubbles: true }));
+            } else {
+                _this.input.dispatchEvent(new Event('uncheck', { composed: true, bubbles: true }));
+            }
+        });
+
         _this.originalValue = _this.input.checked;
         return _this;
     }

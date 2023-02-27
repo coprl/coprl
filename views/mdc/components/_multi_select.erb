@@ -1,6 +1,4 @@
-<% if comp
-     float_label = comp.options.select{|o| o.selected }.any?
-%>
+<% if comp %>
   <div class="v-multi-select-container"
        <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
        <% if comp.dirtyable %>data-dirtyable<% end %>>
@@ -22,7 +20,7 @@
       <div class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched">
         <div class="mdc-notched-outline__leading"></div>
         <div class="mdc-notched-outline__notch">
-          <label class="mdc-floating-label <%= 'mdc-floating-label--float-above' if float_label %>"><%= comp.label %></label>
+          <label class="mdc-floating-label mdc-floating-label--float-above"><%= comp.label %></label>
         </div>
         <div class="mdc-notched-outline__trailing"></div>
       </div>

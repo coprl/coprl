@@ -31,6 +31,7 @@ unless defined?(Coprl::Presenters::Settings)
             # Relative to the root
             setting :custom_css, '../public/presenters'
             setting :protect_from_forgery, false
+            setting :asset_host, proc { |request| request.base_url }
           end
           setting :plugins, []
           setting :components do
@@ -59,6 +60,10 @@ unless defined?(Coprl::Presenters::Settings)
               end
               setting :rich_text_area do
                 setting :rows, 6
+                setting :server_upload_path
+              end
+              setting :padding do
+                setting :default_size, 2
               end
             end
           end

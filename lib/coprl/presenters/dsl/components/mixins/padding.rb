@@ -4,35 +4,51 @@ module Coprl
       module Components
         module Mixins
           module Padding
-            def coerce_padding(padding, default_level: 2)
+            private
+
+            POSITIONS = %i[top right bottom left].sort.freeze
+            SIZES = [0, 1, 2, 3, 4, 5].freeze
+
+            SINGLE_VALUES = [true, :full, :all, false, :none].freeze
+            SINGLES_STRING = SINGLE_VALUES.map(&:inspect).join(', ').freeze
+
+            SIZED_VALUES = POSITIONS.product(SIZES).map { |a| a.join.to_sym }.freeze
+
+            POSITION_VALUES = (POSITIONS + SIZED_VALUES).freeze
+            POSITIONS_STRING = POSITION_VALUES.map(&:inspect).join(', ').freeze
+
+            def coerce_padding(padding, default_level: Presenters::Settings.config.presenters.components.defaults.padding.default_size)
               case padding
               when true, :full, :all
-                [:"top#{default_level}", :"right#{default_level}", :"bottom#{default_level}", :"left#{default_level}"]
+                POSITIONS.product([default_level]).map { |a| a.join.to_sym }
               when false, :none
                 []
               else
                 Array(padding).map do |item|
-                  %i(top right bottom left).include?(item) ? :"#{item}#{default_level}" : item
+                  POSITIONS.include?(item) ? :"#{item}#{default_level}" : item
                 end
               end
             end
 
-            def validate_padding(padding_)
-              valid_padding = %i(top right bottom left
-                                 top0 right0 bottom0 left0
-                                 top1 right1 bottom1 left1
-                                 top2 right2 bottom2 left2
-                                 top3 right3 bottom3 left3)
-              validation_msg = 'Padding must either be true or :full, :all, false or :none, '\
-                             "or an array containing zero or more of the following: #{valid_padding.join(', ')}"
-              if padding_.respond_to?(:pop)
-                raise Errors::ParameterValidation, validation_msg if (padding_ - valid_padding).any?
-              else
-                raise Errors::ParameterValidation, validation_msg unless padding_ === true ||
-                    padding_ === false ||
-                    %i(full none).include(padding_)
+            # Validate the provided padding array or single value, silently
+            # discarding any invalid entries if the argument is an array.
+            #
+            # If the argument is not (or does not contain) a valid padding
+            # value, an error is raised.
+            def validate_padding!(padding)
+              return [] if padding.nil? || padding.empty?
+
+              if (valid_entries = (Array(padding) & POSITION_VALUES)).any?
+                return valid_entries
               end
-              padding_
+
+              if SINGLE_VALUES.include?(padding)
+                return Array(padding)
+              end
+
+              raise Errors::ParameterValidation,
+                    "Padding must be either be #{SINGLES_STRING} or an array " \
+                    "containing zero or more of the following: #{POSITIONS_STRING}"
             end
           end
         end

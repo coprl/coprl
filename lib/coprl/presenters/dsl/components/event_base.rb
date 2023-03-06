@@ -2,14 +2,12 @@ module Coprl
   module Presenters
     module DSL
       module Components
+        # @deprecated
+        # All Components now support events and no longer need to explicitly
+        # inherit from EventBase.
         class EventBase < Base
-          include Mixins::Event
-          attr_reader :event_parent_id
-
           def initialize(**attribs_, &block)
-            super(type: :icon,
-                  **attribs_, &block)
-            @event_parent_id = @id
+            super(type: :icon, **attribs_, &block)
           end
         end
       end

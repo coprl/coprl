@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Chipset < EventBase
+        class Chipset < Base
           include Mixins::Chips
           attr_reader :variant, :components
 

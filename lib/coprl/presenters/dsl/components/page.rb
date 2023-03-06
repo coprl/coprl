@@ -3,11 +3,14 @@ module Coprl
     module DSL
       module Components
         class Page < Base
-          attr_accessor :title, :background_color
+          attr_accessor :title, :header, :background_color, :theme_color, :base_url
 
           def initialize(**attribs_, &block)
-            super(type: :page,
-                  **attribs_, &block)
+            super(type: :page, **attribs_, &block)
+
+            @theme_color = attribs_.delete(:theme_color)
+            @base_url = attribs_.delete(:base_url) { '/' }
+
             expand!
           end
 
@@ -21,6 +24,10 @@ module Coprl
             @background_color = color
           end
 
+          def header(header=nil)
+            return @header if locked?
+            @header = header
+          end
         end
       end
     end

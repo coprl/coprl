@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Content < EventBase
+        class Content < Base
           include Mixins::Common
           include Mixins::Attaches
           include Mixins::TextFields
@@ -41,7 +41,7 @@ module Coprl
             @position = Array(attribs.delete(:position)).compact
             @text_align = attribs.delete(:text_align){'left'}
             padding = attribs.delete(:padding) {nil}
-            @padding = validate_padding(coerce_padding(padding)).uniq if padding != nil
+            @padding = validate_padding!(coerce_padding(padding)).uniq if padding != nil
             @inline = attribs.delete(:inline){false}
             @background_color = attribs.delete(:background_color)
             expand!

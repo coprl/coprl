@@ -6,7 +6,6 @@ module Coprl
           include Mixins::Content
           include Mixins::Append
           include Mixins::Attaches
-          include Mixins::Event
 
           attr_reader :lines, :lines_only, :color, :border, :selectable, :total_lines, :dense
           attr_accessor :components

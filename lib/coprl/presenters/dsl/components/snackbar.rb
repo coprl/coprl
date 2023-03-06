@@ -16,7 +16,7 @@ module Coprl
             @action = Action.new(parent: self, text: text, &block)
           end
 
-          class Action < EventBase
+          class Action < Base
             attr_accessor :text
 
             def initialize(**attribs_, &block)

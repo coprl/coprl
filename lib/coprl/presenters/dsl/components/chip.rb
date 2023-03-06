@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Chip < EventBase
+        class Chip < Base
           include Mixins::Tooltips
           attr_reader :icons, :color, :name, :value, :chipset_variant, :selected
 

@@ -1,0 +1,37 @@
+$directions: (row, column);
+$alignments: (start, center, end, stretch);
+
+@each $direction in $directions {
+  .v-grid--direction-#{$direction} {
+    grid-auto-flow: $direction;
+  }
+
+  .v-column--direction-#{$direction} {
+    grid-auto-flow: $direction;
+  }
+}
+
+@each $value in $alignments {
+  // yes, these are intentionally backwards. we want `align` to control
+  // horizontal placement for LTR and RTL layouts and `justify` to control
+  // vertical placement.
+  // this is an intentional deviation from the CSS box alignment spec: to COPRL
+  // (which is more than just the HTML+JS+CSS "web client"), `align` controls
+  // the equivalent of the CSS "inline" axis and `justify` controls the block
+  // axis.
+  .v-grid--align-#{$value} {
+    justify-items: $value !important;
+  }
+
+  .v-grid--justify-#{$value} {
+    align-items: $value !important;
+  }
+
+  .v-column--align-#{$value} {
+    justify-self: $value !important;
+  }
+
+  .v-column--justify-#{$value} {
+    align-self: $value !important;
+  }
+}

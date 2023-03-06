@@ -1,12 +1,13 @@
-<% if events
-     require_relative "actions/resolver"
-     data_events = events.map do |event|
-       [event.event,
-        event.actions.map do |action|
-          action_proc = WebClient::Actions::Resolver.new(comp, action).resolve
-          action_proc.call(action, parent_id, @grid_nesting)
-        end,
-       {once: false}]
-     end %>
-  data-events = '<%= data_events.to_json %>'
-<% end %>
+<%
+  return unless events && comp
+
+  require_relative 'actions/resolver'
+
+  data_events = events.map do |event|
+    actions = event.actions.map do |action|
+      action_proc = WebClient::Actions::Resolver.new(comp, action).resolve
+      action_proc.call(action, parent_id, @grid_nesting, comp)
+    end
+    [event.event, actions, {once: false}]
+  end
+%>data-events="<%= h data_events.to_json %>"

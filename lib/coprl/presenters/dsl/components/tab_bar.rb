@@ -15,7 +15,7 @@ module Coprl
             @tabs << Tab.new(parent: self, label: label, **attribs, &block)
           end
 
-          class Tab < EventBase
+          class Tab < Base
             include Mixins::Common
 
             attr_accessor :components, :label, :icon, :stacked, :selected

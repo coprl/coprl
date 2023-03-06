@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     module DSL
       module Components
-        class Typography < EventBase
+        class Typography < Base
           include Mixins::Tooltips
 
           attr_accessor :text, :level, :color, :position, :inline, :markdown

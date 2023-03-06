@@ -10,7 +10,7 @@
        id="<%= comp.id %>-rta"
        style="<%= 'width: 100%;' if comp.full_width %>"
        data-name="<%= comp.name %>"
-       data-toolbar='<%= comp.toolbar_options.to_json %>'
+       data-toolbar='<%= expand_hash(comp.toolbar_options).to_json %>'
        data-img-compression="<%= comp.img_compression %>"
        data-img-max-width="<%= comp.img_max_width %>"
        data-img-max-height="<%= comp.img_max_height %>"

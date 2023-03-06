@@ -4,7 +4,7 @@ module Coprl
       module Components
         class RichTextArea < TextField
           attr_reader :placeholder, :height, :resizable, :img_compression,
-                      :img_max_width, :img_max_height, :server_upload_path, :server_upload_enabled
+                      :img_max_width, :img_max_height, :server_upload_path, :server_upload_enabled, :toolbar_options
 
           def initialize(**attribs_, &block)
             super(type: :rich_text_area, **attribs_, &block)
@@ -20,13 +20,10 @@ module Coprl
             @img_max_height = attribs.delete(:img_max_height) { 1000 }
             @server_upload_path = attribs.delete(:server_upload_path) || default(:server_upload_path)
             @server_upload_enabled = attribs.delete(:server_upload_enabled )
+            @toolbar_options = {link: @links,
+                                image: @images,
+                                video: @videos}
             expand!
-          end
-
-          def toolbar_options
-            {link: @links,
-             image: @images,
-             video: @videos}
           end
         end
       end

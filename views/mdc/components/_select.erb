@@ -1,0 +1,43 @@
+<% float_label = comp.options.any?(&:selected) %>
+<div class="mdc-select v-select v-input
+            <%= 'mdc-select--outlined' if comp.outlined %>
+            <% if comp.disabled %>mdc-select--disabled<% end %>
+            <% unless comp.label %>mdc-select--no-label<% end %>"
+     <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
+     <% if comp.dirtyable %>data-dirtyable<% end %>
+     <%= 'style="width: 100%;"' if comp.full_width %>>
+  <%= partial "components/icon", :locals => {comp: comp.icon, class_name: 'mdc-select__icon', parent_id: "#{comp.id}-input", size_class: '', position: []} if comp.icon %>
+  <select id="<%= comp.id %>-input"
+          <% if comp.name %> name="<%= comp.name %>" <% end %>
+          <% if comp.required %>required<% end %>
+          <% if comp.disabled %>disabled<% end %>
+          class="mdc-select__native-control"
+          <%= partial("components/event", locals: {comp: comp,
+                                                events: comp.events,
+                                                parent_id: "#{comp.id}-input"}) if comp.events&.any? %>>
+    <% comp.options.each do |option| %>
+      <option value="<%= option.value %>"
+              <%= 'disabled' if option.disabled %>
+              <%= 'selected' if option.selected %>>
+        <%= option.text %>
+      </option>
+    <% end %>
+  </select>
+  <i class="mdc-select__dropdown-icon"></i>
+  <% if comp.outlined %>
+    <span class="mdc-notched-outline">
+      <span class="mdc-notched-outline__leading"></span>
+        <span class="mdc-notched-outline__notch">
+          <% if comp.label %><label class="mdc-floating-label <%= 'mdc-floating-label--float-above' if float_label %>"><%= comp.label %></label><% end %>
+        </span>
+      <span class="mdc-notched-outline__trailing"></span>
+    </span>
+  <% else %>
+    <% if comp.label %>
+      <label class="mdc-floating-label <%= 'mdc-floating-label--float-above' if float_label %>"><%= comp.label %></label>
+    <% end %>
+    <span class="mdc-line-ripple"></span>
+  <% end %>
+</div>
+<%= partial "components/shared/hint_error_display", :locals => {comp: comp} %>
+<%= partial "components/tooltip", :locals => {comp: comp.tooltip, parent_id: comp.id} if comp.tooltip %>

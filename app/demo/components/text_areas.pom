@@ -1,6 +1,6 @@
 require_relative '../helpers/indented_grid'
 
-Voom::Presenters.define(:text_areas) do
+Coprl::Presenters.define(:text_areas) do
   helpers Demo::Helpers::IndentedGrid
   attach :top_nav
   attach :component_drawer
@@ -23,6 +23,26 @@ Voom::Presenters.define(:text_areas) do
       rich_text_area name: :notes, placeholder: 'Text entered here is saved as HTML', rows: 10 do
         label 'Rich Text Area'
         hint 'Default is full width and 25 rows'
+      end
+
+      rich_text_area name: :notes,
+                     placeholder: 'Text entered here is saved as HTML',
+                     rows: 10,
+                     links: false,
+                     images: false,
+                     videos: false do
+        label 'Rich Text Area - control external content options'
+        hint 'Default is links, images and video embeds enabled'
+      end
+
+      rich_text_area name: :notes,
+                     placeholder: 'Text entered here is saved as HTML',
+                     rows: 10,
+                     img_compression: 0.5,
+                     img_max_width: 500,
+                     img_max_height: 300 do
+        label 'Rich Text Area - control external content options'
+        hint 'When embedded images are enabled you can set a compression factor (0.0 - 1.0, default is 0.7) and a max height and width'
       end
 
       button 'Submit' do

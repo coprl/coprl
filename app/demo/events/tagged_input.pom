@@ -1,4 +1,4 @@
-Voom::Presenters.define(:tagged_input) do
+Coprl::Presenters.define(:tagged_input) do
   helpers Demo::Helpers::IndentedGrid
 
   attach :top_nav
@@ -18,11 +18,11 @@ Voom::Presenters.define(:tagged_input) do
 
     title 'Example'
 
-    content tag: :somefields do
+    content input_tag: :somefields do
       radio_button text: :on, name: :check_me, value: :on, checked: true
       radio_button text: :off, name: :check_me, value: :off
     end
-    text_field name: :myfield2, tag: :somefields do
+    text_field name: :myfield2, input_tag: :somefields do
       label 'More Data to post'
     end
 

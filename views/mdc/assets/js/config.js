@@ -4,7 +4,6 @@ export default new VConfig({
     component: {
         datetime: {
             flatpickr: {
-                altInput: true,
                 disableMobile: true,
                 clickOpens: false,
                 defaultHour: 0

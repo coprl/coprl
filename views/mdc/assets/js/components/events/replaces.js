@@ -2,18 +2,17 @@ import {expandParams} from './action_parameter';
 import {VBase} from './base';
 import {initialize} from '../initialize';
 import {uninitialize} from '../uninitialize';
+import {getRootNode} from '../base-component';
 
 const MOUSE_DELAY_AMOUNT = 0; // ms
 const KEYBOARD_DELAY_AMOUNT = 500; // ms
 
-// Create a NodeList from raw HTML.
-// Whitespace is trimmed to avoid creating superfluous text nodes.
+// Create a HTMLCollection from raw HTML.
 function htmlToNodes(html, root = document) {
-    const template = document.createElement('template');
+    const doc = getRootNode(root);
+    const fragment = doc.createRange().createContextualFragment(html);
 
-    template.innerHTML = html.trim();
-
-    return template.content.children;
+    return fragment.children;
 }
 
 function assertXHRSupport() {
@@ -84,22 +83,13 @@ export class VReplaces extends VBase {
                             console.debug(httpRequest.status + ':' +
                                 this.getResponseHeader('content-type'));
                             if (httpRequest.status === 200) {
-                                // NodeList.childNodes is "live", meaning DOM
-                                // changes to its entries will mutate the list
-                                // itself.
-                                // (see: https://developer.mozilla.org/en-US/docs/Web/API/NodeList)
-                                // Array.from clones the entries, creating a
-                                // "dead" list.
-                                const newNodes = Array.from(htmlToNodes(
-                                    httpRequest.responseText,
-                                    root
-                                ));
+                                const html = httpRequest.responseText.trim();
+                                const nodes = Array.from(htmlToNodes(html, root));
 
                                 uninitialize(nodeToReplace);
+                                nodeToReplace.replaceWith(...nodes);
 
-                                nodeToReplace.replaceWith(...newNodes);
-
-                                for (const node of newNodes) {
+                                for (const node of nodes) {
                                     initialize(node);
                                 }
 

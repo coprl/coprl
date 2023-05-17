@@ -1,5 +1,6 @@
 import {MDCNotchedOutline} from '@material/notched-outline';
 import {hookupComponentsManually} from './base-component';
+import {VBaseComponent} from "./base-component";
 
 export function initMultiSelects(root) {
   console.debug('\tMultiSelects');
@@ -8,13 +9,19 @@ export function initMultiSelects(root) {
   });
 }
 
-export class VMultiSelect {
-
+export class VMultiSelect extends VBaseComponent {
   constructor(root, element) {
-    this.vComponent = root.vComponent;
-    this.element = element;
+    super(element, null);
     this.setEventListeners();
     this.setLabelHandlers();
+    this.setChangeHandler();
+  }
+
+  prepareSubmit(params) {
+    const selectedElementsValues = Array.from(this.element.querySelectorAll('.v-multi-select--option'))
+      .filter((e) => e.checked)
+      .map((e) => e.value);
+    params.push([this.element.dataset.name, selectedElementsValues]);
   }
 
   setEventListeners() {
@@ -26,6 +33,15 @@ export class VMultiSelect {
     createValueDescriptionHandler(this.element);
     setCurrentValueDescription(this.element);
     setLabelNotch(this.element);
+  }
+
+  setChangeHandler() {
+    const listElements = this.element.querySelectorAll('.v-multi-select--option');
+    for (let element of listElements) {
+      element.addEventListener('change', function(e) {
+        this.element.querySelector('.v-multi-select').dispatchEvent(new Event('change', { composed: true, bubbles: true }));
+      }.bind(this));
+    }
   }
 }
 

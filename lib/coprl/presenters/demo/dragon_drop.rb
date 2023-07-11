@@ -8,7 +8,7 @@ module Coprl
 
         configure do
           enable :sessions
-          set :session_secret, '0e53ba1da13aa8eb8cf3d361e67b70d79265edca0e53ba1da13aa8eb8cf3d361e67b70d79265edca'
+          set :session_secret, '1a26652db9d8502aa327cb098dde9239d3f06cf0c57f5e4c4ef237118ba78a18'
         end
 
         post('/_dragon_drop_change_order_') do

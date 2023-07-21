@@ -2,7 +2,7 @@ module Coprl::Presenters::WebClient::Helpers
   module Markdown
     def base_markdown(text)
       unless @markdown
-        renderer = Coprl::Presenters::WebClient::CustomRender.new(hard_wrap: false, filter_html: true)
+        renderer = Coprl::Presenters::WebClient::CustomRender.new(hard_wrap: false, filter_html: true, underline: true)
         options = {
           autolink: false,
           no_intra_emphasis: true,
@@ -10,7 +10,8 @@ module Coprl::Presenters::WebClient::Helpers
           lax_html_blocks: true,
           strikethrough: true,
           superscript: true,
-          disable_indented_code_blocks: true
+          disable_indented_code_blocks: true,
+          underline: true
         }
         @markdown = Redcarpet::Markdown.new(renderer, options)
       end

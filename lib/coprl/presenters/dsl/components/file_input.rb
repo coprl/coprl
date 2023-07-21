@@ -6,6 +6,7 @@ module Coprl
           include Mixins::Append
           include Mixins::Buttons
           include Mixins::Grids
+          include Mixins::Content
 
           attr_reader :accept, :preview, :components
 

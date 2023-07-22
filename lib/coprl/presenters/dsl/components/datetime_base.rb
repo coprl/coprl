@@ -14,10 +14,14 @@ module Coprl
             merge_config(:mode)
             @picker = attribs_.delete(:picker){ true }
 
-            my_id = self.id
-            clear_icon(:clear) do
-              event :click do
-                clear my_id
+
+            unless required
+              my_id = self.id
+
+              clear_icon(:clear) do
+                event :click do
+                  clear my_id
+                end
               end
             end
           end
@@ -26,6 +30,14 @@ module Coprl
             return @clear_icon if locked?
             @clear_icon = icon ? Components::Icon.new(parent: self, icon: icon,
                                                       **attribs, &block) : nil
+          end
+
+          # overrides TextField#icon - need to default to left if this field is optional and has
+          # a "clear" icon.
+          def icon(icon=nil, **attribs, &block)
+            return @icon if locked?
+            icon_position = attribs.delete(:position) { @clear_icon ? :left : :right }
+            @icon = Components::Icon.new(parent: self, icon: icon, position: icon_position, **attribs, &block)
           end
 
           private

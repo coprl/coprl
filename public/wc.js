@@ -46475,11 +46475,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
 
 
 
@@ -46490,31 +46485,17 @@ function initMultiSelects(root) {
   });
 }
 
-var VMultiSelect = function (_VBaseComponent) {
-  _inherits(VMultiSelect, _VBaseComponent);
-
+var VMultiSelect = function () {
   function VMultiSelect(root, element) {
     _classCallCheck(this, VMultiSelect);
 
-    var _this = _possibleConstructorReturn(this, (VMultiSelect.__proto__ || Object.getPrototypeOf(VMultiSelect)).call(this, element, null));
-
-    _this.setEventListeners();
-    _this.setLabelHandlers();
-    _this.setChangeHandler();
-    return _this;
+    this.vComponent = root.vComponent;
+    this.element = element;
+    this.setEventListeners();
+    this.setLabelHandlers();
   }
 
   _createClass(VMultiSelect, [{
-    key: 'prepareSubmit',
-    value: function prepareSubmit(params) {
-      var selectedElementsValues = Array.from(this.element.querySelectorAll('.v-multi-select--option')).filter(function (e) {
-        return e.checked;
-      }).map(function (e) {
-        return e.value;
-      });
-      params.push([this.element.dataset.name, selectedElementsValues]);
-    }
-  }, {
     key: 'setEventListeners',
     value: function setEventListeners() {
       this.element.addEventListener('click', createToggleHandler(this.element));
@@ -46527,41 +46508,10 @@ var VMultiSelect = function (_VBaseComponent) {
       setCurrentValueDescription(this.element);
       setLabelNotch(this.element);
     }
-  }, {
-    key: 'setChangeHandler',
-    value: function setChangeHandler() {
-      var listElements = this.element.querySelectorAll('.v-multi-select--option');
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = listElements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var element = _step.value;
-
-          element.addEventListener('change', function (e) {
-            this.element.querySelector('.v-multi-select').dispatchEvent(new Event('change', { composed: true, bubbles: true }));
-          }.bind(this));
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-    }
   }]);
 
   return VMultiSelect;
-}(__WEBPACK_IMPORTED_MODULE_1__base_component__["a" /* VBaseComponent */]);
+}();
 
 function createToggleHandler(component) {
   return function (event) {
@@ -46583,29 +46533,29 @@ function createCloseHandler(component) {
 
 function createValueDescriptionHandler(component) {
   var listElements = component.querySelectorAll('.v-multi-select--option');
-  var _iteratorNormalCompletion2 = true;
-  var _didIteratorError2 = false;
-  var _iteratorError2 = undefined;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
 
   try {
-    for (var _iterator2 = listElements[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      var element = _step2.value;
+    for (var _iterator = listElements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var element = _step.value;
 
       element.addEventListener('change', function (e) {
         setCurrentValueDescription(component);
       });
     }
   } catch (err) {
-    _didIteratorError2 = true;
-    _iteratorError2 = err;
+    _didIteratorError = true;
+    _iteratorError = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion2 && _iterator2.return) {
-        _iterator2.return();
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
       }
     } finally {
-      if (_didIteratorError2) {
-        throw _iteratorError2;
+      if (_didIteratorError) {
+        throw _iteratorError;
       }
     }
   }

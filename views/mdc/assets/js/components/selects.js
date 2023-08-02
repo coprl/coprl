@@ -12,6 +12,7 @@ export class VSelect extends dirtyableMixin(visibilityObserverMixin(VBaseCompone
     constructor(element, mdcComponent) {
         super(element, mdcComponent);
         this.select = element.querySelector('select');
+        this.label = element.querySelector('label');
         this.select.vComponent = this;
         this.recalcWhenVisible(this);
         this.originalValue = this.value();
@@ -43,11 +44,18 @@ export class VSelect extends dirtyableMixin(visibilityObserverMixin(VBaseCompone
     }
 
     reset() {
-        this.select.value = this.originalValue;
+        this.setValue(this.originalValue);
     }
 
     setValue(value) {
         this.select.value = value;
+
+        if (value) {
+            this.label.classList.add('mdc-floating-label--float-above');
+        }
+        else {
+            this.label.classList.remove('mdc-floating-label--float-above');
+        }
     }
 
     isDirty() {

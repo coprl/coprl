@@ -37038,6 +37038,7 @@ var VSelect = function (_dirtyableMixin) {
         var _this = _possibleConstructorReturn(this, (VSelect.__proto__ || Object.getPrototypeOf(VSelect)).call(this, element, mdcComponent));
 
         _this.select = element.querySelector('select');
+        _this.label = element.querySelector('label');
         _this.select.vComponent = _this;
         _this.recalcWhenVisible(_this);
         _this.originalValue = _this.value();
@@ -37076,12 +37077,18 @@ var VSelect = function (_dirtyableMixin) {
     }, {
         key: 'reset',
         value: function reset() {
-            this.select.value = this.originalValue;
+            this.setValue(this.originalValue);
         }
     }, {
         key: 'setValue',
         value: function setValue(value) {
             this.select.value = value;
+
+            if (value) {
+                this.label.classList.add('mdc-floating-label--float-above');
+            } else {
+                this.label.classList.remove('mdc-floating-label--float-above');
+            }
         }
     }, {
         key: 'isDirty',

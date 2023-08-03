@@ -11,7 +11,9 @@
             rows="<%= comp.rows %>"
             cols="<%= comp.cols %>"
             <% if comp.disabled %>disabled<% end %>
-            <%= partial 'components/shared/test_id', locals: {comp: comp} %>><%= comp.value %></textarea>
+            <%= partial 'components/shared/test_id', locals: {comp: comp} %>
+            <% if comp.max_length %>maxlength="<%= comp.max_length %>"<% end %>
+          ><%= comp.value %></textarea>
   <%= partial "components/shared/input_label", :locals => {comp: comp} if comp %>
 </div>
 <%= partial "components/shared/hint_error_display", :locals => {comp: comp} if comp %>

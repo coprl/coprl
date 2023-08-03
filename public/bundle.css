@@ -9364,6 +9364,13 @@ svg.mdc-button__icon {
   color: #d50000 !important;
   font-weight: bold !important; }
 
+.mdc-text-field--textarea > textarea {
+  /*
+    this is approximately one line.
+    font-size is 1rem; line-height 1.75rem + 16px padding + 2px border (1px top, 1px bottom)
+  */
+  min-height: calc(1.75rem + 16px + 2px); }
+
 .mdc-list {
   font-family: Roboto, sans-serif;
   -moz-osx-font-smoothing: grayscale;

@@ -13516,6 +13516,12 @@ var VTextField = function (_dirtyableMixin) {
         _this.recalcWhenVisible(_this);
         _this.setupEventListeners(element);
         _this.originalValue = _this.value();
+
+        if (_this.input.nodeName == 'TEXTAREA') {
+            _this.input.addEventListener('input', function (e) {
+                _this.input.style.height = _this.input.scrollHeight + 'px';
+            });
+        }
         return _this;
     }
 

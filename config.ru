@@ -41,6 +41,11 @@ Coprl::Presenters::Plugins::Cacheable::Settings.configure do |config|
   config.cache=cache_store
 end
 
+require 'coprl/presenters/plugins/google_maps'
+Coprl::Presenters::Plugins::GoogleMaps::Settings.configure do |c|
+  c.api_key = ENV['GOOGLE_MAPS_API_KEY']
+end
+
 use Coprl::Presenters::Demo::Search
 use Coprl::Presenters::Demo::Echo
 use Coprl::Presenters::Demo::Slow

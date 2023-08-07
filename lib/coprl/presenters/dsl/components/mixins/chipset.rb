@@ -8,7 +8,7 @@ module Coprl
           module Chipset
             include Mixins::Append
 
-            def chipset(chipset_variant=nil, **attribs, &block)
+            def chipset(chipset_variant = :static, **attribs, &block)
               self << Components::Chipset.new(chipset_variant, parent: self, **attribs, &block)
             end
           end

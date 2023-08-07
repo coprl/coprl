@@ -37781,7 +37781,10 @@ var MDCSelect = /** @class */function (_super) {
 "use strict";
 /* unused harmony export EVENT_SELECT */
 /* unused harmony export EVENT_DESELECT */
-/* unused harmony export EVENT_TRAILING_ICON_CLICK */
+/* unused harmony export VARIANT_CHOICE */
+/* unused harmony export VARIANT_FILTER */
+/* unused harmony export VARIANT_INPUT */
+/* unused harmony export VARIANT_STATIC */
 /* harmony export (immutable) */ __webpack_exports__["a"] = initChips;
 /* unused harmony export VChip */
 /* unused harmony export VChipSet */
@@ -37801,29 +37804,48 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+// https://github.com/material-components/material-components-web/tree/v3.2.0/packages/mdc-chips
+
 var EVENT_SELECT = 'select';
 var EVENT_DESELECT = 'deselect';
-var EVENT_TRAILING_ICON_CLICK = 'trailing_icon_click';
 
-var SELECTABLE_VARIANT_CLASS = 'v-chip-set--selectable-variant';
-var CHIP_BEHAVIOR_AUTO_REMOVE = 'auto_remove';
-var CHIP_BEHAVIOR_NO_AUTO_REMOVE = 'no_auto_remove';
+var VARIANT_CHOICE = 'choice';
+var VARIANT_FILTER = 'filter';
+var VARIANT_INPUT = 'input';
+var VARIANT_STATIC = 'static';
 
-function initChips(e) {
+// event.keyCode constants
+var KEYS = {
+    backspace: 8,
+    delete: 46,
+    leftArrow: 37,
+    rightArrow: 39,
+    comma: 188,
+    enter: 13,
+    space: 32,
+    IMESequence: 229
+};
+
+function initChips(root) {
     console.debug('\tChips');
 
-    // The chip set > chips hierarchy is established differently than other
-    // components: a chip set constructs and manages Chip components for its
-    // chip elements.
-    //
-    // Because the chip set constructs chips on its own, a `hookupComponents`
-    // call for chips is not needed.
+    // The chip set > chip hierarchy is established differently than other
+    // components: a chip set constructs and manages MDCChip components for its
+    // child elements. Because of this, a `hookupComponents` call for .v-chip is
+    // not needed.
+    Object(__WEBPACK_IMPORTED_MODULE_2__base_component__["d" /* hookupComponentsManually */])(root, '.v-chip-set', function (element) {
+        var mdcChipSet = new __WEBPACK_IMPORTED_MODULE_0__material_chips__["b" /* MDCChipSet */](element, undefined, function (element) {
+            var mdcChip = new __WEBPACK_IMPORTED_MODULE_0__material_chips__["a" /* MDCChip */](element);
 
-    Object(__WEBPACK_IMPORTED_MODULE_2__base_component__["d" /* hookupComponentsManually */])(e, '.v-chip-set', function (element) {
-        var chipFactory = CoprlChipFactoryFactory(CHIP_BEHAVIOR_NO_AUTO_REMOVE);
-        var mdcComponent = new __WEBPACK_IMPORTED_MODULE_0__material_chips__["b" /* MDCChipSet */](element, undefined, chipFactory);
+            // value is unused, but the constructor has side effects.
+            new VChip(element, mdcChip);
 
-        return new VChipSet(element, mdcComponent);
+            // the MDC chip set expects to manage instances of MDCChip, not
+            // VChip, so the chip factory must produce MDC chips.
+            return mdcChip;
+        });
+
+        return new VChipSet(element, mdcChipSet);
     });
 }
 
@@ -37835,26 +37857,40 @@ var VChip = function (_eventHandlerMixin) {
 
         var _this = _possibleConstructorReturn(this, (VChip.__proto__ || Object.getPrototypeOf(VChip)).call(this, element, mdcComponent));
 
-        _this.element.addEventListener('click', function (e) {
-            if (_this.selectable) {
-                _this.mdcComponent.selected = !_this.mdcComponent.selected;
-
-                var eventType = _this.mdcComponent.selected ? EVENT_SELECT : EVENT_DESELECT;
-                var selectionEvent = new Event(eventType, { bubbles: false });
-
-                _this.element.dispatchEvent(selectionEvent);
-            }
+        _this.mdcComponent.listen('MDCChip:selection', function (event) {
+            _this.element.dispatchEvent(new Event(event.detail.selected ? EVENT_SELECT : EVENT_DESELECT));
         });
+
+        mdcComponent.shouldRemoveOnTrailingIconClick = _this.variant == VARIANT_INPUT;
+
+        if (_this.variant == VARIANT_INPUT) {
+            // Store the `name` attribute so we can use it when generating new chips:
+            _this.element.dataset.name = _this.element.dataset.name || _this.chipSet.dataset.name;
+
+            _this.mdcComponent.listen('keydown', function (event) {
+                switch (event.keyCode) {
+                    case KEYS.backspace:
+                    case KEYS.delete:
+                        _this.chipSet.vComponent.focusTextField();
+                        _this.chipSet.vComponent.removeChip(_this.element);
+                        break;
+                    case KEYS.leftArrow:
+                    case KEYS.rightArrow:
+                        event.preventDefault();
+                        break;
+                }
+            });
+        }
         return _this;
     }
 
+    // Called to collect data for submission
+
+
     _createClass(VChip, [{
         key: 'prepareSubmit',
-
-
-        // Called to collect data for submission
         value: function prepareSubmit(params) {
-            if (this.shouldSubmitParams()) {
+            if (this.shouldSubmitParams) {
                 params.push([this.name(), this.value()]);
             }
         }
@@ -37880,39 +37916,30 @@ var VChip = function (_eventHandlerMixin) {
         }
     }, {
         key: 'shouldSubmitParams',
-        value: function shouldSubmitParams() {
+        get: function get() {
             // Selectable chips (those within a :filter or :choice chipset) which
             // are not currently selected do not submit their value.
             return this.name() && this.value() && (!this.selectable || this.mdcComponent.selected);
         }
     }, {
-        key: 'trailingIcon',
+        key: 'chipSet',
         get: function get() {
-            return this.element.querySelector('.mdc-chip__icon.mdc-chip__icon--trailing');
+            return this.element.closest('.v-chip-set');
+        }
+    }, {
+        key: 'variant',
+        get: function get() {
+            return this.chipSet.dataset.variant;
         }
     }, {
         key: 'selectable',
         get: function get() {
-            return this.element.parentElement.classList.contains(SELECTABLE_VARIANT_CLASS);
+            return this.variant == VARIANT_CHOICE || this.variant == VARIANT_FILTER;
         }
     }]);
 
     return VChip;
 }(Object(__WEBPACK_IMPORTED_MODULE_1__mixins_event_handler__["a" /* eventHandlerMixin */])(__WEBPACK_IMPORTED_MODULE_2__base_component__["a" /* VBaseComponent */]));
-
-// Returns a function which constructs VChip components.
-function CoprlChipFactoryFactory() {
-    var behavior = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : CHIP_BEHAVIOR_AUTO_REMOVE;
-
-    var autoRemove = behavior === CHIP_BEHAVIOR_AUTO_REMOVE;
-
-    return function (element) {
-        var mdcComponent = new __WEBPACK_IMPORTED_MODULE_0__material_chips__["a" /* MDCChip */](element);
-        mdcComponent.shouldRemoveOnTrailingIconClick = autoRemove;
-
-        return new VChip(element, mdcComponent);
-    };
-}
 
 var VChipSet = function (_eventHandlerMixin2) {
     _inherits(VChipSet, _eventHandlerMixin2);
@@ -37920,8 +37947,223 @@ var VChipSet = function (_eventHandlerMixin2) {
     function VChipSet(element, mdcComponent) {
         _classCallCheck(this, VChipSet);
 
-        return _possibleConstructorReturn(this, (VChipSet.__proto__ || Object.getPrototypeOf(VChipSet)).call(this, element, mdcComponent));
+        var _this2 = _possibleConstructorReturn(this, (VChipSet.__proto__ || Object.getPrototypeOf(VChipSet)).call(this, element, mdcComponent));
+
+        _this2.mdcComponent.listen('MDCChip:removal', function (event) {
+            _this2.removeChip(event.target);
+        });
+
+        // handle moving amongst sibling chips:
+        _this2.mdcComponent.listen('keydown', function (event) {
+            switch (event.keyCode) {
+                case KEYS.leftArrow:
+                    {
+                        if (!event.target.matches('.v-chip')) {
+                            return;
+                        }
+
+                        var previousSibling = event.target.previousElementSibling;
+
+                        if (previousSibling && previousSibling.matches('.v-chip')) {
+                            previousSibling.focus();
+                        }
+                        break;
+                    }
+                case KEYS.rightArrow:
+                    {
+                        var nextSibling = event.target.nextElementSibling;
+
+                        if (nextSibling && nextSibling.matches('.v-chip, .mdc-chip-set--input input')) {
+                            nextSibling.focus();
+                        }
+                        break;
+                    }
+            }
+        });
+
+        if (_this2.variant == VARIANT_INPUT) {
+            _this2.textField = _this2.element.querySelector('.v-text-field');
+            _this2.input = _this2.textField.querySelector('input');
+
+            _this2.textField.addEventListener('focusout', function (event) {
+                // remain visually focused if the new focused element is within the chip set:
+                if (event.relatedTarget && event.relatedTarget.closest('.v-chip-set') == _this2.element) {
+                    _this2.textField.classList.add('mdc-text-field--focused');
+                } else {
+                    _this2.textField.classList.remove('mdc-text-field--focused');
+                }
+
+                // keep the label floating if there are any chips in the chip set or text in the input field:
+                if (_this2.chips.length > 0 || _this2.input.value.length > 0) {
+                    _this2.textField.vComponent.mdcComponent.foundation_.notchOutline(true);
+                    _this2.textField.vComponent.label.classList.add('mdc-floating-label--float-above');
+                } else {
+                    _this2.textField.vComponent.mdcComponent.foundation_.notchOutline(false);
+                    _this2.textField.vComponent.label.classList.remove('mdc-floating-label--float-above');
+                }
+            });
+
+            // TODO: internationalization: determine and use locale list separator character(s). see `Intl.ListFormat`?
+            // TODO: all of this is likely better handled by the `input` event.
+            _this2.textField.addEventListener('keydown', function (event) {
+                if (event.isComposing || event.keyCode == KEYS.IMESequence) {
+                    // user is composing a single character via multiple key
+                    // strokes – ignore input until they're done.
+                    return;
+                }
+
+                switch (event.keyCode) {
+                    case KEYS.enter:
+                        event.preventDefault(); // prevent submitting form
+                    // fallthrough
+                    case KEYS.comma:
+                    case KEYS.space:
+                        {
+                            var text = _this2.textField.vComponent.value().trim();
+
+                            if (!text || text.length < 1) {
+                                return;
+                            }
+
+                            _this2.addChip(_this2.makeInputChip(text));
+                            _this2.textField.vComponent.clear();
+                            break;
+                        }
+                    case KEYS.backspace:
+                    case KEYS.leftArrow:
+                        {
+                            if (document.activeElement != _this2.textField.querySelector('input')) {
+                                return;
+                            }
+
+                            // select the last chip if we're at the start of the text:
+                            var start = _this2.input.selectionStart;
+                            var length = Math.abs(_this2.input.selectionEnd - _this2.input.selectionStart);
+
+                            if (start == 0 && length < 1) {
+                                if (_this2.lastChip) {
+                                    _this2.lastChip.focus();
+                                }
+                            }
+
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            });
+
+            if (_this2.chips.length > 0) {
+                _this2.textField.vComponent.mdcComponent.foundation_.notchOutline(true);
+                _this2.textField.vComponent.label.classList.add('mdc-floating-label--float-above');
+
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = _this2.chips[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var chip = _step.value;
+
+                        _this2.input.insertAdjacentElement('beforebegin', chip);
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            }
+
+            // when focusing a chip, the owning chip set should appear focused:
+            _this2.element.addEventListener('focusin', function (event) {
+                _this2.textField.vComponent.mdcComponent.foundation_.notchOutline(true);
+                _this2.textField.classList.add('mdc-text-field--focused');
+                _this2.textField.vComponent.label.classList.add('mdc-floating-label--float-above');
+            });
+
+            // when focus moves outside of the chip set, the owning chip set should appear to have lost focus:
+            _this2.element.addEventListener('focusout', function (event) {
+                if (!event.relatedTarget || event.relatedTarget.closest('.v-chip-set') != _this2.element) {
+                    _this2.textField.classList.remove('mdc-text-field--focused');
+                }
+            });
+        }
+        return _this2;
     }
+
+    _createClass(VChipSet, [{
+        key: 'addChip',
+        value: function addChip(element) {
+            // https://github.com/material-components/material-components-web/tree/v3.2.0/packages/mdc-chips#adding-chips-to-the-dom
+            if (this.lastChip) {
+                this.lastChip.insertAdjacentElement('afterend', element);
+            } else {
+                this.textField.insertAdjacentElement('afterbegin', element);
+            }
+
+            // `MDCChipSet.addChip` runs its chip factory (see above, `initChips`),
+            // which creates an MDCChip and a VChip.
+            this.mdcComponent.addChip(element);
+        }
+    }, {
+        key: 'removeChip',
+        value: function removeChip(element) {
+            // https://github.com/material-components/material-components-web/tree/v3.2.0/packages/mdc-chips#removing-chips-from-the-dom
+            // most of a chip's removal is handled by MDC, but removing the DOM node
+            // is left to us.
+            element.remove();
+            this.focusTextField();
+        }
+    }, {
+        key: 'focusTextField',
+        value: function focusTextField() {
+            if (!this.textField) {
+                return;
+            }
+
+            this.textField.vComponent.focus();
+        }
+    }, {
+        key: 'makeInputChip',
+        value: function makeInputChip(text) {
+            var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : text;
+
+            // don't put ${text} or ${value} in this template literal. without escaping, it's vulnerable to XSS.
+            var html = '\n            <button type="button" class="v-chip v-input mdc-chip v-component" tabindex="0">\n                <div class="v-typography mdc-typography--chip-text mdc-chip__text v-component"></div>\n                <i class="v-icon mdc-chip__icon mdc-chip__icon--trailing material-icons">cancel</i>\n            </button>\n        ';
+            var template = document.createElement('template');
+            template.innerHTML = html.trim();
+
+            var element = template.content.firstChild;
+            element.dataset.value = value;
+            element.querySelector('.v-typography').textContent = text;
+
+            return element;
+        }
+    }, {
+        key: 'chips',
+        get: function get() {
+            return this.element.querySelectorAll('.v-chip');
+        }
+    }, {
+        key: 'variant',
+        get: function get() {
+            return this.element.dataset.variant;
+        }
+    }, {
+        key: 'lastChip',
+        get: function get() {
+            return this.textField.querySelector('.v-chip:last-of-type');
+        }
+    }]);
 
     return VChipSet;
 }(Object(__WEBPACK_IMPORTED_MODULE_1__mixins_event_handler__["a" /* eventHandlerMixin */])(__WEBPACK_IMPORTED_MODULE_2__base_component__["a" /* VBaseComponent */]));

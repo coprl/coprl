@@ -17,6 +17,7 @@ module Coprl
           include Mixins::FileInputs
           include Mixins::Images
           include Mixins::Tables
+          include Mixins::Chipset
 
           attr_reader :components, :shows_errors
 

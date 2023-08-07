@@ -7335,7 +7335,7 @@ svg.mdc-button__icon {
   /* @alternate */
   background-color: var(--mdc-theme-secondary, #E58D36); }
 
-@keyframes mdc-checkbox-fade-in-background-u688aa917 {
+@keyframes mdc-checkbox-fade-in-background-u0cb0c968 {
   0% {
     border-color: rgba(0, 0, 0, 0.54);
     background-color: transparent; }
@@ -7347,7 +7347,7 @@ svg.mdc-button__icon {
     /* @alternate */
     background-color: var(--mdc-theme-secondary, #E58D36); } }
 
-@keyframes mdc-checkbox-fade-out-background-u688aa917 {
+@keyframes mdc-checkbox-fade-out-background-u0cb0c968 {
   0%,
   80% {
     border-color: #E58D36;
@@ -7361,10 +7361,10 @@ svg.mdc-button__icon {
     background-color: transparent; } }
 
 .mdc-checkbox--anim-unchecked-checked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-checkbox--anim-unchecked-indeterminate .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-in-background-u688aa917; }
+  animation-name: mdc-checkbox-fade-in-background-u0cb0c968; }
 
 .mdc-checkbox--anim-checked-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-checkbox--anim-indeterminate-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-out-background-u688aa917; }
+  animation-name: mdc-checkbox-fade-out-background-u0cb0c968; }
 
 .mdc-checkbox__checkmark {
   color: #fff; }
@@ -11659,16 +11659,48 @@ select {
 .mdc-chip-set--input .mdc-chip {
   animation: mdc-chip-entry 100ms cubic-bezier(0, 0, 0.2, 1); }
 
-button.mdc-chip {
-  border: none; }
+.v-chip-set.mdc-chip-set,
+.v-chip.mdc-chip,
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field {
+  gap: var(--v-padding1); }
 
-.mdc-chip__icon.v-icon-position-left {
-  float: none;
-  padding-right: 0; }
+.mdc-chip-set.mdc-chip-set--input {
+  padding: 0; }
 
-.mdc-chip__icon.v-icon-position-right {
-  float: none;
-  padding-left: 0; }
+.v-chip.mdc-chip-set,
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field {
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center; }
+
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field {
+  height: auto;
+  min-height: 56px;
+  padding: 12px 16px 14px; }
+
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field__input {
+  padding: 0;
+  flex: 1;
+  min-width: 10ch;
+  height: auto;
+  min-height: 32px; }
+
+.mdc-chip-set.mdc-chip-set--input .v-chip:last-of-type {
+  margin-right: var(--v-padding2); }
+
+.v-chip.mdc-chip {
+  line-height: revert; }
+
+.mdc-chip-set .v-chip.mdc-chip {
+  margin: 0; }
+
+.mdc-chip__text {
+  overflow: hidden;
+  text-overflow: ellipsis; }
+
+.v-icon.mdc-chip__icon {
+  position: revert;
+  padding: 0; }
 
 .v-chip__primary {
   background-color: #5488b2; }
@@ -14346,7 +14378,7 @@ button.mdc-chip {
   /* @alternate */
   background-color: var(--mdc-theme-primary, #5488b2); }
 
-@keyframes mdc-checkbox-fade-in-background-uc1d87bb5 {
+@keyframes mdc-checkbox-fade-in-background-ue8813a69 {
   0% {
     border-color: rgba(0, 0, 0, 0.54);
     background-color: transparent; }
@@ -14358,7 +14390,7 @@ button.mdc-chip {
     /* @alternate */
     background-color: var(--mdc-theme-primary, #5488b2); } }
 
-@keyframes mdc-checkbox-fade-out-background-uc1d87bb5 {
+@keyframes mdc-checkbox-fade-out-background-ue8813a69 {
   0%,
   80% {
     border-color: #5488b2;
@@ -14374,12 +14406,12 @@ button.mdc-chip {
 .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-unchecked-checked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-unchecked-indeterminate .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-unchecked-checked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-unchecked-indeterminate .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-in-background-uc1d87bb5; }
+  animation-name: mdc-checkbox-fade-in-background-ue8813a69; }
 
 .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-checked-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background, .mdc-data-table__header-row-checkbox.mdc-checkbox--anim-indeterminate-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-checked-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background,
 .mdc-data-table__row-checkbox.mdc-checkbox--anim-indeterminate-unchecked .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background {
-  animation-name: mdc-checkbox-fade-out-background-uc1d87bb5; }
+  animation-name: mdc-checkbox-fade-out-background-ue8813a69; }
 
 .mdc-data-table .mdc-list-item__graphic {
   margin-right: 0px; }
@@ -15014,7 +15046,7 @@ button.mdc-chip {
 .flatpickr-calendar .hasWeeks .dayContainer {
   border-left: 0; }
 
-.flatpickr-calendar.showTimeInput.hasTime .flatpickr-time {
+.flatpickr-calendar.hasTime .flatpickr-time {
   height: 40px;
   border-top: 1px solid #e6e6e6; }
 
@@ -15031,9 +15063,13 @@ button.mdc-chip {
   width: 0;
   left: 22px; }
 
-.flatpickr-calendar.rightMost:before, .flatpickr-calendar.rightMost:after {
+.flatpickr-calendar.rightMost:before, .flatpickr-calendar.arrowRight:before, .flatpickr-calendar.rightMost:after, .flatpickr-calendar.arrowRight:after {
   left: auto;
   right: 22px; }
+
+.flatpickr-calendar.arrowCenter:before, .flatpickr-calendar.arrowCenter:after {
+  left: 50%;
+  right: 50%; }
 
 .flatpickr-calendar:before {
   border-width: 5px;
@@ -15093,6 +15129,10 @@ button.mdc-chip {
   flex: 1; }
 
 .flatpickr-months .flatpickr-prev-month, .flatpickr-months .flatpickr-next-month {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   text-decoration: none;
   cursor: pointer;
   position: absolute;
@@ -15112,9 +15152,7 @@ button.mdc-chip {
 .flatpickr-months .flatpickr-prev-month.flatpickr-prev-month, .flatpickr-months .flatpickr-next-month.flatpickr-prev-month {
   /*
       /*rtl:begin:ignore*/
-  left: 0;
-  /*
-      /*rtl:end:ignore*/ }
+  left: 0; }
 
 /*
       /*rtl:begin:ignore*/
@@ -15123,9 +15161,7 @@ button.mdc-chip {
 .flatpickr-months .flatpickr-prev-month.flatpickr-next-month, .flatpickr-months .flatpickr-next-month.flatpickr-next-month {
   /*
       /*rtl:begin:ignore*/
-  right: 0;
-  /*
-      /*rtl:end:ignore*/ }
+  right: 0; }
 
 /*
       /*rtl:begin:ignore*/
@@ -17422,6 +17458,9 @@ i:focus.v-datetime--clear {
     --v-padding3: 16px;
     --v-padding4: 24px;
     --v-padding5: 32px; } }
+
+*, *:before, *:after {
+  box-sizing: border-box; }
 
 .v-actionable {
   cursor: pointer; }

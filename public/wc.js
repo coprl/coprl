@@ -9795,7 +9795,7 @@ var VTextField = function (_dirtyableMixin) {
     }, {
         key: 'reset',
         value: function reset() {
-            this.input.value = this.originalValue;
+            this.setValue(this.originalValue);
         }
     }, {
         key: 'setValue',

@@ -134,7 +134,7 @@ export class VTextField extends dirtyableMixin(
     }
 
     reset() {
-        this.input.value = this.originalValue;
+        this.setValue(this.originalValue);
     }
 
     setValue(value) {

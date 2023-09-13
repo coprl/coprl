@@ -1,4 +1,4 @@
-<details id = '<%= comp.id %>' class="v-expansion mdc-elevation--z3"<% if comp.open %> open<% end %>>
+<details id = '<%= comp.id %>' class="v-expansion mdc-elevation--z3"<% if comp.open %> open<% end %> <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
   <summary class="v-expansion__summary">
     <% if comp.text&.text %>
       <%= partial "components/typography", :locals => {comp: comp.text, class_name: 'v-expansion__header', type: 'text', inline: comp.text&.inline} if comp.text %>

@@ -9,7 +9,8 @@
                     <%= 'mdc-tab--active' if tab.selected %>
                     <%= 'mdc-tab--stacked' if tab.stacked %>"
                   role="tab" aria-selected="<%= tab.selected %>" tabindex="0"
-                  <%= partial "components/event", :locals => {comp: tab, events: tab.events, parent_id: tab.event_parent_id} if tab.events&.any? %>>
+                  <%= partial "components/event", :locals => {comp: tab, events: tab.events, parent_id: tab.event_parent_id} if tab.events&.any? %>
+                  <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
           <span class="mdc-tab__content">
            <% if tab.icon %>
             <span class="mdc-tab__icon material-icons"><%= tab.icon %></span>

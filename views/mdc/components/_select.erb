@@ -14,7 +14,8 @@
           class="mdc-select__native-control"
           <%= partial("components/event", locals: {comp: comp,
                                                 events: comp.events,
-                                                parent_id: "#{comp.id}-input"}) if comp.events&.any? %>>
+                                                parent_id: "#{comp.id}-input"}) if comp.events&.any? %>
+          <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
     <% comp.options.each do |option| %>
       <option value="<%= option.value %>"
               <%= 'disabled' if option.disabled %>

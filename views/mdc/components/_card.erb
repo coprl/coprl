@@ -15,6 +15,7 @@
     <%= "height: #{comp.height};" if comp.height %>
     <%= color_style(comp, 'background-', :background_color) %>"
   <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp %>
+  <%= partial 'components/shared/test_id', locals: {comp: comp} %>
   data-is-container>
     <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(top both)) %>
     <% if comp.media %>

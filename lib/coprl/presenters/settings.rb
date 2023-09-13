@@ -32,6 +32,7 @@ unless defined?(Coprl::Presenters::Settings)
             setting :custom_css, '../public/presenters'
             setting :protect_from_forgery, false
             setting :asset_host, proc { |request| request.base_url }
+            setting :test_id_attribute, 'data-testid'
           end
           setting :plugins, []
           setting :components do

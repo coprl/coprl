@@ -21,17 +21,19 @@ module Coprl
                       :attributes,
                       :draggable,
                       :drop_zone,
-                      :css_class
+                      :css_class,
+                      :test_id
 
           alias attribs attributes # unused in here, but used in descendents.
 
-          def initialize(type:, parent:, id: nil, tag: nil, input_tag: nil, **attributes, &block)
+          def initialize(type:, parent:, id: nil, tag: nil, input_tag: nil, test_id: nil, **attributes, &block)
             @draggable = attributes.delete(:draggable) {nil}
             @drop_zone = attributes.delete(:drop_zone) {nil}
             @css_class = Array(attributes.delete(:class) {nil})
             @id = id || generate_id
             @event_parent_id = @id
             @input_tag = input_tag || tag
+            @test_id = test_id
             @type = type
             @parent = parent
             @attributes = attributes

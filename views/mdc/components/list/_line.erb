@@ -14,7 +14,8 @@
     id="<%= line.id %>"
     <%= draggable_attributes(line) %>
     <%= drop_zone_attributes(line) %>
-    <%= partial "components/event", :locals => {comp: line, events: line.events, parent_id: line.event_parent_id} if line.events&.any? %>>
+    <%= partial "components/event", :locals => {comp: line, events: line.events, parent_id: line.event_parent_id} if line.events&.any? %>
+    <%= partial 'components/shared/test_id', locals: {comp: line} %>>
   <%= partial "components/list/hidden_field", :locals => {:line => line} if line.hidden_field %>
   <%= partial "components/list/checkbox", :locals => {:line => line} if line.checkbox %>
   <%= partial "components/list/icon", :locals => {:line => line} if line.icon %>

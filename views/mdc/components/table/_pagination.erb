@@ -1,4 +1,4 @@
-<div class="v-paging">
+<div class="v-paging" <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
   <span class="v-paging__per-page">
     <span class="v-paging__per-page-label">Rows per page: </span>
     <span class="v-paging__per-page-value"><%= partial "components/select", :locals => {:comp=> comp.per_page} %></span>

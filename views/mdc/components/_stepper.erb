@@ -23,7 +23,8 @@
            <% end %>
            class="v-content v-step__content v-step__content-<%= step.id %>
             <%= ' is-active' if step.selected %>
-            <%= ' v-step--horizontal' if horizontal %>">
+            <%= ' v-step--horizontal' if horizontal %>"
+            <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
 
         <%= partial "components/render", :locals => {:components => step.components, :scope => nil} if step.components.any? %>
 

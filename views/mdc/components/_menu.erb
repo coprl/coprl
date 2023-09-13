@@ -24,7 +24,8 @@
               role="menuitem"
               tabindex="0"
               <%= 'disabled' if item.disabled %>
-              <%= partial "components/event", :locals => {comp: item, events: item.events, parent_id: item.event_parent_id} if !item.disabled && item.events&.any? %>>
+              <%= partial "components/event", :locals => {comp: item, events: item.events, parent_id: item.event_parent_id} if !item.disabled && item.events&.any? %>
+              <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
             <a class="v-menu-link"
                              id="<%= item.id %>"
                              href="javascript:void(0)">

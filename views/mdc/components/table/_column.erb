@@ -7,6 +7,7 @@
     class="<%= 'mdl-data-table__cell--non-numeric' unless col.numeric? %>
                <%= 'v-actionable' if col.events %>"
     <%= partial "components/event", :locals => {comp: col, events: col.events, parent_id: col.event_parent_id} if col.events&.any? %>
+    <%= partial 'components/shared/test_id', locals: {comp: col} %>
     style="<%= "background-color: #{col.color};" if col.color %>"
     <%= " colspan=#{col.colspan}" if col.colspan %>>
   <%= expand_text(col.value&.text) %>

@@ -3,7 +3,8 @@
       <%= 'data-hoist="false"' if !comp.hoisted %>
       data-placement="contextual"
       style="position: absolute;"
-      tabindex="-1">
+      tabindex="-1"
+      <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
   <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
     <% comp.items.each do |item| %>
       <% unless eq(item.type, :divider) %>
@@ -13,7 +14,8 @@
             <a class="v-menu-link"
                id="<%= item.id %>"
                href="javascript:void(0)"
-               <%= partial "components/event", :locals => {comp: item, events: item.events, parent_id: item.event_parent_id} if item.events&.any? %>>
+               <%= partial "components/event", :locals => {comp: item, events: item.events, parent_id: item.event_parent_id} if item.events&.any? %>
+               <%= partial 'components/shared/test_id', locals: {comp: item} %>>
           <% end %>
           <%= item.text %>
           <% unless item.disabled %>

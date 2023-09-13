@@ -1,5 +1,6 @@
 <tr
-  style="<%= "background-color: #{row.color};" if row.color %>">
+  style="<%= "background-color: #{row.color};" if row.color %>"
+  <%= partial 'components/shared/test_id', locals: {comp: row} %>>
   <%= partial "components/table/checkbox", :locals => {:row=> row, :type=> 'footer'} %>
   <% row.columns.each do |col| %>
     <%= partial "components/table/column", :locals => {:col=> col, :type=> 'footer'} %>

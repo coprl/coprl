@@ -118,7 +118,7 @@ export function hookupComponentsManually(root, selector, fn) {
     const elements = getCandidateElements(root, selector);
 
     for (const element of elements) {
-        if (element.mdcComponent || element.vComponent) {
+        if (element.mdcComponent || element.vComponent || !element.isConnected) {
             continue;
         }
 

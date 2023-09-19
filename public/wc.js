@@ -46107,6 +46107,12 @@ var VFileInput = function (_dirtyableMixin) {
             return this.input.files[0];
         }
     }, {
+        key: 'clear',
+        value: function clear() {
+            this.input.value = null;
+            this.element.classList.remove('v-file-input--has-file');
+        }
+    }, {
         key: 'previewComponent',
         value: function previewComponent(e) {
             var _this2 = this;
@@ -46173,6 +46179,12 @@ var VFileInput = function (_dirtyableMixin) {
     }, {
         key: 'handleFileSelection',
         value: function handleFileSelection(e) {
+            if (e.target.files.length > 0) {
+                this.element.classList.add('v-file-input--has-file');
+            } else {
+                this.element.classList.remove('v-file-input--has-file');
+            }
+
             this.previewComponent(e);
         }
     }]);

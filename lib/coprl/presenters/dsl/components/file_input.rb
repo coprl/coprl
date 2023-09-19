@@ -24,7 +24,9 @@ module Coprl
             return @value if locked?
             @value = value
           end
+
           private
+
           def default_button
             button(icon: :cloud_upload) unless components.any?
           end

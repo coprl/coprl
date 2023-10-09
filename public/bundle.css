@@ -12093,7 +12093,7 @@ button.mdc-chip {
     margin-right: 8px; }
 
 .v-snackbar {
-  z-index: 9999; }
+  z-index: 9999 !important; }
 
 /**
  * mdl-stepper - A Material Design Lite Stepper component polyfill.

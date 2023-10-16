@@ -30,7 +30,8 @@
           tabindex="0"
           <%= partial("components/event", locals: {comp: comp,
                                                 events: comp.events,
-                                                parent_id: comp.id}) if comp.events&.any? %>>
+                                                parent_id: comp.id}) if comp.events&.any? %>
+          <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
     <%= partial("components/icon", :locals => {comp: leading_icon,
                                             class_name: 'mdc-chip__icon mdc-chip__icon--leading',
                                             events: child_events ? (leading_icon&.events || comp.events) : nil}) if leading_icon %>

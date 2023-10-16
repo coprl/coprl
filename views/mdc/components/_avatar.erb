@@ -19,7 +19,8 @@
            class="v-avatar
                <%= 'v-actionable' if events %>"
          src="<%= comp.avatar %>"
-         <%= partial "components/event", :locals => {comp: comp, events: events, parent_id: comp.event_parent_id} if events&.any? %> />
+         <%= partial "components/event", :locals => {comp: comp, events: events, parent_id: comp.event_parent_id} if events&.any? %>
+         <%= partial 'components/shared/test_id', locals: {comp: comp} %> />
       <%= partial "components/tooltip", :locals => {comp: comp.tooltip, parent_id: comp.id} if comp.tooltip %>
     </span>
   <% else %>

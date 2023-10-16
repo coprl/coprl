@@ -3,7 +3,8 @@
     class="icon-ul"
   <% else %>
     style="<%= "list-style: #{comp.list_style}" if comp.list_style %>"
-  <% end %>>
+  <% end %>
+  <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
 <% for item in comp.list_items %>
   <%= partial "components/unordered_list/list_item", :locals => {:list_item => item} %>
 <% end %>

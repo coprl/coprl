@@ -10,7 +10,8 @@
         <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
       <% end %>
       <span class="mdc-top-app-bar__title <%= 'v-actionable' if header.title&.events %>"
-            <%= partial "components/event", :locals => {comp: header, events: header.title&.events, parent_id: header.title&.event_parent_id} %>>
+            <%= partial "components/event", :locals => {comp: header, events: header.title&.events, parent_id: header.title&.event_parent_id} %>
+            <%= partial 'components/shared/test_id', locals: {comp: header} %>>
         <%= expand_text(header.title&.text, markdown: header.title&.markdown) %>
       </span>
     </section>

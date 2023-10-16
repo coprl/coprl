@@ -8,6 +8,7 @@
                <%= 'v-actionable' if col.events %>"
         role="columnheader" scope="col"
         <%= partial "components/event", :locals => {comp: col, events: col.events, parent_id: col.event_parent_id} if col.events&.any? %>
+        <%= partial 'components/shared/test_id', locals: {comp: col} %>
         style="<%= "background-color: #{col.color};" if col.color %>">
       <%= expand_text(col.value&.text) %>
       <%= partial "components/render", :locals => {:components => col.components, :scope => nil} if col.components.any? %>

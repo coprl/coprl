@@ -12,7 +12,8 @@
            name="<%= comp.name %>"
            <% if comp.checked %>checked<% end %>
            <% if comp.disabled %>disabled<% end %>
-           <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>>
+           <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>
+           <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
     <div class="mdc-radio__background">
       <div class="mdc-radio__outer-circle"></div>
       <div class="mdc-radio__inner-circle"></div>

@@ -1,7 +1,11 @@
 <% if comp.icon %>
-  <div class="material-icons mdl-badge--overlap mdl-badge <%= comp.css_class.join(' ') %>" data-badge="<%= comp.badge %>">
+  <div class="material-icons mdl-badge--overlap mdl-badge <%= comp.css_class.join(' ') %>"
+       data-badge="<%= comp.badge %>"
+       <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
     <%= comp.icon %>
   </div>
 <% else %>
-  <span class="mdl-badge <%= comp.css_class.join(' ') %>" data-badge="<%= comp.badge %>"><%=expand_text(comp.text)%></span>
+  <span class="mdl-badge <%= comp.css_class.join(' ') %>"
+        data-badge="<%= comp.badge %>"
+        <%= partial 'components/shared/test_id', locals: {comp: comp} %>><%= expand_text(comp.text) %></span>
 <% end %>

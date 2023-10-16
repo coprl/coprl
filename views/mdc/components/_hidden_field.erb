@@ -2,4 +2,5 @@
        type="hidden"
        <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
        <% if comp.dirtyable %>data-dirtyable<% end %>
-       id="<%= comp.id %>" name="<%= comp.name %>" value="<%= comp.value %>"/>
+       id="<%= comp.id %>" name="<%= comp.name %>" value="<%= comp.value %>"
+       <%= partial 'components/shared/test_id', locals: {comp: comp} %>/>

@@ -2,8 +2,8 @@
 <a href="<%= comp.url %>"
    id="<%= comp.id %>"
    target="<%= target %>"
-   class="<%= comp.css_class.join(' ') %>"
-   <%= partial "components/event", locals: {comp: comp, events: comp.events, parent_id: comp.parent_id} if comp.events&.any? %>
+   class="v-link <%= comp.css_class.join(' ') %>"
+   <%= partial "components/event", locals: {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>
    <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
   <%= comp.text %>
 </a>

@@ -4,7 +4,7 @@ import {eventHandlerMixin} from './mixins/event-handler';
 
 export function initTypography(e) {
     console.debug('\tTypography');
-    hookupComponents(e, '.v-typography', VTypography);
+    hookupComponents(e, '.v-typography,.v-link', VTypography);
 }
 
 

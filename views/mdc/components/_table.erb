@@ -26,4 +26,6 @@
 </div>
 <% if comp.pagination %>
   <%= partial "components/table/pagination", :locals => {:comp => comp.pagination} %>
+<% elsif comp.cursor_pagination %>
+  <%= partial "components/table/cursor_pagination", :locals => {:comp => comp.cursor_pagination} %>
 <% end %>

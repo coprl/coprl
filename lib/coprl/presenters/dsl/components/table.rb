@@ -33,6 +33,12 @@ module Coprl
                              **attribs, &block)
           end
 
+          def cursor_pagination(**attribs, &block)
+            return @cursor_pagination if locked?
+            @cursor_pagination = CursorPagination.new(parent: self,
+                                         **attribs, &block)
+          end
+
           def pagination(**attribs, &block)
             return @pagination if locked?
             @pagination = Pagination.new(parent: self,
@@ -111,6 +117,54 @@ module Coprl
 
             end
 
+          end
+
+          class CursorPagination < Base
+            attr_accessor :after_id, :before_id, :per_page, :previous_button, :next_button
+
+            def initialize(**attribs_, &block)
+              super(type: :cursor_pagination, **attribs_, &block)
+              @after_id = attribs.delete(:after_id)
+              @before_id = attribs.delete(:before_id)
+              @per_page = attribs.delete(:per_page){ 20 }.to_i
+              @replace_id = attribs.delete(:replace_id)
+              @replace_presenter = attribs.delete(:replace_presenter)
+              @align = attribs.delete(:align){ :right }
+              previous_button_icon
+              next_button_icon
+              expand!
+            end
+
+            def align
+              if @align == :center
+                'center'
+              elsif @align == :right
+                'end'
+              elsif @align == :left
+                'start'
+              else
+                'end'
+              end
+            end
+
+            def previous_button_icon
+              return @previous_button if locked?
+              @previous_button = button(:keyboard_arrow_left, before_id: before_id)
+            end
+
+            def next_button_icon
+              return @next_button if locked?
+              @next_button = button(:keyboard_arrow_right, after_id: after_id)
+            end
+
+            def button(icon_name, navigation_data, replace_id = @replace_id, replace_presenter = @replace_presenter)
+              __attribs__ = attribs.merge(navigation_data)
+              Components::Button.new(parent: self, type: :icon, icon: icon_name) do
+                event :click do
+                  replaces replace_id, replace_presenter, __attribs__
+                end
+              end
+            end
           end
 
           class Pagination < Base

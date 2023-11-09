@@ -1,0 +1,13 @@
+<div class="v-paging__wrapper" style="display: flex;
+  align-items: <%= comp.align %>;
+  flex-flow: column;
+  padding: 0 15px;">
+  <div class="v-paging" <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
+    <% if comp.before_id %>
+      <%= partial 'components/button', locals: { comp: comp.previous_button, class_name: 'v-actionable v-button--pagination v-button--pagination--previous v-paging__prev' } %>
+    <% end %>
+    <% if comp.after_id %>
+      <%= partial 'components/button', locals: { comp: comp.next_button, class_name: 'v-actionable v-button--pagination v-button--pagination--next v-paging__next' } %>
+    <% end %>
+  </div>
+</div>

@@ -8,7 +8,7 @@
   <div id="<%=comp.id%>"
        class="v-hidden"
        aria-hidden="true"
-       data-events='<%= data_events.to_json %>'
+       data-events="<%= h data_events.to_json %>"
        <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
   </div>
 <% end %>

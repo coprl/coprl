@@ -1,5 +1,6 @@
 <% float_label = comp.options.any?(&:selected) %>
-<div class="mdc-select v-select v-input
+<div id="<%= comp.id %>"
+     class="mdc-select v-select v-input
             <%= 'mdc-select--outlined' if comp.outlined %>
             <% if comp.disabled %>mdc-select--disabled<% end %>
             <% unless comp.label %>mdc-select--no-label<% end %>"

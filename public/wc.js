@@ -10763,7 +10763,7 @@ var VDialog = function () {
         _classCallCheck(this, VDialog);
 
         this.dialogId = options.target;
-        this.params = params;
+        this.params = Object.assign({ dismissable: true }, params);
         this.event = event;
         this.root = root;
     }
@@ -10771,26 +10771,33 @@ var VDialog = function () {
     _createClass(VDialog, [{
         key: 'call',
         value: function call(results) {
-            var dialog = this.root.querySelector('#' + this.dialogId);
+            var element = this.root.querySelector('#' + this.dialogId);
 
-            if (!(dialog && dialog.vComponent)) {
-                var err = new Error('Unable to find dialog ' + this.dialogId + '. ' + 'Did you forget to attach it?');
+            if (!element) {
+                var message = 'Unable to find dialog #' + this.dialogId + '. Did you forget to attach it?';
 
                 results.push({
                     action: 'dialog',
                     contentType: 'v/errors',
-                    content: { exception: err.message }
+                    content: { exception: message }
                 });
 
-                return new Promise(function (_, reject) {
-                    return reject(results);
-                });
+                return Promise.reject(results);
             }
 
-            return new Promise(function (resolve, reject) {
-                var comp = dialog.vComponent.mdcComponent;
+            var dialog = element.vComponent;
+            var mdcDialog = dialog.mdcComponent;
 
-                comp.listen('MDCDialog:closed', function (event) {
+            if (this.isDismissable) {
+                mdcDialog.escapeKeyAction = 'close';
+                mdcDialog.scrimClickAction = 'close';
+            } else {
+                mdcDialog.escapeKeyAction = '';
+                mdcDialog.scrimClickAction = '';
+            }
+
+            return new Promise(function (resolve, _) {
+                mdcDialog.listen('MDCDialog:closed', function (event) {
                     results.push({
                         action: 'dialog',
                         statusCode: 200,
@@ -10800,8 +10807,13 @@ var VDialog = function () {
                     resolve(results);
                 });
 
-                dialog.vComponent.open();
+                dialog.open();
             });
+        }
+    }, {
+        key: 'isDismissable',
+        get: function get() {
+            return !!this.params.dismissable;
         }
     }]);
 

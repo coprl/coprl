@@ -6,9 +6,8 @@ module Coprl
           include Mixins::Tooltips
           attr_reader :icons, :color, :name, :value, :chipset_variant, :selected
 
-          def initialize(**attribs_, &block)
-            super(type: :chip,
-                  **attribs_, &block)
+          def initialize(**attribs, &block)
+            super(type: :chip, **attribs, &block)
             @icons = []
             self.text(attribs.delete(:text)) if attribs.key?(:text)
             self.icon(attribs.delete(:icon)) if attribs.key?(:icon)
@@ -17,7 +16,12 @@ module Coprl
             @value = attribs.delete(:value)
             @selected = attribs.delete(:selected){false}
             expand!
-            @chipset_variant = self.parent(:chipset)&.variant.to_s
+            @chipset_variant = self.parent(:chipset)&.variant
+
+            if @chipset_variant == :input
+              @icons = @icons.delete_if { |i| i.position == :right }
+              icon(:cancel, position: :right)
+            end
           end
 
           def text(*text, **attribs, &block)
@@ -26,8 +30,7 @@ module Coprl
           end
 
           def icon(icon=nil, **attribs, &block)
-            @icons << Icon.new(parent: self, icon: icon,
-                               **attribs, &block)
+            @icons << Icon.new(parent: self, icon: icon, **attribs, &block)
           end
 
           def menu(**attributes, &block)
@@ -35,10 +38,21 @@ module Coprl
             @menu = Components::Menu.new(parent: self, **attributes, &block)
           end
 
-          class Icon < Components::IconBase
+          def choice?
+            chipset_variant == :choice
+          end
 
-            def initialize(**attribs_, &block)
-              super(**attribs_, &block)
+          def filter?
+            chipset_variant == :filter
+          end
+
+          def input?
+            chipset_variant == :input
+          end
+
+          class Icon < Components::IconBase
+            def initialize(**attribs, &block)
+              super(**attribs, &block)
               @position = [:left] if position.empty?
               expand!
             end

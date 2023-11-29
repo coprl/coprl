@@ -1,18 +1,19 @@
 <%
-  variant_classes = []
-  variant_classes << "mdc-chip-set--#{comp.variant}" if comp.variant
-  variant_classes << 'v-chip-set--selectable-variant' if eq(comp.variant, :select) || eq(comp.variant, :filter)
+  variant_class = "mdc-chip-set--#{comp.variant}"
 %>
 <div id="<%= comp.id %>"
-     class="v-chip-set mdc-chip-set
-            <%= variant_classes.join(' ') %>
-            <% if comp.draggable %>v-dnd-draggable
-       <% end %>"
+     class="v-chip-set mdc-chip-set <%= variant_class %> <% if comp.draggable %>v-dnd-draggable<% end %>"
+     data-variant="<%= comp.variant %>"
+     <% if comp.name %>data-name="<%= comp.name %>"<% end %>
      <%= draggable_attributes(comp) %>
      <%= drop_zone_attributes(comp) %>
-     <%= partial("components/event", locals: {comp: comp,
-                                           events: comp.events,
-                                           parent_id: comp.id}) if comp.events&.any? %>
+     <% if comp.events&.any? %>
+       <%= partial("components/event", locals: {comp: comp, events: comp.events, parent_id: comp.id}) %>
+     <% end %>
      <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
-  <%= partial "components/render", :locals => {:components => comp.components, :scope => nil} if comp.components.any? %>
+  <%= partial "components/render", locals: {components: comp.components, scope: nil} %>
+  <% if comp.input? %>
+    <%# "input" chips are moved into and created within the text field's wrapper. (see js/components/chips.js) %>
+    <%= partial 'components/text_field', locals: {comp: comp.input_text_field} %>
+  <% end %>
 </div>

@@ -1,57 +1,57 @@
 <%
-  if comp
-    leading_icon = comp.icons.select { |i| i.position.select { |p| eq(p, :left) }.any? }.first
-    trailing_icon = comp.icons.select { |i| i.position.select { |p| eq(p, :right) }.any? }.first
-    child_events = (leading_icon&.events || trailing_icon&.events || comp.text&.events || []).any?
+  leading_icon = comp.icons.select { |i| i.position.select { |p| eq(p, :left) }.any? }.first
+  trailing_icon = comp.icons.select { |i| i.position.select { |p| eq(p, :right) }.any? }.first
+  child_events = (leading_icon&.events || trailing_icon&.events || comp.text&.events || []).any?
 %>
-  <% if comp.menu %>
-    <div class="mdc-menu-anchor">
+<% if comp.menu %>
+  <div class="mdc-menu-anchor">
+<% end %>
+<button id="<%= comp.id %>"
+        type="button" <%# default button type is "submit", but chip clicks shouldn't submit a <form>. %>
+        <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
+        class="v-chip v-input mdc-chip
+            <%= color_classname(comp) %>
+            <%= 'mdc-chip--selected' if comp.selected %>
+            v-menu-click
+            <% if comp.draggable %>v-dnd-draggable<% end %>"
+        <% if child_events || comp.choice? || comp.filter? || comp.input? %>tabindex="0"<% end %>
+        <% if comp.name %>data-name="<%= comp.name %>"<% end %>
+        <% if comp.value %>data-value="<%= comp.value %>"<% end %>
+        style="<%= color_style(comp, 'background-') %>"
+        <%= draggable_attributes(comp) %>
+        <%= drop_zone_attributes(comp) %>
+        <%= partial("components/event", locals: {comp: comp,
+                                                 events: comp.events,
+                                                 parent_id: comp.id}) if comp.events&.any? %>
+        <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
+  <%# leading icon must come before the checkmark of a filter chip. the icon will replace the checkmark when the chip is selected. %>
+  <%# https://github.com/material-components/material-components-web/tree/v3.2.0/packages/mdc-chips#filter-chips %>
+  <% if leading_icon %>
+    <% hidden_icon_class = eq(comp.chipset_variant, :filter) && comp.selected ? 'mdc-chip__icon--leading-hidden' : '' %>
+    <%= partial("components/icon", locals: {comp: leading_icon,
+                                            class_name: "mdc-chip__icon mdc-chip__icon--leading #{hidden_icon_class}",
+                                            events: child_events ? (leading_icon&.events || comp.events) : nil}) %>
   <% end %>
-
-  <button id="<%= comp.id %>"
-          <% if comp.input_tag %>
-          data-input-tag="<%= comp.input_tag %>"
-          <% end %>
-          class="v-chip v-input mdc-chip
-              <%= color_classname(comp) %>
-              <%= 'mdc-chip--selected' if comp.selected %>
-              v-menu-click
-              <% if comp.draggable %>v-dnd-draggable
-            <% end %>"
-          <% if comp.name %>
-          data-name="<%= comp.name %>"
-          <% end %>
-          <% if comp.value %>
-          data-value="<%= comp.value %>"
-          <% end %>
-          style="<%= color_style(comp, 'background-') %>"
-          <%= draggable_attributes(comp) %>
-          <%= drop_zone_attributes(comp) %>
-          tabindex="0"
-          <%= partial("components/event", locals: {comp: comp,
-                                                events: comp.events,
-                                                parent_id: comp.id}) if comp.events&.any? %>
-          <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
-    <%= partial("components/icon", :locals => {comp: leading_icon,
-                                            class_name: 'mdc-chip__icon mdc-chip__icon--leading',
-                                            events: child_events ? (leading_icon&.events || comp.events) : nil}) if leading_icon %>
-    <% if comp.chipset_variant == 'filter' %>
+  <% if eq(comp.chipset_variant, :filter) %>
     <span class="mdc-chip__checkmark">
       <svg class="mdc-chip__checkmark-svg" viewBox="-2 -3 30 30">
-        <path class="mdc-chip__checkmark-path" fill="none" stroke="black"
-              d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+        <path class="mdc-chip__checkmark-path" fill="none" stroke="currentColor" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
       </svg>
     </span>
-    <% end %>
-
-    <%= partial "components/typography", :locals => {comp: comp.text, type: 'chip-text', class_name: 'mdc-chip__text'} if comp.text  %>
-    <%= partial("components/icon", locals: {comp: trailing_icon,
-                                         class_name: 'mdc-chip__icon mdc-chip__icon--trailing',
-                                         events: child_events ? (trailing_icon&.events || comp.events) : nil}) if trailing_icon %>
-  </button>
-  <% if comp.menu %>
-    <%= partial "components/list/menu", :locals => {:comp => comp.menu} %>
-    </div>
   <% end %>
-  <%= partial "components/tooltip", :locals => {comp: comp.tooltip, parent_id: comp.id} if comp.tooltip %>
+
+  <%= partial "components/typography", :locals => {comp: comp.text, type: 'chip-text', class_name: 'mdc-chip__text'} if comp.text  %>
+
+  <%# Per the MDC-web Chip docs, "Trailing icons should only be added to input chips." %>
+  <%# But, Core is relying on non-input chip trailing icons. ¯\_(ツ)_/¯ %>
+  <% if trailing_icon %>
+    <%= partial("components/icon", locals: {comp: trailing_icon,
+                                            class_name: 'mdc-chip__icon mdc-chip__icon--trailing',
+                                            events: child_events ? (trailing_icon&.events || comp.events) : nil}) %>
+  <% end %>
+</button>
+<% if comp.menu %>
+  <%= partial "components/list/menu", :locals => {:comp => comp.menu} %>
+  </div> <%# end tag for mdc-menu-anchor, above %>
 <% end %>
+<%= partial "components/tooltip", :locals => {comp: comp.tooltip, parent_id: comp.id} if comp.tooltip %>

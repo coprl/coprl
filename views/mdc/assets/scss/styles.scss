@@ -1,5 +1,9 @@
 @import 'node_modules/@material/layout-grid/mixins';
 
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
 .v-actionable {
     cursor: pointer;
 }
@@ -71,4 +75,3 @@ button.v-button.mdc-dialog__button.v-hidden {
 .v-align-right {
     text-align: right;
 }
-

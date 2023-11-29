@@ -1,27 +1,59 @@
 @import "@material/chips/mdc-chips";
 
-button.mdc-chip {
-  border: none;
+.v-chip-set.mdc-chip-set,
+.v-chip.mdc-chip,
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field {
+  gap: var(--v-padding1);
 }
 
-.mdc-chip__icon.v-icon-position-left {
-  float: none;
-  padding-right: 0;
+.mdc-chip-set.mdc-chip-set--input {
+  padding: 0;
 }
 
-.mdc-chip__icon.v-icon-position-top {
-  //position: absolute;
-  //top: 0;
+.v-chip.mdc-chip-set,
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field {
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center; // for flex-wrap
 }
 
-.mdc-chip__icon.v-icon-position-right {
-  float: none;
-  padding-left: 0;
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field {
+  // "input" chip sets can wrap to new lines, so the height must be flexible:
+  height: auto;
+  min-height: $mdc-text-field-height;
+
+  // for "input" chip sets, move mdc-text-field__input's padding up to the wrapper:
+  padding: 12px 16px 14px;
 }
 
-.mdc-chip__icon.v-icon-position-bottom {
-  //position: absolute;
-  //bottom: 0;
+.mdc-chip-set.mdc-chip-set--input .mdc-text-field__input {
+  padding: 0;
+  flex: 1;
+  min-width: 10ch;
+  height: auto;
+  min-height: $mdc-chip-height-default;
+}
+
+.mdc-chip-set.mdc-chip-set--input .v-chip:last-of-type {
+  margin-right: var(--v-padding2);
+}
+
+.v-chip.mdc-chip {
+  line-height: revert;
+}
+
+.mdc-chip-set .v-chip.mdc-chip {
+  margin: 0;
+}
+
+.mdc-chip__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.v-icon.mdc-chip__icon {
+  position: revert;
+  padding: 0;
 }
 
 .v-chip__primary {

@@ -13,8 +13,6 @@ module Coprl::Presenters::DSL::Components
       @url = attribs_.delete(:url)
       @text = attribs_.delete(:text) { url }
       @target = validate_target(attribs_.delete(:target) { :self })
-
-      expand!
     end
 
     private

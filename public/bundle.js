@@ -60917,7 +60917,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function initTypography(e) {
     console.debug('\tTypography');
-    Object(__WEBPACK_IMPORTED_MODULE_0__base_component__["c" /* hookupComponents */])(e, '.v-typography', VTypography);
+    Object(__WEBPACK_IMPORTED_MODULE_0__base_component__["c" /* hookupComponents */])(e, '.v-typography,.v-link', VTypography);
 }
 
 var VTypography = function (_eventHandlerMixin) {

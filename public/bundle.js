@@ -2818,24 +2818,24 @@ var VBaseContainer = function (_VBaseComponent) {
     _createClass(VBaseContainer, [{
         key: 'components',
         value: function components() {
-            return Array.from(this.element.querySelectorAll('.v-component')).filter(function (element) {
-                return element.vComponent;
+            return Array.from(this.element.querySelectorAll('.v-component, .v-plugin')).filter(function (element) {
+                return element.vComponent || element.vPlugin;
             }).map(function (element) {
-                return element.vComponent;
+                return element.vComponent || element.vPlugin;
             });
         }
     }, {
         key: 'inputs',
         value: function inputs() {
-            return this.element.querySelectorAll('.v-input');
+            return this.element.querySelectorAll('.v-input, .v-plugin');
         }
     }, {
         key: 'inputComponents',
         value: function inputComponents() {
             return Array.from(this.inputs()).filter(function (element) {
-                return element.vComponent;
+                return element.vComponent || element.vPlugin;
             }).map(function (element) {
-                return element.vComponent;
+                return element.vComponent || element.vPlugin;
             });
         }
 
@@ -3117,9 +3117,9 @@ var VBase = function (_VUrls) {
             // Collect tagged components, if applicable:
             if (this.options.input_tag) {
                 var taggedComponents = Array.from(this.taggedInputs()).filter(function (element) {
-                    return element.vComponent;
+                    return element.vComponent || element.vPlugin;
                 }).map(function (element) {
-                    return element.vComponent;
+                    return element.vComponent || element.vPlugin;
                 });
 
                 components.push(taggedComponents);
@@ -3174,9 +3174,9 @@ var VBase = function (_VUrls) {
         key: 'inputComponents',
         value: function inputComponents() {
             return this.inputs().filter(function (element) {
-                return element.vComponent;
+                return element.vComponent || element.vPlugin;
             }).map(function (element) {
-                return element.vComponent;
+                return element.vComponent || element.vPlugin;
             });
         }
 
@@ -3204,7 +3204,11 @@ var VBase = function (_VUrls) {
         value: function component() {
             var parent = this.parentElement();
 
-            return parent ? parent.vComponent : null;
+            if (!parent) {
+                return null;
+            }
+
+            return parent.vComponent || parent.vPlugin;
         }
     }, {
         key: 'validate',
@@ -3226,7 +3230,7 @@ var VBase = function (_VUrls) {
                 return null;
             }
 
-            return element.vComponent;
+            return element.vComponent || element.vPlugin;
         }
     }, {
         key: 'closestContainerElement',

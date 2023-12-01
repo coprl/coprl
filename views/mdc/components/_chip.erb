@@ -2,19 +2,21 @@
   leading_icon = comp.icons.select { |i| i.position.select { |p| eq(p, :left) }.any? }.first
   trailing_icon = comp.icons.select { |i| i.position.select { |p| eq(p, :right) }.any? }.first
   child_events = (leading_icon&.events || trailing_icon&.events || comp.text&.events || []).any?
+  chipset_variant = :static unless bound_locals_include?(:chipset_variant, binding)
+  tabindex_attribute = child_events || !eq(chipset_variant, :static) ? 'tabindex="0"' : nil
 %>
 <% if comp.menu %>
   <div class="mdc-menu-anchor">
 <% end %>
 <button id="<%= comp.id %>"
-        type="button" <%# default button type is "submit", but chip clicks shouldn't submit a <form>. %>
+        type="button"
         <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
         class="v-chip v-input mdc-chip
             <%= color_classname(comp) %>
             <%= 'mdc-chip--selected' if comp.selected %>
             v-menu-click
             <% if comp.draggable %>v-dnd-draggable<% end %>"
-        <% if child_events || comp.choice? || comp.filter? || comp.input? %>tabindex="0"<% end %>
+        <%= tabindex_attribute %>
         <% if comp.name %>data-name="<%= comp.name %>"<% end %>
         <% if comp.value %>data-value="<%= comp.value %>"<% end %>
         style="<%= color_style(comp, 'background-') %>"
@@ -27,12 +29,12 @@
   <%# leading icon must come before the checkmark of a filter chip. the icon will replace the checkmark when the chip is selected. %>
   <%# https://github.com/material-components/material-components-web/tree/v3.2.0/packages/mdc-chips#filter-chips %>
   <% if leading_icon %>
-    <% hidden_icon_class = eq(comp.chipset_variant, :filter) && comp.selected ? 'mdc-chip__icon--leading-hidden' : '' %>
+    <% hidden_icon_class = eq(chipset_variant, :filter) && comp.selected ? 'mdc-chip__icon--leading-hidden' : '' %>
     <%= partial("components/icon", locals: {comp: leading_icon,
                                             class_name: "mdc-chip__icon mdc-chip__icon--leading #{hidden_icon_class}",
                                             events: child_events ? (leading_icon&.events || comp.events) : nil}) %>
   <% end %>
-  <% if eq(comp.chipset_variant, :filter) %>
+  <% if eq(chipset_variant, :filter) %>
     <span class="mdc-chip__checkmark">
       <svg class="mdc-chip__checkmark-svg" viewBox="-2 -3 30 30">
         <path class="mdc-chip__checkmark-path" fill="none" stroke="currentColor" d="M1.73,12.91 8.1,19.28 22.79,4.59" />

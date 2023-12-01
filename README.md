@@ -132,7 +132,6 @@ Use the [Demo] to get example code to drop into your presenters.
 ## Status
 This project is in a released status. 
 
-[![CircleCI](https://circleci.com/gh/rx/presenters.svg?style=svg)](https://circleci.com/gh/rx/presenters)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=plastic)](https://raw.githubusercontent.com/rx/presenters/master/LICENSE)
 
 ## Contributing

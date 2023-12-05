@@ -19,7 +19,7 @@
   data-is-container>
     <%= partial("components/progress", :locals => {:comp => comp.progress}) if comp.progress && includes_one?(Array(comp.progress.position), %i(top both)) %>
     <% if comp.media %>
-      <div class="v-errors">
+      <div class="<% if comp.shows_errors %>v-errors<% end %>">
         <div id="<%= comp.media.id %>"
              class="mdc-card__media v-card-media
                 <%= 'v-hidden' if comp.media.hidden %>
@@ -36,7 +36,7 @@
         </div>
       </div>
     <% end %>
-    <div class="v-errors" style="<%= "height: #{comp.height};" if comp.height %>">
+    <div class="<% if comp.shows_errors %>v-errors<% end %>" style="<%= "height: #{comp.height};" if comp.height %>">
       <% if comp.components.any? %>
         <div class="v-card-content <%= padding_classes(comp.padding, subclass: :col) %>"
              style="<%= "height: #{comp.height};" if comp.height %>">

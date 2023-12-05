@@ -30,7 +30,7 @@
       <% end %>
 
       <div class="mdc-dialog__content" id="<%= comp.id %>-content">
-        <div class="v-errors">
+        <div class="<% if comp.shows_errors %>v-errors<% end %>">
           <%= partial "components/render", :locals => {:components => comp.components, :scope => nil} if comp.components.any? %>
           <% if dialog_action_buttons.any? %>
             <footer class="mdc-dialog__actions">

@@ -1,9 +1,14 @@
-import {VBaseComponent, hookupComponents} from './base-component';
+import {VBaseComponent, hookupComponents, unhookupComponents} from './base-component';
 import {eventHandlerMixin} from './mixins/event-handler';
 
 export function initPlugins(e) {
     console.debug('\tPlugins');
     hookupComponents(e, '.v-plugin', VPluginComponent);
+}
+
+export function uninitPlugins(e) {
+  console.debug('\tUninit plugins');
+  unhookupComponents(e, '.v-plugin');
 }
 
 // Delegating plugin class. Allows a plugin to define a class-name as a data
@@ -61,6 +66,12 @@ export class VPluginComponent extends eventHandlerMixin(VBaseComponent) {
         if (this.element.vPlugin && this.element.vPlugin.onShow) {
             return this.element.vPlugin.onShow();
         }
+    }
+
+    destroy() {
+      if (this.element.vPlugin && this.element.vPlugin.destroy) {
+        return this.element.vPlugin.destroy();
+      }
     }
 
     initEventListener(eventName, eventHandler) {

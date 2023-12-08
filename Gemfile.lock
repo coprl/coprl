@@ -85,7 +85,7 @@ PATH
       dry-container (<= 0.8)
       dry-inflector (<= 0.1)
       ice_nine (~> 0.11)
-      redcarpet (~> 3.4)
+      redcarpet (~> 3.6)
       sinatra (>= 1.4, < 4.0)
       tzinfo (>= 1.1, < 3.0)
       tzinfo-data (~> 1.2018)

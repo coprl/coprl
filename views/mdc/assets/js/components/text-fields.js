@@ -70,7 +70,7 @@ export class VTextField extends dirtyableMixin(
         console.debug('TextField validate', formData);
         const isValid = this.input.checkValidity();
         if (isValid) {
-            if (this.origHelperText !== '') {
+            if (this.shouldShowHelperText) {
                 this.helperDisplay.innerHTML = this.origHelperText;
                 this.helperDisplay.classList.remove('v-hidden', 'mdc-text-field-helper-text--validation-msg');
                 this.element.classList.remove('mdc-text-field--invalid');
@@ -134,11 +134,18 @@ export class VTextField extends dirtyableMixin(
     }
 
     reset() {
-        this.input.value = this.originalValue;
+        this.setValue(this.originalValue);
     }
 
     setValue(value) {
         this.input.value = value;
+
+        if (value) {
+            this.label.classList.add('mdc-floating-label--float-above');
+        }
+        else {
+            this.label.classList.remove('mdc-floating-label--float-above');
+        }
     }
 
     isDirty() {
@@ -146,8 +153,26 @@ export class VTextField extends dirtyableMixin(
             && this.value().localeCompare(this.originalValue) !== 0;
     }
 
+    onHide() {
+        if (this.helperDisplay) {
+            this.helperDisplay.classList.add('v-hidden');
+        }
+
+        super.onHide();
+    }
+
     onShow() {
         this.mdcComponent.layout();
+
+        if (this.shouldShowHelperText) {
+            this.helperDisplay.classList.remove('v-hidden');
+        }
+
+        super.onShow();
+    }
+
+    get shouldShowHelperText() {
+        return this.helperDisplay && this.origHelperText && this.origHelperText !== '';
     }
 
     preview(result, acceptsMimeTypes) {

@@ -1,5 +1,5 @@
 <% if comp %>
-  <div id="<%= comp.id %>" class="v-input v-file-input"
+  <div id="<%= comp.id %>" class="v-input v-file-input <%= 'v-file-input--has-file' if comp.value %>"
        data-preview=<%= JSON.generate(Array(comp.preview)) %>
            data-accept="<%= comp.accept %>"
        <% if comp.dirtyable %>data-dirtyable<% end %>

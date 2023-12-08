@@ -23,7 +23,7 @@ module Coprl
             @auto_complete = validate_auto_complete(attribs.delete(:auto_complete) { :off })
             @default_value = attribs.delete(:default_value) if attribs.key?(:default_value)
             @tab_index = validate_tab_index(attribs.delete(:tab_index)) if attribs.key?(:tab_index)
-            @behavior = determine_behavior(attribs.delete(:password), attribs.delete(:behavior))
+            @behavior = attribs.delete(:behavior)
             label(attribs.delete(:label))if attribs.key?(:label)
             value(attribs.delete(:value))if attribs.key?(:value)
             expand!
@@ -94,24 +94,6 @@ module Coprl
 
             raise Errors::ParameterValidation, "Tab Index needs to be an int" unless tab_index.is_a?(Integer)
             tab_index
-          end
-
-          def determine_behavior(password, behavior)
-            unless password.nil?
-              logger.warn(
-                'The `password` attribute of text_field is deprecated. ' \
-                'Use `text_field behavior: :password` instead.'
-              )
-            end
-
-            case password
-            when nil
-              behavior
-            when true
-              :password
-            when false
-              :text
-            end
           end
         end
       end

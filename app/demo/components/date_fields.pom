@@ -25,8 +25,7 @@ Coprl::Presenters.define(:date_fields) do
     DOC
     grid do
       column 6 do
-        date_field name: :skydive_at,
-                       format: 'F j, Y' do
+        date_field name: :skydive_at, format: 'F j, Y', required: true do
           label 'Select your date to skydive'
           icon :event
           event :change do
@@ -41,7 +40,10 @@ Coprl::Presenters.define(:date_fields) do
     grid do
       column 6 do
         title 'Min Date'
-        date_field min_date: "2020-01-01"
+        date_field min_date: "2020-01-01" do
+          label 'Date on which to sky dive'
+          icon :event, position: :left
+        end
 
         title 'Max Date'
         date_field max_date: "2017-12-15"

@@ -15,7 +15,7 @@ Coprl::Presenters.define(:text_areas) do
         hint 'Default behavior is full width'
       end
 
-      text_area name: :notes, rows: 5, cols: 60, full_width: false do
+      text_area name: :notes, rows: 5, cols: 60, full_width: false, max_length: 200 do
         label 'Five by Sixty'
         hint 'Or specify using rows and columns'
       end

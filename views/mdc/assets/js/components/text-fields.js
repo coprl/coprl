@@ -28,6 +28,12 @@ export class VTextField extends dirtyableMixin(
         this.recalcWhenVisible(this);
         this.setupEventListeners(element);
         this.originalValue = this.value();
+
+        if (this.input.nodeName == 'TEXTAREA') {
+            this.input.addEventListener('input', (e) => {
+                this.input.style.height = `${this.input.scrollHeight}px`;
+            });
+        }
     }
 
     setupEventListeners(element) {

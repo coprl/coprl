@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 import { MDCTextField } from '@material/textfield';
 import { VTextField } from './text-fields';
-import { hookupComponents } from './base-component';
+import { hookupComponents, unhookupComponents } from './base-component';
 import appConfig from '../config';
 
 // field types:
@@ -19,6 +19,12 @@ export function initDateTime(e) {
     console.debug('\tDateTime');
     hookupComponents(e, '.v-datetime', VDateTime, MDCTextField);
     hookupComponents(e, '.v-date-text', VDateText, MDCTextField);
+}
+
+export function uninitDateTime(root) {
+    console.debug('\tUninit DateTime');
+    unhookupComponents(root, '.v-datetime');
+    unhookupComponents(root, '.v-date-text');
 }
 
 export class VDateTime extends VTextField {
@@ -73,6 +79,12 @@ export class VDateTime extends VTextField {
         this.originalValue = this.fp.input.value;
     }
 
+    destroy() {
+        super.destroy();
+        this.fp.destroy();
+        delete this.fp;
+    }
+
     clear() {
         if (this.fp.input.value !== '') {
             this.fp.clear();
@@ -82,6 +94,11 @@ export class VDateTime extends VTextField {
     }
 
     reset() {
+        // reset() can be called after a component has been destroyed, so guard against this case:
+        if (!this.fp) {
+            return;
+        }
+
         this.fp.setDate(this.originalValue);
     }
 

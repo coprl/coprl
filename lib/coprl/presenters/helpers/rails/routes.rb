@@ -34,7 +34,8 @@ module Coprl
           end
 
           def default_url_options
-            ::Rails.application.config.action_controller.default_url_options || { :host => context[:base_url] ? context[:base_url] : context[:request].host_with_port }
+            ::Rails.application.routes.default_url_options ||
+              {host: context[:base_url] ? context[:base_url] : context[:request].host_with_port}
           end
         end
       end

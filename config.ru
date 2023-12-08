@@ -1,10 +1,6 @@
 #!/usr/bin/env ruby
 if ENV['VOOM_ENV'] == 'integration_testing'
   require 'simplecov'
-  if ENV['CIRCLE_ARTIFACTS']
-    dir = File.join(ENV['CIRCLE_ARTIFACTS'], "coverage")
-    SimpleCov.coverage_dir(dir)
-  end
   SimpleCov.start
 end
 

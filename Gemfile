@@ -13,9 +13,9 @@ end
 group :test do
   gem 'rspec'
   gem 'rspec-html-matchers'
-  gem 'watir', '~> 6.19'
-  gem 'webdrivers', '~> 4.1'
-  gem 'watir-rspec', '~> 3.0'
+  gem 'watir', '~> 7'
+  gem 'webdrivers', '= 5.3.0' # lock to 5.3.0 per warning when installing webdrivers
+  gem 'watir-rspec', '~> 5'
   gem 'rspec_junit_formatter'
   gem 'simplecov', require: false
 end

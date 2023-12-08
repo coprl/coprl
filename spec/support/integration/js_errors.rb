@@ -1,11 +1,11 @@
 module Support
   module JSErrors
     def print_js_errors
-      log = @browser.driver.manage.logs.get(:browser)
-      errors = log.select {|entry| entry.level.eql? 'SEVERE'}
-      if errors.count > 0
-        javascript_errors = errors.map(&:message).join("\n")
-        raise javascript_errors
+      logs = @browser.driver.logs.get(:browser)
+      errors = logs.select { |entry| entry.level == 'SEVERE' }
+
+      if errors.any?
+        raise errors.map(&:message).join($/)
       end
     end
   end

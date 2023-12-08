@@ -26,7 +26,7 @@ module Coprl
             @position = Array(default_position).compact
             @disabled_on_post_finished = attribs.delete(:disabled_on_post_finished) {false}
             expand!
-            @event_parent_id = parent_form&.id || id
+            @event_parent_id = parent(:form)&.id || id
           end
 
           def icon(icon = nil, **attribs, &block)
@@ -44,15 +44,7 @@ module Coprl
             @menu = Components::Menu.new(parent: self, position: menu_position, **attributes, &block)
           end
 
-          def in_form?
-            parent_form != nil
-          end
-
           private
-
-          def parent_form
-            parent(:form)
-          end
 
           def default_position
             attribs.delete(:position){button_type == :fab ? %i(top right) : nil}

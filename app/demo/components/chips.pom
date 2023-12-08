@@ -110,8 +110,8 @@ Coprl::Presenters.define(:chips) do
       text "Alright, who's in?"
 
       chipset :filter do
-        ['Danny Ocean', 'Frank Catton', 'Robert "Rusty" Ryan', 'Tess Ocean'].each do |peep|
-          chip peep, selected: rand > 0.5 do
+        ['Danny Ocean', 'Frank Catton', 'Robert "Rusty" Ryan', 'Tess Ocean'].each.with_index do |peep, i|
+          chip peep, selected: i.odd? do
             event :select do
               snackbar "#{peep}'s in!"
             end

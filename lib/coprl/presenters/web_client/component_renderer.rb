@@ -14,12 +14,14 @@ module Coprl
                        render:,
                        components:,
                        index:,
-                       scope: nil)
+                       scope: nil,
+                       locals: {})
           @comp = comp
           @index = index
           @components = components
           @scope = scope
           @render = render
+          @locals = locals
           initialize_plugins
         end
 
@@ -34,8 +36,7 @@ module Coprl
                       render: @render) if respond_to?(:"render_#{@comp.type}")
 
           @render.call :erb, "components#{@scope ? "/#{@scope}" : nil}/#{@comp.type}",
-                       :locals => {comp: comp,
-                                   components: components, index: @index}
+                       locals: {comp: comp, components: components, index: @index, **@locals}
         end
 
         private

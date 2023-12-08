@@ -1,24 +1,24 @@
 GIT
   remote: https://github.com/coprl/animate_presenter_plugin.git
-  revision: 1eb21032ea4bd44113bb4d887df2472d5cd10a8f
+  revision: e6b91b00215909d45b1e7624d0a0f2ca957a41ad
   specs:
     animate_presenter_plugin (0.0.1)
 
 GIT
   remote: https://github.com/coprl/cacheable_presenter_plugin.git
-  revision: 262ac076d70d94b111b9ccb692dfc9225c7cc6c6
+  revision: 1d2dce05912f8a8c6c012ef4cb9b0f94e82146de
   specs:
     cacheable_presenter_plugin (0.0.3)
 
 GIT
   remote: https://github.com/coprl/chart_presenter_plugin.git
-  revision: 6b93c7a1b04356987cbe962841f564f4afc744c4
+  revision: 9082e3a6ec43913c9d4da0b1213dc110e3a18a7e
   specs:
     chart_presenter_plugin (0.1.0)
 
 GIT
   remote: https://github.com/coprl/clipboard_presenter_plugin.git
-  revision: 3de13cd7b858d68f4d2060bcbd44683b5ea755f8
+  revision: dd066e05304f0ccdde3740647c408fc88d5be0d4
   specs:
     clipboard_presenter_plugin (0.1.0)
 
@@ -30,7 +30,7 @@ GIT
 
 GIT
   remote: https://github.com/coprl/foo_presenter_plugin.git
-  revision: 6f1d796bf030bf69fca87777d28bdee63e9880d8
+  revision: 6494235b3cc7d807ba091e8fa920303c1decacb6
   specs:
     foo_presenter_plugin (0.0.2)
 
@@ -61,19 +61,19 @@ GIT
 
 GIT
   remote: https://github.com/coprl/script_presenter_plugin.git
-  revision: c7cea03e73f4752a3df99e4b3ab0d4030f141f4d
+  revision: 8efe3fedbb04d30401639052d8bbb6d4fc4b23ba
   specs:
     script_presenter_plugin (0.0.2)
 
 GIT
   remote: https://github.com/coprl/scroll_to_presenter_plugin.git
-  revision: c34ab770665a16b81b8274357dd9cc77dbd0a566
+  revision: 29af7a94135a6da94161b8a209f68ce0f152e53d
   specs:
     scroll_to_presenter_plugin (0.0.2)
 
 GIT
   remote: https://github.com/coprl/timer_presenter_plugin.git
-  revision: 5901fd1a368ae7b293c0b87f58ebd01a24a38573
+  revision: d9bc581c8705924ccde2c2330609adf15a65f181
   specs:
     timer_presenter_plugin (0.0.1)
 
@@ -95,12 +95,11 @@ GEM
   remote: https://rubygems.org/
   specs:
     byebug (11.1.3)
-    childprocess (3.0.0)
-    coderay (1.1.2)
+    coderay (1.1.3)
     concurrent-ruby (1.2.2)
-    diff-lcs (1.4.4)
-    docile (1.3.1)
-    dotenv (2.7.6)
+    diff-lcs (1.5.0)
+    docile (1.4.0)
+    dotenv (2.8.1)
     dry-configurable (0.13.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.6)
@@ -112,77 +111,79 @@ GEM
       zeitwerk (~> 2.6)
     dry-inflector (0.1.0)
     ice_nine (0.11.2)
-    json (2.3.1)
-    method_source (0.9.0)
-    mini_portile2 (2.8.1)
+    method_source (1.0.0)
+    mini_portile2 (2.8.5)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
-    nio4r (2.5.8)
-    nokogiri (1.14.2)
-      mini_portile2 (~> 2.8.0)
+    nio4r (2.7.0)
+    nokogiri (1.15.5)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.14.2-x86_64-darwin)
+    nokogiri (1.15.5-x86_64-darwin)
       racc (~> 1.4)
-    pry (0.11.3)
-      coderay (~> 1.1.0)
-      method_source (~> 0.9.0)
-    pry-byebug (3.8.0)
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-byebug (3.10.1)
       byebug (~> 11.0)
-      pry (~> 0.10)
-    puma (6.1.1)
+      pry (>= 0.13, < 0.15)
+    puma (6.4.0)
       nio4r (~> 2.0)
-    racc (1.6.2)
-    rack (2.2.6.3)
-    rack-cors (1.1.0)
+    racc (1.7.3)
+    rack (2.2.8)
+    rack-cors (2.0.1)
       rack (>= 2.0.0)
-    rack-protection (3.0.5)
-      rack
+    rack-protection (3.1.0)
+      rack (~> 2.2, >= 2.2.4)
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
-    rake (13.0.1)
+    rake (13.1.0)
     redcarpet (3.6.0)
-    regexp_parser (2.1.1)
-    rspec (3.10.0)
-      rspec-core (~> 3.10.0)
-      rspec-expectations (~> 3.10.0)
-      rspec-mocks (~> 3.10.0)
-    rspec-core (3.10.1)
-      rspec-support (~> 3.10.0)
-    rspec-expectations (3.10.1)
+    regexp_parser (2.8.3)
+    rexml (3.2.6)
+    rspec (3.12.0)
+      rspec-core (~> 3.12.0)
+      rspec-expectations (~> 3.12.0)
+      rspec-mocks (~> 3.12.0)
+    rspec-core (3.12.2)
+      rspec-support (~> 3.12.0)
+    rspec-expectations (3.12.3)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.10.0)
-    rspec-html-matchers (0.9.1)
+      rspec-support (~> 3.12.0)
+    rspec-html-matchers (0.10.0)
       nokogiri (~> 1)
-      rspec (>= 3.0.0.a, < 4)
-    rspec-mocks (3.10.2)
+      rspec (>= 3.0.0.a)
+    rspec-mocks (3.12.6)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.10.0)
-    rspec-support (3.10.2)
-    rspec_junit_formatter (0.4.1)
+      rspec-support (~> 3.12.0)
+    rspec-support (3.12.1)
+    rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
     ruby2_keywords (0.0.5)
-    rubyzip (2.3.0)
-    selenium-webdriver (3.142.7)
-      childprocess (>= 0.5, < 4.0)
-      rubyzip (>= 1.2.2)
+    rubyzip (2.3.2)
+    selenium-webdriver (4.9.0)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
     shotgun (0.9.2)
       rack (>= 1.0)
-    simplecov (0.16.1)
+    simplecov (0.22.0)
       docile (~> 1.1)
-      json (>= 1.8, < 3)
-      simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.2)
-    sinatra (3.0.5)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.12.3)
+    simplecov_json_formatter (0.1.4)
+    sinatra (3.1.0)
       mustermann (~> 3.0)
       rack (~> 2.2, >= 2.2.4)
-      rack-protection (= 3.0.5)
+      rack-protection (= 3.1.0)
       tilt (~> 2.0)
     thor (1.1.0)
-    tilt (2.1.0)
-    timecop (0.9.4)
+    tilt (2.3.0)
+    timecop (0.9.8)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    tzinfo-data (1.2022.7)
+    tzinfo-data (1.2023.3)
       tzinfo (>= 1.0.0)
     watir (6.19.1)
       regexp_parser (>= 1.2, < 3)
@@ -190,11 +191,12 @@ GEM
     watir-rspec (3.0.0)
       rspec (~> 3.0)
       watir (>= 6.0.0.beta4)
-    webdrivers (4.6.0)
+    webdrivers (4.7.0)
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
-      selenium-webdriver (>= 3.0, < 4.0)
-    zeitwerk (2.6.7)
+      selenium-webdriver (> 3.141, < 5.0)
+    websocket (1.2.10)
+    zeitwerk (2.6.12)
 
 PLATFORMS
   ruby

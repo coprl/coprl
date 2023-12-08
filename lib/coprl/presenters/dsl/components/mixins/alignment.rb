@@ -1,10 +1,11 @@
 module Coprl::Presenters::DSL::Components::Mixins
   module Alignment
+    attr_reader :align, :justify
+
     private
 
     DIRECTIONS = %i[row column].freeze
     ALIGNMENTS = %i[start center end stretch].freeze
-
     DIRECTIONS_STRING = DIRECTIONS.map(&:inspect).join(', ').freeze
     ALIGNMENTS_STRING = ALIGNMENTS.map(&:inspect).join(', ').freeze
     DEPRECATED_ALIGNMENTS = {left: :start, right: :end}.freeze
@@ -28,7 +29,7 @@ module Coprl::Presenters::DSL::Components::Mixins
       sym = alignment.to_sym
 
       if DEPRECATED_ALIGNMENTS.key?(sym)
-        logger.warn ':left and :right grid/column alignments are deprecated ' \
+        logger.warn ':left and :right alignments are deprecated ' \
                     'and will be removed in a future release. Please migrate ' \
                     "usages to one of #{ALIGNMENTS_STRING}."
 

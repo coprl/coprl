@@ -4,15 +4,18 @@
   devices.each do |device|
     span_classes << " mdc-layout-grid__cell--span-#{comp.send(device)}-#{device}" if comp.send(device)
   end
+  direction_class = comp.direction ? "v-column--direction-#{comp.direction}" : nil
+  align_class = comp.align ? "v-column--align-#{comp.align}" : nil
+  justify_class = comp.justify ? "v-column--justify-#{comp.justify}" : nil
 %>
 <div id="<%= comp.id %>"
      class="v-column v-column--relative mdc-layout-grid__cell
      <%= span_classes %>
      <%= comp.overflow ? nil : 'v-column-hide-overflow' %>
      <%= padding_classes(comp.padding) %>
-     <%= column_direction_class(comp.direction) %>
-     <%= column_align_class(comp.align) %>
-     <%= column_justify_class(comp.justify) %>
+     <%= direction_class %>
+     <%= align_class %>
+     <%= justify_class %>
      <%= comp.css_class.join(' ') %>"
      style="<%= "background-color: #{comp.color};" if comp.color %><%= "height:#{comp.height};" if comp.height %>"
   <%= partial "components/event", locals: {comp: comp, events: comp.events, parent_id: comp.event_parent_id} if comp.events&.any? %>>

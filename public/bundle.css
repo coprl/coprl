@@ -16717,11 +16717,19 @@ i:focus.v-datetime--clear {
 .v-column--direction-row {
   grid-auto-flow: row; }
 
+.v-content--direction-row {
+  display: flex;
+  flex-direction: row; }
+
 .v-grid--direction-column {
   grid-auto-flow: column; }
 
 .v-column--direction-column {
   grid-auto-flow: column; }
+
+.v-content--direction-column {
+  display: flex;
+  flex-direction: column; }
 
 .v-grid--align-start {
   justify-items: start !important; }
@@ -16735,6 +16743,14 @@ i:focus.v-datetime--clear {
 .v-column--justify-start {
   align-self: start !important; }
 
+.v-content--align-start {
+  display: flex;
+  justify-content: start !important; }
+
+.v-content--justify-start {
+  display: flex;
+  align-items: start !important; }
+
 .v-grid--align-center {
   justify-items: center !important; }
 
@@ -16746,6 +16762,14 @@ i:focus.v-datetime--clear {
 
 .v-column--justify-center {
   align-self: center !important; }
+
+.v-content--align-center {
+  display: flex;
+  justify-content: center !important; }
+
+.v-content--justify-center {
+  display: flex;
+  align-items: center !important; }
 
 .v-grid--align-end {
   justify-items: end !important; }
@@ -16759,6 +16783,14 @@ i:focus.v-datetime--clear {
 .v-column--justify-end {
   align-self: end !important; }
 
+.v-content--align-end {
+  display: flex;
+  justify-content: end !important; }
+
+.v-content--justify-end {
+  display: flex;
+  align-items: end !important; }
+
 .v-grid--align-stretch {
   justify-items: stretch !important; }
 
@@ -16770,6 +16802,14 @@ i:focus.v-datetime--clear {
 
 .v-column--justify-stretch {
   align-self: stretch !important; }
+
+.v-content--align-stretch {
+  display: flex;
+  justify-content: stretch !important; }
+
+.v-content--justify-stretch {
+  display: flex;
+  align-items: stretch !important; }
 
 :root {
   --mdc-layout-grid-margin-desktop: 24px;

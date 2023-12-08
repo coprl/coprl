@@ -1,12 +1,17 @@
 require_relative '../helpers/indented_grid'
 
-Voom::Presenters.define(:chips) do
+Coprl::Presenters.define(:chips) do
   helpers Demo::Helpers::IndentedGrid
   attach :top_nav
   attach :component_drawer
   page_title 'Chips'
 
+
   indented_grid do
+    content padding: :bottom do
+      text "Chips are always contained within a `chipset` component."
+    end
+
     chipset do
       chip 'Chip 1'
       chip 'Chip 1', color: :primary
@@ -15,6 +20,7 @@ Voom::Presenters.define(:chips) do
         text 'Chip 3', color: :white
       end
     end
+
     subheading 'leading icon'
     chipset do
       chip 'Jane Smith', icon: :face
@@ -34,7 +40,13 @@ Voom::Presenters.define(:chips) do
         icon :more_vert, position: :right
       end
     end
+
     heading 'Events'
+
+    text <<~TEXT
+      As with other components, chips support events. Additionally, a chip's leading icon, text,
+      and trailing icon all individually support their own events.
+    TEXT
 
     chipset do
       chip 'Jane Smith' do
@@ -93,11 +105,83 @@ Voom::Presenters.define(:chips) do
       end
     end
 
-    title 'Chips as input', id: :input_chips
-    body 'You can set the name and value attributes of a chip, they then can be posted.
-          An example of this can be found in the [search select](/search_select) pattern demo.'
+    content padding: %i[top bottom] do
+      title '`filter` chipset'
+      text "Alright, who's in?"
 
+      chipset :filter do
+        ['Danny Ocean', 'Frank Catton', 'Robert "Rusty" Ryan', 'Tess Ocean'].each.with_index do |peep, i|
+          chip peep, selected: i.odd? do
+            event :select do
+              snackbar "#{peep}'s in!"
+            end
+
+            event :deselect do
+              snackbar "#{peep}'s out."
+            end
+          end
+        end
+      end
+    end
+
+    content padding: %i[top bottom] do
+      title '`choice` chipset'
+      text 'At most one chip in a `choice` chipset can be selected.'
+
+      chipset :choice do
+        %w[Sun Mon Tue Wed Thu Fri Sat].each do |text|
+          chip text do
+            event :select do
+              snackbar "My favorite day is #{text}."
+            end
+
+            event :deselect do
+              snackbar "I have no favorite day."
+            end
+          end
+        end
+      end
+    end
+
+    form padding: %i[top bottom4] do
+      title '`input` chipset'
+      text '`input` chipsets convert typed tokens to chips. The chips can be removed by the user.'
+
+      chipset :input, name: 'values[]' do
+        label 'Fruits'
+
+        %w[Apple Orange Lime].each do |text|
+          chip text, value: text
+        end
+      end
+
+      content padding: %i[top bottom4] do
+        button 'Submit', type: :raised do
+          event :click do
+            replaces :submitted_chips, :submitted_chips
+          end
+        end
+      end
+    end
+
+    attach :submitted_chips
 
     attach :code, file: __FILE__
+  end
+end
+
+Coprl::Presenters.define(:submitted_chips) do
+  helpers do
+    def values
+      context.fetch(:values) { [] }
+    end
+  end
+
+  content id: :submitted_chips do
+    title 'Submitted chips' if values.any?
+
+    values.each do |value|
+      text "* #{value}"
+    end
   end
 end

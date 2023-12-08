@@ -1,0 +1,29 @@
+<div class="v-rich-text-area-container v-input"
+     id="<%= comp.id %>"
+     <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
+     <% if comp.dirtyable %>data-dirtyable<% end %>
+     <% if comp.height %>data-initial-height="<%= comp.height %>"<% end %>
+     <% if comp.resizable %>data-resizable<% end %>
+     <% if comp.disabled %>disabled<% end %>>
+  <label for="<%= comp.id %>-rta"><%= expand_text(comp.label) %></label>
+  <div class="v-rich-text-area"
+       id="<%= comp.id %>-rta"
+       style="<%= 'width: 100%;' if comp.full_width %>"
+       data-name="<%= comp.name %>"
+       data-toolbar='<%= expand_hash(comp.toolbar_options).to_json %>'
+       data-img-compression="<%= comp.img_compression %>"
+       data-img-max-width="<%= comp.img_max_width %>"
+       data-img-max-height="<%= comp.img_max_height %>"
+       data-server-upload-path="<%= comp.server_upload_path %>"
+       data-server-upload-enabled="<%= comp.server_upload_enabled %>"
+       <%= "data-placeholder='#{comp.placeholder}'" if comp.placeholder %>
+       <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
+    <%= comp.value %>
+  </div>
+  <span class="mdl-textfield__error" ><%= comp.hint%></span>
+  <p id="<%= comp.id %>-input-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--persistent mdc-text-field-helper-text--validation-msg" aria-hidden="true">
+    <%= comp.hint %>
+  </p>
+  <div class="v-hidden v-rich-text-area--fixed-up-content" hidden aria-hidden="true"></div>
+  <%= partial "components/tooltip", :locals => {comp: comp.tooltip, parent_id: comp.id} if comp.tooltip %>
+</div>

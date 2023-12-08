@@ -1,18 +1,44 @@
+@import 'node_modules/@material/layout-grid/mixins';
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
 .v-actionable {
     cursor: pointer;
 }
 
 .v-error-message {
     color: $v-theme-error-message;
-    padding: 20px;
+    background: lighten($v-theme-error-message, 50%);
+    padding: var(--v-padding2);
     border: 1px solid $v-theme-error-message;
-    font-weight: bold;
-    border-radius: 5px;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    word-wrap: break-word;
 }
 
 .v-hidden {
-    display: none;
-    visibility: hidden;
+    display: none !important;
+}
+
+@include mdc-layout-grid-media-query_(phone) {
+    .v-hidden--phone {
+        display: none !important;
+    }
+}
+
+@include mdc-layout-grid-media-query_(tablet) {
+    .v-hidden--tablet {
+        display: none !important;
+    }
+}
+
+@include mdc-layout-grid-media-query_(desktop) {
+    .v-hidden--desktop {
+        display: none !important;
+    }
 }
 
 div.mdc-text-field-helper-text.mdc-text-field-helper-text--persistent.v-hidden {
@@ -51,4 +77,3 @@ button.v-button.mdc-dialog__button.v-hidden {
 .v-align-right {
     text-align: right;
 }
-

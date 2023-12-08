@@ -1,33 +1,43 @@
 export class VDialog {
     constructor(options, params, event, root) {
         this.dialogId = options.target;
-        this.params = params;
+        this.params = Object.assign({dismissable: true}, params);
         this.event = event;
         this.root = root;
     }
 
-    call(results) {
-        const dialog = this.root.querySelector('#' + this.dialogId);
+    get isDismissable() {
+        return !!this.params.dismissable;
+    }
 
-        if (!(dialog && dialog.vComponent)) {
-            const err = new Error(
-                `Unable to find dialog ${this.dialogId}. `
-                + 'Did you forget to attach it?'
-            );
+    call(results) {
+        const element = this.root.querySelector(`#${this.dialogId}`);
+
+        if (!element) {
+            const message = `Unable to find dialog #${this.dialogId}. Did you forget to attach it?`;
 
             results.push({
                 action: 'dialog',
                 contentType: 'v/errors',
-                content: {exception: err.message},
+                content: {exception: message},
             });
 
-            return new Promise((_, reject) => reject(results));
+            return Promise.reject(results);
         }
 
-        return new Promise(function(resolve, reject) {
-            const comp = dialog.vComponent.mdcComponent;
+        const dialog = element.vComponent;
+        const mdcDialog = dialog.mdcComponent;
 
-            comp.listen('MDCDialog:closed', (event) => {
+        if (this.isDismissable) {
+            mdcDialog.escapeKeyAction = 'close';
+            mdcDialog.scrimClickAction = 'close';
+        } else {
+            mdcDialog.escapeKeyAction = '';
+            mdcDialog.scrimClickAction = '';
+        }
+
+        return new Promise((resolve, _) => {
+            mdcDialog.listen('MDCDialog:closed', (event) => {
                 results.push({
                     action: 'dialog',
                     statusCode: 200,
@@ -37,7 +47,7 @@ export class VDialog {
                 resolve(results);
             });
 
-            dialog.vComponent.open();
+            dialog.open();
         });
     }
 }

@@ -175,7 +175,7 @@ export class VErrors {
             return false;
         }
 
-        const helperText = this.root.getElementById(`${currentEl.id}-helper-text`);
+        const helperText = this.root.getElementById(`${currentEl.id}-input-helper-text`);
         if (!helperText) {
             return false;
         }
@@ -184,6 +184,7 @@ export class VErrors {
         currentEl.classList.add('mdc-text-field--invalid');
         helperText.classList.add('mdc-text-field-helper-text--validation-msg');
         helperText.classList.remove('v-hidden');
+        currentEl.scrollIntoView(true);
 
         return true;
     }
@@ -201,16 +202,21 @@ export class VErrors {
         }
 
         const newDiv = document.createElement('div');
-
         newDiv.classList.add('v-error-message');
-        newDiv.insertAdjacentHTML('beforeend', messages.join('<br>'));
+        const fragment = document.createDocumentFragment();
 
-        // add the newly created element and its content into the DOM
-        if (errorsDiv.clientTop < 10) {
-            errorsDiv.scrollIntoView();
+        for (const message of messages) {
+            fragment.appendChild(document.createTextNode(message));
         }
 
+        newDiv.appendChild(fragment);
+
+        // add the newly created element and its content into the DOM
         errorsDiv.insertAdjacentElement('beforebegin', newDiv);
+
+        if (errorsDiv.getBoundingClientRect().top < 0) {
+            window.scrollTo({top: 0});
+        }
 
         return true;
     }

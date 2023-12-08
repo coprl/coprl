@@ -7,19 +7,19 @@ export class VBaseContainer extends VBaseComponent {
     }
 
     components() {
-        return Array.from(this.element.querySelectorAll('.v-component'))
-            .filter((element) => element.vComponent)
-            .map((element) => element.vComponent);
+        return Array.from(this.element.querySelectorAll('.v-component, .v-plugin'))
+            .filter((element) => element.vComponent || element.vPlugin)
+            .map((element) => element.vComponent || element.vPlugin);
     }
 
     inputs() {
-        return this.element.querySelectorAll('.v-input');
+        return this.element.querySelectorAll('.v-input, .v-plugin');
     }
 
     inputComponents() {
         return Array.from(this.inputs())
-            .filter((element) => element.vComponent)
-            .map((element) => element.vComponent);
+            .filter((element) => element.vComponent || element.vPlugin)
+            .map((element) => element.vComponent || element.vPlugin);
     }
 
     // Called to collect data for submission

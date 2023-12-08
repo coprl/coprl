@@ -1,6 +1,6 @@
 require 'date'
 
-Voom::Presenters.define(:date_fields) do
+Coprl::Presenters.define(:date_fields) do
   helpers Demo::Helpers::IndentedGrid
   attach :top_nav
   attach :component_drawer
@@ -13,7 +13,7 @@ Voom::Presenters.define(:date_fields) do
       The default date user display [format](/formatting_tokens#date) can be configured globally using the following:      
       
       ````
-      Voom::Presenters::Settings.configure do |config|
+      Coprl::Presenters::Settings.configure do |config|
         config.presenters.components.defaults.date.format = 'F j, Y'
       end
       ````
@@ -25,8 +25,7 @@ Voom::Presenters.define(:date_fields) do
     DOC
     grid do
       column 6 do
-        date_field name: :skydive_at,
-                       format: 'F j, Y' do
+        date_field name: :skydive_at, format: 'F j, Y', required: true do
           label 'Select your date to skydive'
           icon :event
           event :change do
@@ -41,7 +40,10 @@ Voom::Presenters.define(:date_fields) do
     grid do
       column 6 do
         title 'Min Date'
-        date_field min_date: "2020-01-01"
+        date_field min_date: "2020-01-01" do
+          label 'Date on which to sky dive'
+          icon :event, position: :left
+        end
 
         title 'Max Date'
         date_field max_date: "2017-12-15"

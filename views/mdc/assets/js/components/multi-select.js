@@ -9,7 +9,6 @@ export function initMultiSelects(root) {
 }
 
 export class VMultiSelect {
-
   constructor(root, element) {
     this.vComponent = root.vComponent;
     this.element = element;

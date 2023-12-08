@@ -14,6 +14,7 @@ import {VPostMessage} from './events/post_message';
 import {VRemoves} from './events/removes';
 import {VStepperEvent} from './events/stepper';
 import {VNavigates} from './events/navigates';
+import {VParallelGroup} from './events/parallel_group';
 import {VPluginEventAction} from './events/plugin';
 import getRoot from './root_document';
 import {hasDragDropData, extractDragDropData} from './drag_n_drop';
@@ -172,6 +173,8 @@ export class VEvents {
                 return new VStepperEvent(options, params, event, root);
             case 'navigates':
                 return new VNavigates(options, params, event, root);
+            case 'parallel_group':
+                return new VParallelGroup(options, params, event, root);
             default:
                 return new VPluginEventAction(action_type, options, params,
                     event, root);

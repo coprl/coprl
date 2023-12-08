@@ -1,0 +1,43 @@
+<%
+  time_val = comp.value ? Array([comp.value]).join(', ') : nil
+  type_class = comp.picker ? 'v-datetime' : 'v-date-text'
+  has_clear_icon = comp.picker && comp.clear_icon
+  icon_positions = (comp.icon&.position || []).map(&:to_s)
+  has_leading_icon = icon_positions.include?('left')
+  has_trailing_icon = icon_positions.include?('right') || has_clear_icon
+  leading_icon = has_leading_icon ? comp.icon : nil
+  trailing_icon = (icon_positions.include?('right') ? comp.icon : nil) || comp.picker && comp.clear_icon
+%>
+<div id="<%= comp.id %>"
+     <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
+     <% if comp.dirtyable %>data-dirtyable<% end %>
+     class="v-input <%= type_class %> mdc-text-field mdc-text-field--outlined
+            <%= 'v-focusable' if comp.focusable %>
+            <%= 'mdc-text-field--with-leading-icon' if has_leading_icon %>
+            <%= 'mdc-text-field--with-trailing-icon' if has_trailing_icon %>
+            <%= 'mdc-text-field--disabled' if comp.disabled %>"
+     data-config='<%= snake_to_camel(to_hash(comp.config), except: %i(time_24hr)).to_json %>'
+     data-type='<%= comp.type %>'
+     style="<%= 'width:100%' if comp.full_width %>">
+  <input id="<%= comp.id %>-input"
+         name="<%= comp.name %>"
+         type="text"
+         value="<%= time_val %>"
+         class="mdc-text-field__input"
+         aria-controls="<%= comp.id %>-input-helper-text"
+         data-input
+         <%= 'required' if comp.required %>
+         <%= "pattern='#{comp.pattern}'" if comp.pattern %>
+         list="<%= comp.id %>-list"
+         <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id:  "#{comp.id}-input"} if comp.events&.any? %>
+         <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
+  <%= partial "components/icon", :locals => {comp: leading_icon, class_name: 'mdc-text-field__icon', parent_id: "#{comp.id}-input"}  if has_leading_icon %>
+  <%= partial "components/icon", :locals => {comp: trailing_icon, class_name: 'mdc-text-field__icon', parent_id: "#{comp.id}-input"}  if has_trailing_icon %>
+  <%= partial "components/shared/input_label", :locals => {comp: comp} if comp %>
+  <% if comp.picker %>
+    <datalist id="<%= comp.id %>-list">
+    </datalist>
+    <% end %>
+</div>
+<%= partial "components/shared/hint_error_display", :locals => {comp: comp} if comp %>
+<%= partial "components/tooltip", :locals => {comp: comp.tooltip, parent_id: comp.id} if comp.tooltip%>

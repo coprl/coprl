@@ -19,19 +19,39 @@ export class VTextField extends dirtyableMixin(
         super(element, mdcComponent);
 
         this.input = element.querySelector('input,textarea');
+        this.label = element.querySelector('label');
         this.input.vComponent = this;
         this.afterInputTimeout = null;
         this.helperDisplay = this.root.getElementById(`${element.id}-input-helper-text`);
         this.origHelperText = this.helperDisplay.innerHTML.trim();
 
         this.recalcWhenVisible(this);
+        this.setupEventListeners(element);
+        this.originalValue = this.value();
 
+        if (this.input.nodeName == 'TEXTAREA') {
+            this.input.addEventListener('input', (e) => {
+                this.input.style.height = `${this.input.scrollHeight}px`;
+            });
+        }
+    }
+
+    setupEventListeners(element) {
         this.input.addEventListener('input', (event) => {
             clearTimeout(this.afterInputTimeout);
             this.afterInputTimeout = setTimeout(() => {
-                this.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, {composed: true}));
+                this.element.dispatchEvent(new Event(AFTER_INPUT_EVENT, {bubbles: true, composed: true}));
             }, AFTER_INPUT_TIMEOUT);
         });
+
+        const defaultValue = element.dataset.default_value;
+        if (defaultValue) {
+            ['blur', 'change'].forEach((key) => {
+                this.input.addEventListener(key, () => {
+                    this.setDefaultValueIfBlank(defaultValue);
+                });
+            });
+        }
 
         const caseType = element.dataset.case_type;
         if (caseType !== 'mixed') {
@@ -39,7 +59,12 @@ export class VTextField extends dirtyableMixin(
                 this.forceCase(caseType);
             });
         }
-        this.originalValue = this.value();
+    }
+
+    setDefaultValueIfBlank(defaultValue) {
+        if (this.value().trim().length === 0) {
+            this.setValue(defaultValue);
+        }
     }
 
     // Called whenever a form is about to be submitted.
@@ -51,7 +76,7 @@ export class VTextField extends dirtyableMixin(
         console.debug('TextField validate', formData);
         const isValid = this.input.checkValidity();
         if (isValid) {
-            if (this.origHelperText !== '') {
+            if (this.shouldShowHelperText) {
                 this.helperDisplay.innerHTML = this.origHelperText;
                 this.helperDisplay.classList.remove('v-hidden', 'mdc-text-field-helper-text--validation-msg');
                 this.element.classList.remove('mdc-text-field--invalid');
@@ -115,11 +140,18 @@ export class VTextField extends dirtyableMixin(
     }
 
     reset() {
-        this.input.value = this.originalValue;
+        this.setValue(this.originalValue);
     }
 
     setValue(value) {
         this.input.value = value;
+
+        if (value) {
+            this.label.classList.add('mdc-floating-label--float-above');
+        }
+        else {
+            this.label.classList.remove('mdc-floating-label--float-above');
+        }
     }
 
     isDirty() {
@@ -127,8 +159,26 @@ export class VTextField extends dirtyableMixin(
             && this.value().localeCompare(this.originalValue) !== 0;
     }
 
+    onHide() {
+        if (this.helperDisplay) {
+            this.helperDisplay.classList.add('v-hidden');
+        }
+
+        super.onHide();
+    }
+
     onShow() {
         this.mdcComponent.layout();
+
+        if (this.shouldShowHelperText) {
+            this.helperDisplay.classList.remove('v-hidden');
+        }
+
+        super.onShow();
+    }
+
+    get shouldShowHelperText() {
+        return this.helperDisplay && this.origHelperText && this.origHelperText !== '';
     }
 
     preview(result, acceptsMimeTypes) {
@@ -147,10 +197,11 @@ export class VTextField extends dirtyableMixin(
         return (style.display === 'none');
     }
 
-    forceCase(caseType){
+    forceCase(caseType) {
         if (caseType === 'upper') {
             this.input.value = this.input.value.toUpperCase();
-        } else if (caseType === 'lower') {
+        }
+        else if (caseType === 'lower') {
             this.input.value = this.input.value.toLowerCase();
         }
     }

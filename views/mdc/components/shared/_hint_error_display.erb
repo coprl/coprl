@@ -1,0 +1,16 @@
+<%
+  # text_area may not be full-width if the caller has specific `cols`:
+  width = eq(comp.type, :text_area) && comp.cols ? "calc(1ch * #{comp.cols})" : '100%'
+%>
+<div class="mdc-text-field-helper-line" style="width: <%= width %>;">
+  <div id="<%= comp.id %>-input-helper-text"
+       class="mdc-text-field-helper-text mdc-text-field-helper-text--persistent<%= ' v-hidden' unless comp.hint %>"
+       role="alert"
+       aria-live="polite"
+       <% if comp.validation_error %>data-validation-error="<%= comp.validation_error %>"<% end %>>
+      <%= comp.hint %>
+  </div>
+  <% if comp.max_length %>
+    <div class="mdc-text-field-character-counter"></div>
+  <% end %>
+</div>

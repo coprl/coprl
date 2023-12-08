@@ -1,40 +1,37 @@
-# This is a basic workflow to help you get started with Actions
+name: Semantic release
 
-name: CI
-
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [master, main]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v2
+      - name: Run specs
+        run: |
+          bundle exec rspec
+      - uses: actions/setup-node@v4
         with:
+          node-version: '14'
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 18.0.0
           extra_plugins: |
-            @semantic-release/git
-            @semantic-release/changelog
-            @semantic-release/github
+            @semantic-release/commit-analyzer@11
+            @semantic-release/release-notes-generator@12
+            @semantic-release/changelog@6
+            @semantic-release/github@9
+            @semantic-release/git@10
             semantic-release-rubygem
           dry_run: false
         env:

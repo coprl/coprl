@@ -1,0 +1,4 @@
+<% components.each_with_index do |comp, index| %>
+  <% forwarded_locals = locals.slice(*locals.keys - %i[comp components scope index]) %>
+  <%= render_component(scope, comp, components, index, locals: locals) %>
+<% end %>

@@ -1,0 +1,14 @@
+<% if comp
+     data_events =
+         [['after_init',
+           [['snackbar', nil, {}, {text: comp.text}]],
+           {once: true}
+          ]]
+%>
+  <div id="<%=comp.id%>"
+       class="v-hidden"
+       aria-hidden="true"
+       data-events="<%= h data_events.to_json %>"
+       <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
+  </div>
+<% end %>

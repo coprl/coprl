@@ -33,6 +33,11 @@ export class VFileInput extends dirtyableMixin(eventHandlerMixin(VBaseComponent)
         return this.input.files[0];
     }
 
+    clear() {
+      this.input.value = null;
+      this.element.classList.remove('v-file-input--has-file');
+    }
+
     previewComponent(e) {
         if (!this.preview) return null;
         for (const previewId of this.preview) {
@@ -71,6 +76,13 @@ export class VFileInput extends dirtyableMixin(eventHandlerMixin(VBaseComponent)
 
     // From an example based on: https://www.quirksmode.org/dom/inputfile.html
     handleFileSelection(e) {
+        if (e.target.files.length > 0) {
+            this.element.classList.add('v-file-input--has-file');
+        }
+        else {
+            this.element.classList.remove('v-file-input--has-file');
+        }
+
         this.previewComponent(e);
     }
 }

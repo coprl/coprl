@@ -10,7 +10,7 @@ $palette-colors: (
 }
 
 @each $name, $color in $palette-colors {
-  .v-color__#{$name} {
+  #{".v-color__" + $name} {
     color: $color !important;
   }
 }

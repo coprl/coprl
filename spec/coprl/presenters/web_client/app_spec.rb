@@ -33,7 +33,6 @@ describe Coprl::Presenters::WebClient::App do
           response = get "/#{key}"
           unless response.status == 200
             get = write_file(response.body, 'response_get.html')
-            puts "#{key}: #{get}"
           end
           expect(response.status).to eq 200
         end
@@ -87,7 +86,6 @@ describe Coprl::Presenters::WebClient::App do
           response_get = get "/#{key}", 'testing' => true
           get = write_file(response_get.body, 'response_get.html')
           expect(response_get.status).to eq(200), get
-          puts key
 
           error_message = "POST json failed on #{key}: #{pom}\nThe file contains details:#{get}"
           expect(response_pom.body).to eq(response_get.body), error_message

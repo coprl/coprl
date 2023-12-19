@@ -12,7 +12,6 @@ describe Coprl::Serializer do
 
     it 'exists' do
       Coprl::Presenters::App.list.each do |key|
-        puts key
         presenter = Coprl::Presenters::App[key].call
         pom = presenter.expand(router: router)
         expect(pom.to_hash).not_to eq nil

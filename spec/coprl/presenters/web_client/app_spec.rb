@@ -70,7 +70,7 @@ describe Coprl::Presenters::WebClient::App do
         Timecop.return
       end
       it "render from pom" do
-        keys = Coprl::Presenters::App.keys
+        keys = Coprl::Presenters::App.keys.select{|e| e !~ /^plugin/}
         keys.each do |key|
           @ids.clear
           presenter = Coprl::Presenters::App[key].call

@@ -20,8 +20,6 @@ describe Coprl::Presenters::Api::App do
       keys = Coprl::Presenters::App.keys
       keys.each do |key|
         response = get "#{key.gsub(':','/')}.pom"
-        puts response.body unless response.status==200
-        puts key
         expect(response.status).to eq 200
       end
     end

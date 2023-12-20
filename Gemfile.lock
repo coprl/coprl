@@ -36,10 +36,11 @@ GIT
 
 GIT
   remote: https://github.com/coprl/google_maps_presenter_plugin.git
-  revision: 53d8d4d778fcc0295980aaae29bbc3fdb3a947d4
+  revision: ad627bc8478f55abfe6be18dc0af18df37c9439b
   branch: main
   specs:
-    google_maps_presenter_plugin (0.1.0)
+    google_maps_presenter_plugin (1.0.2)
+      dry-configurable (> 0.1, <= 7.0)
 
 GIT
   remote: https://github.com/coprl/iframe_presenter_plugin.git
@@ -238,7 +239,7 @@ DEPENDENCIES
   webdrivers (= 5.3.0)
 
 RUBY VERSION
-   ruby 2.7.4p191
+   ruby 2.7.8p225
 
 BUNDLED WITH
-   2.2.20
+   2.4.18

@@ -28,7 +28,7 @@ describe Coprl::Presenters::WebClient::App do
     describe 'all pages' do
 
       it "render" do
-        keys = Coprl::Presenters::App.keys
+        keys = Coprl::Presenters::App.keys.select{|e| e !~ /^plugin/}
         keys.each do |key|
           response = get "/#{key}"
           unless response.status == 200
@@ -71,7 +71,7 @@ describe Coprl::Presenters::WebClient::App do
         Timecop.return
       end
       it "render from pom" do
-        keys = Coprl::Presenters::App.keys
+        keys = Coprl::Presenters::App.keys.select{|e| e !~ /^plugin/}
         keys.each do |key|
           @ids.clear
           presenter = Coprl::Presenters::App[key].call

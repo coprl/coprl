@@ -30,7 +30,6 @@ describe Coprl::Presenters::WebClient::App do
       it "render" do
         keys = Coprl::Presenters::App.keys.select{|e| e !~ /^plugin/}
         keys.each do |key|
-          puts key
           response = get "/#{key}"
           unless response.status == 200
             get = write_file(response.body, 'response_get.html')

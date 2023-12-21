@@ -13,7 +13,6 @@ module Coprl
             @bundle_js ||= asset_url("#{request.env['SCRIPT_NAME']}bundle.js?v=87618f772b7c9c5212ecff20204c47e0c0329a89")
 
             html_safe <<~HTML
-              <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700" type="text/css">
               <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Material+Icons+Outlined">
               <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
 

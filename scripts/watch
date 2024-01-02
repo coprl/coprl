@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+pushd views/mdc
+
+npm install
+foreman start
+
+popd

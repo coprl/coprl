@@ -1,7 +1,8 @@
 {
   "scripts": {
     "start": "webpack",
-    "test": "jest"
+    "test": "jest",
+    "sass": "sass --load-path=./node_modules assets/scss/app.scss ../../public/bundle.css"
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",

@@ -6,6 +6,7 @@ npm install
 npx webpack $1
 npx sass \
   --load-path=./node_modules \
+  --style=compressed \
   assets/scss/app.scss \
   ../../public/bundle.css
 

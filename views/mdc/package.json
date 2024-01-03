@@ -64,7 +64,7 @@
     "detect-browser": "^5.2.0",
     "flatpickr": "^4.6.2",
     "material-design-lite": "^1.3.0",
-    "mdl-stepper": "^1.2.1",
+    "mdl-stepper": "https://github.com/evvnt/mdl-stepper.git#master",
     "npm": "^10.2.5",
     "quill": "^1.3.7",
     "quill-image-compress": "^1.2.21",

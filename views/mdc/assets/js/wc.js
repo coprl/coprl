@@ -20,7 +20,6 @@ function loadFont(src) {
 }
 
 // https://stackoverflow.com/questions/54546007/why-doesnt-font-awesome-work-in-my-shadow-dom
-loadFont('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
 loadFont('https://fonts.googleapis.com/icon?family=Material+Icons');
 loadFont('https://use.fontawesome.com/releases/v5.4.1/css/all.css');
 

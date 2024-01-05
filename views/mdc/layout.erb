@@ -14,7 +14,7 @@
     <meta name="theme-color" content="<%= @pom.page.theme_color %>">
   <% end %>
   <%= coprl_headers %>
-  <%= html_safe(@pom.page.header) if !@pom.page&.header&.nil? %>
+  <%= html_safe(@pom&.page&.header) %>
 </head>
 <body class="mdc-typography">
     <% with_presenters_wrapper do %>

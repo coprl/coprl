@@ -12,17 +12,22 @@ function createMenuHandler(menu, element) {
         menu.setAnchorCorner(placement);
         menu.open = !menu.open;
         event.stopPropagation();
+
+        // close all *other* open menus:
+        for (const e of document.querySelectorAll('.v-menu')) {
+            if (e == element) {
+                continue;
+            }
+
+            e.vComponent?.close();
+        }
     };
 }
 
-function createSurfaceClickHandler(mdcMenu) {
-    return function (event) {
-        if (mdcMenu.open) {
-            if (event.target.classList.contains('v-menu-link')) {
-                mdcMenu.open = false;
-            }
-        }
-    };
+function closeAllMenus() {
+    for (const element of document.querySelectorAll('.v-menu')) {
+        element.vComponent?.close();
+    }
 }
 
 export function uninitMenus(root) {
@@ -32,6 +37,7 @@ export function uninitMenus(root) {
 
 export function initMenus(root) {
     console.debug('\tMenus');
+    document.addEventListener('V:eventsFinished', closeAllMenus);
     hookupComponents(root, '.v-menu', VMenu, null);
 }
 
@@ -44,15 +50,37 @@ export class VMenu extends eventHandlerMixin(VBaseComponent) {
         initEvents(this.hoistedMenuElement);
 
         // Ensure that the menu surface closes when an item is clicked
-        this.hoistedMenuElement.addEventListener('click', createSurfaceClickHandler(this.mdcComponent), { capture: true });
+        this.hoistedMenuElement.addEventListener('click', closeAllMenus, { capture: true });
 
-        var link = this.menulink();
+        const link = this.menulink();
+
         if (link) {
-            link.addEventListener('click', createMenuHandler(this.mdcComponent, element));
+            this.menuHandler = createMenuHandler(this.mdcComponent, element);
+            link.addEventListener('click', this.menuHandler);
         }
+
         if (this.hoistedMenuElement.getAttribute('data-hoist') != 'false') {
+            this.hoistedMenuElement.originalAnchor = this.element;
             this.mdcComponent.hoistMenuToBody();
         }
+    }
+
+    open() {
+        // seems redundant, but avoids MDC touching the DOM unnecessarily.
+        if (this.mdcComponent.open) {
+            return;
+        }
+
+        this.mdcComponent.open = true;
+    }
+
+    close() {
+        // seems redundant, but avoids MDC touching the DOM unnecessarily.
+        if (!this.mdcComponent.open) {
+            return;
+        }
+
+        this.mdcComponent.open = false;
     }
 
     destroy() {
@@ -61,11 +89,11 @@ export class VMenu extends eventHandlerMixin(VBaseComponent) {
 
         var link = this.menulink();
         if (link) {
-            link.removeEventListener('click', createMenuHandler(this.mdcComponent, this.element));
+            link.removeEventListener('click', this.menuHandler);
         }
 
-        this.hoistedMenuElement.removeEventListener('click', createSurfaceClickHandler(), { capture: true });
-        this.hoistedMenuElement.parentNode.removeChild(this.hoistedMenuElement);
+        this.hoistedMenuElement.removeEventListener('click', closeAllMenus);
+        this.hoistedMenuElement.remove();
     }
 
     menulink() {

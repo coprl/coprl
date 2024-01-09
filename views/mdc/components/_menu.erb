@@ -1,5 +1,6 @@
 <% if comp %>
-  <div class='v-menu'
+  <div id="<%= comp.id %>-anchor"
+       class='v-menu'
        data-placement="<%= comp.placement %>"
        <%= "data-right-offset=9999" if eq(comp.position, :right) %>>
   <% if comp.label %>
@@ -18,11 +19,12 @@
       <% comp.items.each do |item| %>
         <% unless eq(item.type, :divider) %>
           <li id="<%= item.id %>"
-              class="mdc-list-item
+              class="v-menu-item mdc-list-item
                      <%= 'v-menu-item__selected' if item.selected %>
                      <% if item.disabled %>mdc-list-item--disabled<% end %>"
               role="menuitem"
               tabindex="0"
+              data-menu-id="<%= comp.id %>"
               <%= 'disabled' if item.disabled %>
               <%= partial "components/event", :locals => {comp: item, events: item.events, parent_id: item.event_parent_id} if !item.disabled && item.events&.any? %>
               <%= partial 'components/shared/test_id', locals: {comp: comp} %>>

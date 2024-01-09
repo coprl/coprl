@@ -171,6 +171,14 @@ module Coprl
             self << Actions::ParallelGroup.new(parent: self, &block)
           end
 
+          def dispatch_event(name, from: nil)
+            self << Actions::DispatchEvent.new(parent: self, params: {name: name, from: from})
+          end
+
+          def run_script(script)
+            self << Actions::RunScript.new(parent: self, params: {script: script})
+          end
+
           private
 
           # Alias common event names

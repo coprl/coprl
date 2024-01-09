@@ -37,6 +37,35 @@ Coprl::Presenters.define(:date_fields) do
         attach :context_list
       end
     end
+
+    grid do
+      column 6 do
+        title 'As an inline calendar'
+        text "Specify `inline: true` to render an inline calendar that's always open."
+        text <<~MARKDOWN
+          Provide a `selected_menu` and `unselected_menu` (or just a `menu`)
+          to attach menus to selected and unselected days.
+
+          Note that this disables date selection, which will need to be handled
+          manually.
+        MARKDOWN
+
+        date_field mode: :multiple, inline: true, name: :inline_calendar_date do
+          value [Date.today, (Time.now.utc + 7 * 24 * 60 * 60).to_date, (Time.now.utc + 14 * 24 * 60 * 60).to_date]
+
+          selected_menu do
+            item 'Start on this date'
+            item 'Exclude date'
+          end
+
+          unselected_menu do
+            item 'Start on this date'
+            item 'Add date'
+          end
+        end
+      end
+    end
+
     grid do
       column 6 do
         title 'Min Date'
@@ -102,7 +131,6 @@ Coprl::Presenters.define(:date_fields) do
         end
       end
     end
-
   end
   attach :code, file: __FILE__
 end

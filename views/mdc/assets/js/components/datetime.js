@@ -1,6 +1,7 @@
 import flatpickr from 'flatpickr';
 import { MDCTextField } from '@material/textfield';
 import { VTextField } from './text-fields';
+import { initMenus, uninitMenus } from './menus';
 import { hookupComponents, unhookupComponents } from './base-component';
 import appConfig from '../config';
 
@@ -31,7 +32,11 @@ export class VDateTime extends VTextField {
     constructor(element, mdcComponent) {
         super(element, mdcComponent);
 
-        const defaultConfig = {altInput: true};
+        const defaultConfig = {
+            allowInvalidPreload: true,
+            altInput: true,
+            shorthandCurrentMonth: true
+        };
 
         if (!this.root.documentElement) {
           defaultConfig.appendTo = this.root.querySelector('.v-root');
@@ -59,8 +64,62 @@ export class VDateTime extends VTextField {
             element.dispatchEvent(event);
         };
 
+        const selectedMenuTemplate = this.element.querySelector('[data-selected-menu-template]');
+        const unselectedMenuTemplate = this.element.querySelector('[data-unselected-menu-template]');
+        const hasMenu = selectedMenuTemplate || unselectedMenuTemplate;
+
+        // menus are supported only for inline date fields (calendars).
+        if (config.inline && hasMenu) {
+            config.onDayCreate = (dates, dateString, flatpickr, dayElement) => {
+                if (dayElement.classList.contains('flatpickr-disabled')) {
+                    return;
+                }
+
+                let template = selectedMenuTemplate;
+
+                if (unselectedMenuTemplate && !dayElement.classList.contains('selected')) {
+                    template = unselectedMenuTemplate;
+                }
+
+                const menu = template.content.cloneNode(true)
+
+                // template menu's `id` was generated once server-side, so here
+                // we need to generate a new (actually unique) ID.
+                const id = `id-${(Math.random() + 1).toString(36).substring(2)}`;
+                menu.querySelectorAll('.mdc-menu').id = id;
+
+                dayElement.classList.add('mdc-menu-anchor');
+                dayElement.innerHTML = `
+                    <div class="v-menu-click">${dayElement.innerHTML}</div>
+                `;
+                dayElement.firstElementChild.appendChild(menu);
+            };
+
+            config.onMonthChange = (dates, dateString, flatPickr) => {
+                initMenus(this.element);
+            };
+
+            config.onYearChange = (dates, dateString, flatPickr) => {
+                initMenus(this.element);
+            };
+
+            config.onReady = (dates, dateString, flatPickr) => {
+                // HACK: flatpickr halts mouse events, preventing the MDC menu
+                // from being opened. Removing the default date selection
+                // listener fixes this behavior:
+                const container = flatPickr.daysContainer
+                const handler = flatPickr._handlers.find(
+                    h => h.element == container && h.event == 'mousedown'
+                );
+                container.removeEventListener('mousedown', handler.handler);
+
+                initMenus(this.element);
+            };
+        }
+
         this.fp = flatpickr(this.input, config);
         this.fp.mdc_text_field = mdcComponent;
+        initMenus(this.element);
 
         // Avoid dispatching `input` event before both ends of a date range have
         // been selected:
@@ -81,7 +140,7 @@ export class VDateTime extends VTextField {
 
     destroy() {
         super.destroy();
-        this.fp.destroy();
+        this.fp?.destroy();
         delete this.fp;
     }
 

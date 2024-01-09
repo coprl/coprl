@@ -4,6 +4,10 @@
   &.mdc-text-field--upgraded:not(.mdc-text-field--fullwidth):not(.mdc-text-field--box) {
     margin-top: 0px;
   }
+
+  &.v-datetime--inline {
+    height: auto;
+  }
 }
 
 .mdc-text-field__icon.v-datetime--clear {
@@ -25,5 +29,26 @@
 }
 
 i:focus.v-datetime--clear {
-    outline: none;
+  outline: none;
+}
+
+.flatpickr-months {
+  position: relative;
+}
+
+.flatpickr-calendar.inline {
+  position: static;
+  top: unset;
+}
+
+.flatpickr-day {
+  user-select: none;
+
+  // &.selected, &.startRange, &.endRange {
+  //   &, &.inRange, &:focus, &:hover {
+  //     @include mdc-theme-prop(background-color, primary);
+  //     @include mdc-theme-prop(border-color, primary);
+  //     @include mdc-theme-prop(color, on-primary);
+  //   }
+  // }
 }

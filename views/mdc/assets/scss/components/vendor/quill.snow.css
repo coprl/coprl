@@ -7,7 +7,7 @@
 .ql-container {
   box-sizing: border-box;
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-size: 0.92857142857143rem;
   height: 100%;
   margin: 0px;
   position: relative;
@@ -645,7 +645,7 @@
   color: #444;
   display: inline-block;
   float: left;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 500;
   height: 24px;
   position: relative;
@@ -831,13 +831,13 @@
   content: 'Huge';
 }
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value=small]::before {
-  font-size: 10px;
+  font-size: 0.71428571428571rem;
 }
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value=large]::before {
-  font-size: 18px;
+  font-size: 1.28571428571429rem;
 }
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value=huge]::before {
-  font-size: 32px;
+  font-size: 2.28571428571429rem;
 }
 .ql-snow .ql-color-picker.ql-background .ql-picker-item {
   background-color: #fff;
@@ -890,7 +890,7 @@
 .ql-snow .ql-tooltip input[type=text] {
   display: none;
   border: 1px solid #ccc;
-  font-size: 13px;
+  font-size: 0.92857142857143rem;
   height: 26px;
   margin: 0px;
   padding: 3px 5px;

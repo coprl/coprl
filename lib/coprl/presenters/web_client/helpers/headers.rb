@@ -45,14 +45,24 @@ module Coprl
             file_paths = CustomCss.new.call(request_path)
             pwd = Pathname.new(Dir.pwd)
 
-            file_paths.map do |path:, digest:|
+            custom_css = []
+
+            custom_css << file_paths.map do |path:, digest:|
               relative_file_path = path.relative_path_from(pwd)
               url = asset_url(relative_file_path)
 
               <<~HTML
                 <link rel="stylesheet" type="text/css" href="#{url}?v=#{digest}">
               HTML
-            end.join("\n")
+            end
+
+            custom_css << Settings.config.presenters.web_client.custom_css_uris.map do |uri|
+              <<~HTML
+                <link rel="stylesheet" type="text/css" href="#{uri}">
+              HTML
+            end
+
+            custom_css.join("\n")
           end
 
           def custom_js

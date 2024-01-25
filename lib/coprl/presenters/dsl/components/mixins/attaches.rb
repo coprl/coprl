@@ -11,6 +11,14 @@ module Coprl
               presenter = Presenters::App.registered?(fq_presenter) ? fq_presenter : presenter
               pom = Coprl::Presenters::App[presenter].call.expand_child(parent: self, context: context.merge(params))
               @components += pom.components if @components
+
+              # many partials examine the presence of `@events`, not whether
+              # it's empty, so avoid setting `@events` to `[]` if possible:
+              if pom.events&.any?
+                @events ||= []
+                @events += pom.events
+              end
+
               pom
             end
           end

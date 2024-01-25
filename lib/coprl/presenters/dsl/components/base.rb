@@ -22,7 +22,8 @@ module Coprl
                       :draggable,
                       :drop_zone,
                       :css_class,
-                      :test_id
+                      :test_id,
+                      :events
 
           alias attribs attributes # unused in here, but used in descendents.
 

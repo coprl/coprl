@@ -10,9 +10,9 @@ module Coprl
           end
           
           module ClassMethods
-            @plugins = []
             def presenter_plugin(*plugins)
-              @plugins += Array(plugins)
+              @plugins ||= []
+              @plugins.push(*plugins)
             end
 
             def plugins
@@ -22,6 +22,7 @@ module Coprl
 
           def set_view_path
             paths = Coprl::Presenters::WebClient::PluginViewsPath.new(pom: nil, plugins: self.class.plugins).render
+
             paths.each do |path|
               prepend_view_path path
             end

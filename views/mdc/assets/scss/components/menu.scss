@@ -26,3 +26,9 @@
     font-size: $mdc-headline6-font-size;
   }
 }
+
+.mdc-menu-surface {
+  // MDC specifies a Z index of 8 for menus and 14 for dialogs,
+  // which by default makes menus unusuable within dialogs.
+  z-index: 15 !important; // `!important` because of the theme plugin aksdjhfkajsdhfkajsd
+}

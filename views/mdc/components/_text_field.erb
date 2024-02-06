@@ -9,7 +9,7 @@
                       'type="number" min="0" max="100" step="0.1"'
                     else
                       "type=\"#{comp.behavior || 'text'}\""
-                    end
+                    end.html_safe
 %>
   <div id="<%= comp.id %>"
        <% if comp.input_tag %>data-input-tag="<%= comp.input_tag %>"<% end %>
@@ -31,9 +31,9 @@
            aria-controls="<%= comp.id %>-input-helper-text"
            <% if comp.disabled %>disabled<% end %>
            <%= 'required' if comp.required %>
-           <%= "maxLength='#{comp.max_length}'" if comp.max_length %>
-           <%= "pattern='#{comp.pattern}'" if comp.pattern %>
-           <%= "tabindex='#{comp.tab_index}'" if comp.tab_index %>
+           <%== "maxLength=\"#{comp.max_length}\"" if comp.max_length %>
+           <%== "pattern=\"#{comp.pattern}\"" if comp.pattern %>
+           <%== "tabindex=\"#{comp.tab_index}\"" if comp.tab_index %>
            autocomplete="<%= auto_complete %>"
            list="<%= comp.id %>-list"
            <%= partial "components/event", :locals => {comp: comp, events: comp.events, parent_id:  "#{comp.id}-input"} if comp.events&.any? %>

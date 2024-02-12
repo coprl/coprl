@@ -46,6 +46,7 @@ export class VErrors {
         for (const error of errors) {
             let fieldElement;
             let helperTextElement;
+            const errorContainer = this.findErrorContainer(error.group);
 
             if (error.element) {
                 fieldElement = this.find(error.element, {includeHidden: true});
@@ -69,11 +70,11 @@ export class VErrors {
 
             // if the helper text element isn't visible, show the error in
             // an error container, prepending the key:
-            if (this.errorContainer && !(helperTextElement?.isConnected && helperTextElement?.offsetParent)) {
+            if (errorContainer && !(helperTextElement?.isConnected && helperTextElement?.offsetParent)) {
                 const element = document.createElement('div');
                 element.classList.add('v-error-message');
                 element.innerHTML = error.message;
-                this.errorContainer.insertAdjacentElement('afterbegin', element);
+                errorContainer.insertAdjacentElement('afterbegin', element);
             }
         }
 
@@ -137,13 +138,22 @@ export class VErrors {
     }
 
     /** @private */
-    get errorContainer() {
+    findErrorContainer(errorGroup = null) {
         let container = this.target?.closest('.v-errors');
+
+        if (errorGroup) {
+            container = this.root.querySelector(`.v-errors[data-error-group="${errorGroup}"]`);
+        }
 
         if (container?.isConnected && container?.offsetParent) {
             return container;
         }
 
+        // a top-level .v-errors element is guaranteed to exist via the COPRL
+        // layout, which calls #with_presenters_wrapper to render the
+        // body/_wrapper partial. the body wrapper contains this .v-errors
+        // element. this is true for both Sinatra-rendered COPRL and COPRL
+        // rendered via Rails.
         return this.root.querySelector('.v-errors');
     }
 
@@ -181,11 +191,19 @@ class ActionError {
         return this._element;
     }
 
+    get group() {
+        if (this.element?.match(/\[\w+\]/)) {
+            return this.element.split(/[\[\]]/).filter(Boolean)[0];
+        }
+
+        return null;
+    }
+
     toObject() {
         return {
-            message: this._message,
-            element: this._element,
-            root: this._root
+            message: this.message,
+            element: this.element,
+            group: this.group
         };
     }
 

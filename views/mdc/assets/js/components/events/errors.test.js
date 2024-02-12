@@ -27,16 +27,6 @@ describe(`clearErrors`, () => {
     })
 })
 
-// TODO: tests for displayErrors
-/*
-    document.body.innerHTML = require('../../__test__/fixtures/input_field.html.js')
-    const subject = new VErrors(document, null)
-    subject.displayErrors(result)
-
-    const helperTextElement = document.querySelector('.mdc-text-field-helper-text')
-    expect(helperTextElement.textContent).toContain('must be filled, must be between 1 and 10 characters long')
-*/
-
 describe(`displayErrors`, () => {
     beforeEach(() => {
         // jsdom does not implement HTMLElement.scrollIntoView.
@@ -100,6 +90,29 @@ describe(`displayErrors`, () => {
             subject.displayErrors(result)
 
             expect(document.querySelector('.v-error-message').innerHTML).toContain("Something bad happened")
+        })
+    })
+
+    describe(`for a nested validation error when an error group element is present`, () => {
+        const result = mockResult({contentType: 'application/json', statusCode: 422, content: `
+            {
+                "errors": {
+                    "address": {
+                        "ln1": ["Address line 1 must be filled and must be a street address"]
+                    }
+                },
+                "warnings": {},
+                "snackbar": []
+            }
+        `})
+
+        it(`renders the error in the proxy error group element`, () => {
+            document.body.innerHTML = require('../../__test__/fixtures/error_group.html.js')
+            const subject = new VErrors(document, null)
+            subject.displayErrors(result)
+
+            const errorMessage = document.querySelector('[data-error-group="address"] .v-error-message')
+            expect(errorMessage.innerHTML).toContain("Address line 1 must be filled and must be a street address")
         })
     })
 })

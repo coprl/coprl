@@ -95,9 +95,6 @@ export class VEvents {
                 this.vComponent.actionsSucceeded(this);
             }
         }).catch((results) => {
-            console.log('If you got here it may not be what you think:',
-                results);
-
             let result = results;
 
             if (typeof results.pop === 'function') {

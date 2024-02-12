@@ -3,6 +3,8 @@
  */
 
 import {ActionError, VErrors} from "./errors"
+import * as fs from "node:fs"
+import * as path from "node:path"
 
 function mockResult({statusCode = 422, contentType, content} = {}) {
     return {
@@ -45,7 +47,7 @@ describe(`displayErrors`, () => {
         `})
 
         it(`renders the error in the element's helper text`, () => {
-            document.body.innerHTML = require('../../__test__/fixtures/input_field.html.js')
+            document.body.innerHTML = fs.readFileSync(path.join(__dirname, '../../__test__/fixtures/html/input_field.html'))
             const subject = new VErrors(document, null)
             subject.displayErrors(result)
 
@@ -68,7 +70,7 @@ describe(`displayErrors`, () => {
         `})
 
         it(`renders the error in the element's helper text`, () => {
-            document.body.innerHTML = require('../../__test__/fixtures/nested_input_field.html.js')
+            document.body.innerHTML = fs.readFileSync(path.join(__dirname, '../../__test__/fixtures/html/nested_input_field.html'))
             const subject = new VErrors(document, null)
             subject.displayErrors(result)
 
@@ -85,7 +87,7 @@ describe(`displayErrors`, () => {
         })
 
         it(`renders the error in an error container`, () => {
-            document.body.innerHTML = require('../../__test__/fixtures/input_field.html.js')
+            document.body.innerHTML = fs.readFileSync(path.join(__dirname, '../../__test__/fixtures/html/input_field.html'))
             const subject = new VErrors(document, null)
             subject.displayErrors(result)
 
@@ -107,7 +109,7 @@ describe(`displayErrors`, () => {
         `})
 
         it(`renders the error in the proxy error group element`, () => {
-            document.body.innerHTML = require('../../__test__/fixtures/error_group.html.js')
+            document.body.innerHTML = fs.readFileSync(path.join(__dirname, '../../__test__/fixtures/html/error_group.html'))
             const subject = new VErrors(document, null)
             subject.displayErrors(result)
 

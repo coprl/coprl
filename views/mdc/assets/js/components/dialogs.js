@@ -41,9 +41,47 @@ function hideDialog(action = '') {
     }, MDCDialogFoundation.numbers.DIALOG_ANIMATION_CLOSE_TIME_MS);
 }
 
+class ScopedMDCDialog extends MDCDialog {
+    // The MDC spec does not explicitly define semantics for or forbid nested
+    // dialogs. However, the MDC web implementation of dialogs pulls in *all*
+    // buttons for "parent" dialogs, including those belonging to child
+    // dialogs. This causes issues with MDCDialog's check to determine if
+    // dialog action buttons need to be vertically stacked. (see
+    // https://github.com/material-components/material-components-web/blob/v3.2.0/packages/mdc-dialog/README.md#action-button-arrangement)
+    // So, work around this by ensuring only buttons owned by this dialog are
+    // included:
+    initialize(focusTrapFactory) {
+        super.initialize(focusTrapFactory);
+        const selector = `${MDCDialogFoundation.strings.BUTTON_SELECTOR}[data-owned-by="${this.root_.id}"]`;
+        this.buttons_ = Array.from(this.root_.querySelectorAll(selector));
+    }
+
+    initialSyncWithDOM() {
+        super.initialSyncWithDOM();
+        this.foundationClose = this.foundation_.close.bind(this.foundation_);
+        this.foundation_.close = this.checkedClose.bind(this);
+    }
+
+    checkedClose(action) {
+        if (!action?.length) {
+            this.foundationClose(action);
+
+            return;
+        }
+
+        // only close if we're handling close for one of our own buttons,
+        // not for a child/nested dialog:
+        const button = this.buttons_.find((e) => e.dataset.mdcDialogAction == action);
+
+        if (button?.dataset.ownedBy == this.root_.id) {
+            this.foundationClose(action);
+        }
+    }
+}
+
 export function initDialogs(e) {
     console.debug('\tDialogs');
-    hookupComponents(e, '.v-dialog', VDialog, MDCDialog);
+    hookupComponents(e, '.v-dialog', VDialog, ScopedMDCDialog);
 }
 
 export class VDialog extends eventHandlerMixin(VBaseContainer) {
@@ -66,14 +104,30 @@ export class VDialog extends eventHandlerMixin(VBaseContainer) {
         });
 
         mdcComponent.listen('MDCDialog:closing', (mdcEvent) => {
-            const action = mdcEvent.detail.action || '';
-            const event = new CustomEvent('close', {
-                cancelable: true,
-                bubbles: true,
-                detail: {action},
-            });
+            const action = mdcEvent.detail.action;
 
-            this.element.dispatchEvent(event);
+            if (!action?.length) {
+                const button = this.element.querySelector(`#${action}`);
+
+                if (button?.dataset.ownedBy == this.element.id) {
+                    const event = new CustomEvent('close', {
+                        cancelable: true,
+                        bubbles: false,
+                        detail: {action},
+                    });
+
+                    this.element.dispatchEvent(event);
+                }
+            }
+            else {
+                const event = new CustomEvent('close', {
+                    cancelable: true,
+                    bubbles: false,
+                    detail: {action},
+                });
+
+                this.element.dispatchEvent(event);
+            }
         });
     }
 
@@ -101,7 +155,7 @@ export class VDialog extends eventHandlerMixin(VBaseContainer) {
         this.shouldNotifyClosing = false;
 
         // We should only be closing the dialog for components marked as autoClose
-        let dialogAction = vEvent.vComponent.element.dataset.autoClose;
+        const dialogAction = vEvent.vComponent.element.dataset.autoClose;
         if (dialogAction !== undefined) {
             this.canClose = true;
             this.close(vEvent.event.detail.action);
@@ -117,14 +171,12 @@ export class VDialog extends eventHandlerMixin(VBaseContainer) {
     }
 
     get buttons() {
-        return this.components().filter((c) => c.is('VButton'));
+        return this.components().filter((c) => c.is('VButton') && c.element.dataset.ownedBy == this.element.id);
     }
 
     afterInit() {
         const dialogHasHandlers = this.hasHandlers();
-        const buttonsHaveHandlers = this.buttons
-            .map((c) => c.hasHandlers())
-            .some(Boolean);
+        const buttonsHaveHandlers = this.buttons.some((c) => c.hasHandlers());
 
         if (dialogHasHandlers || buttonsHaveHandlers) {
             // Stub in our own dialog close method to ensure events run to

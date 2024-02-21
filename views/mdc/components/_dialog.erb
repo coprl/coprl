@@ -38,7 +38,7 @@
                 <%= partial "components/button",
                         :locals => {:comp => button,
                                     :class_name => "mdc-dialog__button",
-                                    :data_attributes => "data-mdc-dialog-action='#{button.id}' data-auto-close"} %>
+                                    :data_attributes => "data-mdc-dialog-action=\"#{button.id}\" data-auto-close data-owned-by=\"#{comp.id}\""} %>
               <% end %>
             </footer>
           <% end %>

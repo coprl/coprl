@@ -25,5 +25,9 @@ jobs:
       - name: Build
         run: scripts/build
 
-      - name: Run specs
+      - name: rspec
         run: bundle exec rspec
+
+      - name: jest
+        working-directory: ./views/mdc
+        run: npx jest --coverage

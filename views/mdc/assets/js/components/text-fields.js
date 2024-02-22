@@ -76,14 +76,8 @@ export class VTextField extends dirtyableMixin(
         console.debug('TextField validate', formData);
         const isValid = this.input.checkValidity();
         if (isValid) {
-            if (this.shouldShowHelperText) {
-                this.helperDisplay.innerHTML = this.origHelperText;
-                this.helperDisplay.classList.remove('v-hidden', 'mdc-text-field-helper-text--validation-msg');
-                this.element.classList.remove('mdc-text-field--invalid');
-            }
-            else {
-                this.helperDisplay.classList.add('v-hidden');
-            }
+            this.resetHelperDisplay();
+
             return true;
         }
 
@@ -141,6 +135,19 @@ export class VTextField extends dirtyableMixin(
 
     reset() {
         this.setValue(this.originalValue);
+        this.resetHelperDisplay();
+    }
+
+    resetHelperDisplay() {
+        if (this.shouldShowHelperText) {
+            this.helperDisplay.innerHTML = this.origHelperText;
+            this.helperDisplay.classList.remove('v-hidden', 'mdc-text-field-helper-text--validation-msg');
+        }
+        else {
+            this.helperDisplay.classList.add('v-hidden');
+        }
+
+        this.element.classList.remove('mdc-text-field--invalid');
     }
 
     setValue(value) {
@@ -178,7 +185,7 @@ export class VTextField extends dirtyableMixin(
     }
 
     get shouldShowHelperText() {
-        return this.helperDisplay && this.origHelperText && this.origHelperText !== '';
+        return this.helperDisplay && Boolean(this.origHelperText);
     }
 
     preview(result, acceptsMimeTypes) {

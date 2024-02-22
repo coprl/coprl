@@ -7,6 +7,10 @@ module.exports = [
     module: {
       rules: [
         {
+          test: /\.test.js$/,
+          loader: "ignore-loader"
+        },
+        {
           test: /\.js$/,
           loader: "babel-loader",
         },

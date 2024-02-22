@@ -1,35 +1,31 @@
-import 'core-js/features/array/flat';
+/*
+    Error cases to interpret and normalize:
+
+    A. Caught client-side exceptions (an instance of Error):
+        ReferenceError: foo is not defined
+    B. Other server errors (JSON):
+        ["undefined method `map' for nil:NilClass"]
+    C. Server validation errors (JSON):
+        1. array-of-string values: {"name": ["Requires name"]}
+        2. string value: {"email": "must be filled"}
+        3. nested fields + array-of-string values: {"address": {"ln1": ["must be filled", "must be a street address"]}}
+        4. nested fields + string values: {"address": {"ln1": "must be filled"}}
+    D. Client-side validation errors (JS object with content type "v/errors"):
+        [{"some_field_id": "Please fill out this field."}, ...]
+    E. Other client-side errors (JS object with content type "v/errors"):
+        {exception: 'Something bad happened'}
+    F. Problem sending XHR
+        {statusCode: 0, ...}
+    G. Other server error with no data:
+        {statusCode: 502, ...}
+ */
 
 /**
- * mapObject transforms an object's key-value pairs via the provided function.
- * @param {Object} object
- * @param {Function} fn A mapping function suitable for use with Array.map
- * @return {Object}
+ * Interprets and displays errors from an action chain to the user.
+ *
+ * Errors are displayed under the erring field when possible, or in the closest
+ * error container (a `.v-errors` <div> element) otherwise.
  */
-function mapObject(object, fn) {
-    return Object.entries(object)
-        .map(fn)
-        .reduce((obj, [k, v]) => Object.assign(obj, {[[k]]: v}), {});
-}
-
-/*
-    Attempt to interpret and serialize the following cases for display:
-
-    A: Rails errors:
-        1. { "name": ["Requires name"] }
-
-    B: Validation errors:
-        1. { :email => ["must be filled"] }
-        2. { :fees => 0 => { :fee => ["must be filled", "must be greater than zero"] } }
-
-    C: Custom errors and client-side exceptions:
-        1. { :email => "must be filled" }
-        2. { exception: 'Something bad happened' }
-
-    D: Logical errors:
-        1. "undefined method `map' for nil:NilClass"
- */
-
 export class VErrors {
     constructor(root, target) {
         this.root = root;
@@ -37,195 +33,214 @@ export class VErrors {
     }
 
     clearErrors() {
-        const errorMessages = this.root.querySelectorAll('.v-error-message');
+        const elements = this.root.querySelectorAll('.v-error-message');
 
-        for (let i = 0; i < errorMessages.length; i++) {
-            errorMessages[i].remove();
+        for (const element of elements) {
+            element.remove();
         }
-    }
-
-    /**
-     * normalize attempts to convert the various error structures described
-     * above into a single consistent structure by replacing error arrays
-     * with joined strings.
-     * @param {Object} errors
-     * @return {Object}
-     */
-    normalize(errors) {
-        if (!errors) {
-            return {};
-        }
-
-        // Normalize case D into case C-1:
-        if (typeof errors === 'string') {
-            errors = {error: errors};
-        }
-
-        return mapObject(errors, ([k, v]) => {
-            let result = null;
-
-            // Case C, a single key-value pair:
-            if (typeof v === 'string') {
-                // Normalize case C into case A/B-1:
-                v = [v];
-            }
-
-            if (Array.isArray(v)) {
-                // Case A and B-1: an array of error messages:
-                result = v.join(', ');
-            } else if (v.constructor === Object) {
-                // Case B-2: a nested structure:
-                result = this.normalize(v);
-            } else {
-                throw new Error(`Cannot normalize value of type ${typeof v}`);
-            }
-
-            return [k, result];
-        });
-    }
-
-    /**
-     * flatten attempts to extract all human-readable error messages from an
-     * arbitrary error structure, yielding a flat array of strings.
-     * @param {Object} errors
-     * @return {Array<String>}
-     */
-    flatten(errors) {
-        if (!errors) {
-            return [];
-        }
-
-        // Normalize case D into case C-1:
-        if (typeof errors === 'string') {
-            errors = {error: errors};
-        }
-
-        const object = mapObject(errors, ([k, v]) => {
-            let result = null;
-
-            if (typeof v === 'string') {
-                result = v;
-            }
-            else if (v.constructor === Object) {
-                result = this.flatten(v);
-            }
-            else {
-                throw new Error(`Cannot flatten value of type ${typeof v}`);
-            }
-
-            return [k, result];
-        });
-
-        return Object.values(object).flat();
     }
 
     displayErrors(result) {
+        const errors = this.normalize(result);
+
+        for (const error of errors) {
+            let fieldElement;
+            let helperTextElement;
+            const errorContainer = this.findErrorContainer(error.group);
+
+            if (error.element) {
+                fieldElement = this.find(error.element, {includeHidden: true});
+            }
+
+            if (fieldElement) {
+                const id = fieldElement.id;
+                helperTextElement = this.root.querySelector(`#${id}-input-helper-text, #${id}-helper-text`);
+            }
+
+            if (helperTextElement) {
+                helperTextElement.textContent = error.message;
+                helperTextElement.classList.add('mdc-text-field-helper-text--validation-msg');
+                helperTextElement.classList.remove('v-hidden');
+
+                // fieldElement can either be a MDC wrapper element or an
+                // <input> element, so there's some indirection to resolve via
+                // `vComponent`:
+                fieldElement.vComponent?.element?.classList?.add('mdc-text-field--invalid');
+            }
+
+            // if the helper text element isn't visible, show the error in
+            // an error container, prepending the key:
+            if (errorContainer && !(helperTextElement?.isConnected && helperTextElement?.offsetParent)) {
+                const element = document.createElement('div');
+                element.classList.add('v-error-message');
+                element.innerHTML = error.message;
+                errorContainer.insertAdjacentElement('afterbegin', element);
+            }
+        }
+
+        // Bring user to first error:
+        this.root.querySelector('.v-error-message,.mdc-text-field--invalid')?.scrollIntoView(true);
+    }
+
+    /** @private */
+    normalize(result) {
+        // case A
+        if (result instanceof Error) {
+            return [new ActionError(result.message)];
+        }
+
         const {statusCode, contentType, content} = result;
+        let errors = [new ActionError("An unexpected error occurred.")];
 
-        let responseErrors = null;
+        if (contentType?.includes('application/json')) {
+            let response = JSON.parse(content);
+            response = response?.errors ?? response;
 
-        if (contentType && contentType.includes('application/json')) {
-            responseErrors = JSON.parse(content);
-        }
-        else if (contentType && contentType.includes('v/errors')) {
-            responseErrors = content;
-        }
-
-        if (responseErrors) {
-            if (!Array.isArray(responseErrors)) {
-                responseErrors = [responseErrors];
+            if (Array.isArray(response)) {
+                // case B
+                errors = response.map(err => new ActionError(err));
             }
-
-            for (const response of responseErrors) {
-                const normalizedResponse = this.normalize(response);
-                const errors = normalizedResponse.errors ? normalizedResponse.errors : normalizedResponse;
-                if (errors.constructor === String) {
-                    this.prependErrors([errors]);
-                }
-                else {
-                    for (const key in errors) {
-                        if (!this.displayInputError(key, errors[key])) {
-                            // If not handled at the field level, display at the page level
-                            if (errors[key].length > 0) {
-                                this.prependErrors([errors[key]]);
-                            }
-                        }
-                    }
-                }
+            else {
+                // case C
+                errors = objectToFormData(response)
+                    .map(([k, v]) => new ActionError(join(v), k));
             }
         }
-        else if (statusCode === 0) {
-            this.prependErrors(
-                ['Unable to contact server. Please check that you are online and retry.']
-            );
+        else if (contentType?.includes('v/errors')) {
+            if (Array.isArray(content)) {
+                // case D
+                errors = content
+                    .flatMap(a => Object.entries(a))
+                    .map(([k, v]) => new ActionError(join(v), k));
+            }
+            else if ('exception' in content) {
+                // case E
+                errors = [new ActionError(String(content.exception))];
+            }
+            else {
+                console.error("Unsupported error structure:", result);
+                throw new Error('Unsupported error structure');
+            }
         }
-        else {
-            this.prependErrors(
-                [`The server returned an unexpected response! Status: ${statusCode}`]
-            );
+        else if (statusCode == 0) {
+            // case F
+            errors = [ActionError.networkError];
         }
+        else if (statusCode) {
+            // case G
+            console.error("Server error:", result);
+            errors = [
+                new ActionError(`An unexpected error occurred. (HTTP ${statusCode})`)
+            ];
+        }
+
+        return errors.map(e => e.toObject());
     }
 
-    // Sets the helper text on the field
-    // Returns true if it was able to set the error on the control
-    displayInputError(id, message) {
-        const currentEl = this.root.getElementById(id) || this.root.getElementsByName(id)[0];
+    /** @private */
+    findErrorContainer(errorGroup = null) {
+        let container = this.target?.closest('.v-errors');
 
-        if (!currentEl) {
-            return false;
+        if (errorGroup) {
+            container = this.root.querySelector(`.v-errors[data-error-group="${errorGroup}"]`);
         }
 
-        const helperText = this.root.getElementById(`${currentEl.id}-input-helper-text`);
-        if (!helperText) {
-            return false;
+        if (container?.isConnected && container?.offsetParent) {
+            return container;
         }
 
-        helperText.innerHTML = message;
-        currentEl.classList.add('mdc-text-field--invalid');
-        helperText.classList.add('mdc-text-field-helper-text--validation-msg');
-        helperText.classList.remove('v-hidden');
-        currentEl.scrollIntoView(true);
-
-        return true;
-    }
-
-    // Creates a div before the element with the same id as the error
-    // Used to display an error message without their being an input field to
-    // attach the error to
-    prependErrors(messages) {
-        const errorsDiv = this.findNearestErrorDiv();
-
-        if (!errorsDiv) {
-            console.error('Unable to display Errors! ', messages);
-
-            return false;
-        }
-
-        const newDiv = document.createElement('div');
-        newDiv.classList.add('v-error-message');
-        const fragment = document.createDocumentFragment();
-
-        for (const message of messages) {
-            fragment.appendChild(document.createTextNode(message));
-        }
-
-        newDiv.appendChild(fragment);
-
-        // add the newly created element and its content into the DOM
-        errorsDiv.insertAdjacentElement('beforebegin', newDiv);
-
-        if (errorsDiv.getBoundingClientRect().top < 0) {
-            window.scrollTo({top: 0});
-        }
-
-        return true;
-    }
-
-    findNearestErrorDiv() {
-        if (this.target) {
-            return this.target.closest('.v-errors');
-        }
-
+        // a top-level .v-errors element is guaranteed to exist via the COPRL
+        // layout, which calls #with_presenters_wrapper to render the
+        // body/_wrapper partial. the body wrapper contains this .v-errors
+        // element. this is true for both Sinatra-rendered COPRL and COPRL
+        // rendered via Rails.
         return this.root.querySelector('.v-errors');
     }
+
+    /** @private */
+    find(nameOrID, options = {includeHidden: false}) {
+        const element = this.root.querySelector(`#${nameOrID},[name="${nameOrID}"]`);
+
+        if (element?.isConnected && element?.offsetParent || options.includeHidden) {
+            return element;
+        }
+
+        return null;
+    }
+}
+
+/**
+ * @private
+ * Internal data class for normalized action errors.
+ */
+class ActionError {
+    constructor(message, element = null) {
+        if (typeof message != "string" || message.length == 0) {
+            throw new TypeError("message must be a nonempty string");
+        }
+
+        this._message = message;
+        this._element = element;
+    }
+
+    get message() {
+        return this._message;
+    }
+
+    get element() {
+        return this._element;
+    }
+
+    get group() {
+        if (this.element?.match(/\[\w+\]/)) {
+            return this.element.split(/[\[\]]/).filter(Boolean)[0];
+        }
+
+        return null;
+    }
+
+    toObject() {
+        return {
+            message: this.message,
+            element: this.element,
+            group: this.group
+        };
+    }
+
+    static networkError = new ActionError("Network error: verify connection and try again.");
+}
+
+function join(value) {
+    if (Array.isArray(value)) {
+        return value.join(", ");
+    }
+
+    return value;
+}
+
+/**
+ * Flattens an object to a structure suitable for use as form data. Nested keys
+ * are flattened as "k1[k2][k3]...". The flattened object is return as an array
+ * of key-value pairs.
+ * @return Array
+ */
+function objectToFormData(object, parentKey = null) {
+    let destination = [];
+
+    for (const [k, v] of Object.entries(object)) {
+        if (v == null || v == undefined) {
+            continue;
+        }
+
+        const key = parentKey ? `${parentKey}[${k}]` : k;
+
+        if (v?.constructor === Object) {
+            destination = destination.concat(objectToFormData(v, key));
+        }
+        else {
+            destination.push([key, v]);
+        }
+    }
+
+    return destination;
 }

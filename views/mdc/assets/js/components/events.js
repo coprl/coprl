@@ -1,3 +1,4 @@
+import {VAppends} from './events/appends';
 import {VLoads} from './events/loads';
 import {VPosts} from './events/posts';
 import {VReplaces} from './events/replaces';
@@ -138,6 +139,8 @@ export class VEvents {
         const params = action[3];
 
         switch (action_type) {
+            case 'appends':
+                return new VAppends(options, url, params, event, root);
             case 'loads':
                 return new VLoads(options, url, params, event, root);
             case 'replaces':

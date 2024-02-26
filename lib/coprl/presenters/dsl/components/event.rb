@@ -179,6 +179,16 @@ module Coprl
             self << Actions::RunScript.new(parent: self, params: {script: script})
           end
 
+          def appends(target, presenter, input_tag: nil, ignore_input_values: [], **params, &block)
+            self << Actions::Appends.new(parent: self,
+                                         target: target,
+                                         presenter: presenter,
+                                         input_tag: input_tag,
+                                         ignore_input_values: Array(ignore_input_values),
+                                         params: params, &block)
+          end
+          alias append appends
+
           private
 
           # Alias common event names

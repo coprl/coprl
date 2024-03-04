@@ -1,6 +1,10 @@
 @import "@material/button/mdc-button";
 @import "@material/icon-button/mdc-icon-button";
 
+.v-button {
+  white-space: nowrap;
+}
+
 .v-button.v-button--image {
   width: 150px;
   height: 45px;

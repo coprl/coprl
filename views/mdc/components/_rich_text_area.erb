@@ -18,7 +18,7 @@
        data-server-upload-enabled="<%= comp.server_upload_enabled %>"
        <%== "data-placeholder=\"#{comp.placeholder}\"" if comp.placeholder %>
        <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
-    <%= comp.value %>
+    <%== comp.value %>
   </div>
   <span class="mdl-textfield__error" ><%= comp.hint%></span>
   <p id="<%= comp.id %>-input-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--persistent mdc-text-field-helper-text--validation-msg" aria-hidden="true">

@@ -1,19 +1,10 @@
 import {expandParams} from './action_parameter';
-import {VBase} from './base';
+import {VBase, htmlToNodes} from './base';
 import {initialize} from '../initialize';
 import {uninitialize} from '../uninitialize';
-import {getRootNode} from '../base-component';
 
 const MOUSE_DELAY_AMOUNT = 0; // ms
 const KEYBOARD_DELAY_AMOUNT = 500; // ms
-
-// Create a HTMLCollection from raw HTML.
-function htmlToNodes(html, root = document) {
-    const doc = getRootNode(root);
-    const fragment = doc.createRange().createContextualFragment(html);
-
-    return fragment.children;
-}
 
 function assertXHRSupport() {
     if (typeof window.XMLHttpRequest !== 'function') {
@@ -43,6 +34,10 @@ export class VReplaces extends VBase {
         this.event = event;
     }
 
+    get shouldValidate() {
+        return this.options.validate || false;
+    }
+
     call(results, eventParams=[]) {
         this.clearErrors();
 
@@ -60,7 +55,7 @@ export class VReplaces extends VBase {
         const url = this.buildURL(this.url, ...paramsCollection);
         const delayAmt = delayAmount(this.event);
 
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             if (!nodeToReplace) {
                 let msg = 'Unable to located node: \'' + elementId + '\'' +
                     ' This usually the result of issuing a replaces action ' +
@@ -74,52 +69,70 @@ export class VReplaces extends VBase {
                     content: {exception: msg},
                 });
                 reject(results);
+
+                return;
             }
-            else {
-                clearTimeout(nodeToReplace.vTimeout);
-                nodeToReplace.vTimeout = setTimeout(function() {
-                    httpRequest.onreadystatechange = function() {
-                        if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                            console.debug(httpRequest.status + ':' +
-                                this.getResponseHeader('content-type'));
-                            if (httpRequest.status === 200) {
-                                const html = httpRequest.responseText.trim();
-                                const nodes = Array.from(htmlToNodes(html, root));
 
-                                uninitialize(nodeToReplace);
-                                nodeToReplace.replaceWith(...nodes);
+            if (this.shouldValidate) {
+                const errors = this.validate();
 
-                                for (const node of nodes) {
-                                    initialize(node);
-                                }
+                if (errors.length > 0) {
+                    results.push({
+                        action: "replaces",
+                        statusCode: 422,
+                        contentType: "v/errors",
+                        content: errors
+                    })
 
-                                results.push({
-                                    action: 'replaces',
-                                    statusCode: httpRequest.status,
-                                    contentType: this.getResponseHeader(
-                                        'content-type'),
-                                    content: httpRequest.responseText,
-                                });
-                                resolve(results);
+                    reject(results);
+
+                    return;
+                }
+            }
+
+            clearTimeout(nodeToReplace.vTimeout);
+            nodeToReplace.vTimeout = setTimeout(function() {
+                httpRequest.onreadystatechange = function() {
+                    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                        console.debug(httpRequest.status + ':' +
+                            this.getResponseHeader('content-type'));
+                        if (httpRequest.status === 200) {
+                            const html = httpRequest.responseText.trim();
+                            const nodes = Array.from(htmlToNodes(html, root));
+
+                            uninitialize(nodeToReplace);
+                            nodeToReplace.replaceWith(...nodes);
+
+                            for (const node of nodes) {
+                                initialize(node);
                             }
-                            else {
-                                results.push({
-                                    action: 'replaces',
-                                    statusCode: httpRequest.status,
-                                    contentType: this.getResponseHeader(
-                                        'content-type'),
-                                    content: httpRequest.responseText,
-                                });
-                                reject(results);
-                            }
+
+                            results.push({
+                                action: 'replaces',
+                                statusCode: httpRequest.status,
+                                contentType: this.getResponseHeader(
+                                    'content-type'),
+                                content: httpRequest.responseText,
+                            });
+                            resolve(results);
                         }
-                    };
-                    console.debug('GET:' + url);
-                    httpRequest.open('GET', url, true);
-                    httpRequest.setRequestHeader('X-NO-LAYOUT', true);
-                    httpRequest.send();
-                }, delayAmt);
-            }
+                        else {
+                            results.push({
+                                action: 'replaces',
+                                statusCode: httpRequest.status,
+                                contentType: this.getResponseHeader(
+                                    'content-type'),
+                                content: httpRequest.responseText,
+                            });
+                            reject(results);
+                        }
+                    }
+                };
+                console.debug('GET:' + url);
+                httpRequest.open('GET', url, true);
+                httpRequest.setRequestHeader('X-NO-LAYOUT', true);
+                httpRequest.send();
+            }, delayAmt);
         });
     }
 }

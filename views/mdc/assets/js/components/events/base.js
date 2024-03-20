@@ -1,5 +1,6 @@
 import {VErrors} from './errors';
 import {VUrls} from '../../utils/urls';
+import {getRootNode} from "../base-component";
 
 export class VBase extends VUrls {
     constructor(options, root) {
@@ -166,4 +167,14 @@ export class VBase extends VUrls {
 
         return comp.element.closest('[data-is-container]');
     }
+}
+
+/**
+ * Create a HTMLCollection from raw HTML.
+ */
+export function htmlToNodes(html, root = document) {
+    const doc = getRootNode(root);
+    const fragment = doc.createRange().createContextualFragment(html);
+
+    return fragment.children;
 }

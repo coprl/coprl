@@ -37,9 +37,25 @@ module Coprl
                                           presenter: presenter,
                                           input_tag: input_tag,
                                           ignore_input_values: Array(ignore_input_values),
+                                          validate: false,
                                           params: params, &block)
           end
           alias replace replaces
+
+          # like #replaces, but first validates inputs and halts if any are invalid.
+          def replaces!(target, presenter, input_tag: nil, ignore_input_values: [], **params, &block)
+            self << Actions::Replaces.new(
+              parent: self,
+              target: target,
+              presenter: presenter,
+              input_tag: input_tag,
+              ignore_input_values: Array(ignore_input_values),
+              validate: true,
+              params: params,
+              &block
+            )
+          end
+          alias_method :replace!, :replaces!
 
           def posts(path, input_tag: nil, headers: nil, **params, &block)
             self << Actions::Posts.new(parent: self,
@@ -185,9 +201,25 @@ module Coprl
                                          presenter: presenter,
                                          input_tag: input_tag,
                                          ignore_input_values: Array(ignore_input_values),
+                                         validate: false,
                                          params: params, &block)
           end
           alias append appends
+
+          # like #appends, but first validates inputs and halts if any are invalid.
+          def appends!(target, presenter, input_tag: nil, ignore_input_values: [], **params, &block)
+            self << Actions::Appends.new(
+              parent: self,
+              target: target,
+              presenter: presenter,
+              input_tag: input_tag,
+              ignore_input_values: Array(ignore_input_values),
+              validate: true,
+              params: params,
+              &block
+            )
+          end
+          alias_method :append!, :appends!
 
           private
 

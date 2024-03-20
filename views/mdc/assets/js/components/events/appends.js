@@ -1,20 +1,11 @@
 import {expandParams} from "./action_parameter";
-import {VBase} from "./base";
+import {VBase, htmlToNodes} from "./base";
 import {initialize} from "../initialize";
-import {getRootNode} from "../base-component";
-
-// Create a HTMLCollection from raw HTML.
-function htmlToNodes(html, root = document) {
-    const doc = getRootNode(root);
-    const fragment = doc.createRange().createContextualFragment(html);
-
-    return fragment.children;
-}
 
 /**
  * Appends the fetched HTML contents of the provided URL to an existing DOM node.
  *
- * Each node returned by the URL is inserted before the end of the target node then initialized.
+ * Each node returned by the URL is inserted before the end of the target node, then initialized.
  */
 export class VAppends extends VBase {
     constructor(options, url, params, event, root) {
@@ -26,10 +17,13 @@ export class VAppends extends VBase {
         this.event = event;
     }
 
+    get shouldValidate() {
+        return this.options.validate || false;
+    }
+
     async call(results, eventParams = []) {
         this.clearErrors();
 
-        const httpRequest = new XMLHttpRequest();
         const root = this.root;
         const elementId = this.element_id;
         const nodeToReplace = root.getElementById(elementId);
@@ -45,10 +39,25 @@ export class VAppends extends VBase {
                 action: "appends",
                 statusCode: 500,
                 contentType: "v/errors",
-                content: `Unable to locate node #${elementId}`
+                content: {exception: `Unable to locate node #${elementId}`}
             });
 
-            return results;
+            return Promise.reject(results);
+        }
+
+        if (this.shouldValidate) {
+            const errors = this.validate();
+
+            if (errors.length > 0) {
+                results.push({
+                    action: "appends",
+                    statusCode: 422,
+                    contentType: "v/errors",
+                    content: errors
+                })
+
+                return Promise.reject(results);
+            }
         }
 
         const response = await fetch(url, {headers: {"X-NO-LAYOUT": true}});
@@ -62,7 +71,7 @@ export class VAppends extends VBase {
                 content: text
             });
 
-            return results;
+            return Promise.reject(results);
         }
 
         const nodes = Array.from(htmlToNodes(text, root));

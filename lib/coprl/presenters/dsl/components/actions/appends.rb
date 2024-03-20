@@ -9,7 +9,8 @@ module Coprl
             def initialize(**attribs_, &block)
               super(type: :appends, **attribs_, &block)
               option_value = attribs.delete(:ignore_input_values) { :not_found }
-              @options.merge!(ignore_input_values: option_value) unless option_value == :not_found
+              @options[:ignore_input_values] = option_value unless option_value == :not_found
+              @options[:validate] = attribs.delete(:validate) { false }
               @host = @params.fetch(:host, false)
             end
 

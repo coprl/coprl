@@ -79,7 +79,11 @@ export class VErrors {
         }
 
         // Bring user to first error:
-        this.root.querySelector('.v-error-message,.mdc-text-field--invalid')?.scrollIntoView(true);
+        const target = this.root.querySelector('.v-error-message,.mdc-text-field--invalid')
+
+        if (target && !isElementVisible(target)) {
+            target.scrollIntoView(true);
+        }
     }
 
     /** @private */
@@ -170,7 +174,6 @@ export class VErrors {
 }
 
 /**
- * @private
  * Internal data class for normalized action errors.
  */
 class ActionError {
@@ -243,4 +246,14 @@ function objectToFormData(object, parentKey = null) {
     }
 
     return destination;
+}
+
+function isElementVisible(element) {
+    const rect = element.getBoundingClientRect()
+
+    return rect.top >= 0
+        && rect.left >= 0
+        && rect.bottom <= window.innerHeight
+        && rect.right <= window.innerWidth;
+
 }

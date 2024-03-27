@@ -18,6 +18,7 @@
             <%= 'mdc-text-field--disabled' if comp.disabled %>"
      data-config='<%= snake_to_camel(to_hash(comp.config), except: %i(time_24hr)).to_json %>'
      data-type='<%= comp.type %>'
+     <% if comp.locale %>data-locale="<%= comp.locale %>"<% end %>
      style="<%= 'width:100%' if comp.full_width %>">
   <input id="<%= comp.id %>-input"
          name="<%= comp.name %>"

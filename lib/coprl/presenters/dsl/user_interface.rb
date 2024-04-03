@@ -99,8 +99,10 @@ module Coprl
         end
 
         def plugin(*plugin_names)
-          @plugins.push(*plugin_names)
-          self.class.include_plugins(:DSLComponents, :DSLHelpers, plugins: plugin_names)
+          new_plugin_names = plugin_names - @plugins
+
+          @plugins.push(*new_plugin_names)
+          self.class.include_plugins(:DSLComponents, :DSLHelpers, plugins: new_plugin_names)
         end
 
         def plugins

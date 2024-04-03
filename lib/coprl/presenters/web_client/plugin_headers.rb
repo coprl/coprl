@@ -18,6 +18,7 @@ module Coprl
           results = ""
           ((@plugins||[]) + Coprl::Presenters::Settings.config.presenters.plugins).each do |plugin|
             header_method = :"render_header_#{plugin}"
+            results << "<!-- Headers for #{plugin} -->\n"
             results << send(header_method,
                  @pom,
                  render: @render) if respond_to?(header_method)

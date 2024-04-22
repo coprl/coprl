@@ -96,13 +96,38 @@ Coprl::Presenters.define(:date_fields) do
     grid do
       column 6 do
         title 'As a simple text field'
-        text 'You can use the date field without a picker and get a simple auto-formatting text input.'
-        date_field picker: false do
-          label 'Birthdate'
-        end
+        text 'You can use the date field without a picker for locale-aware text input of a date.'
+        text 'When not specified, locale is obtained from the browser. It can be overridden via the `locale` attribute.'
+        attach :text_date_field
       end
     end
 
   end
   attach :code, file: __FILE__
+end
+
+Coprl::Presenters.define(:text_date_field) do
+  content id: :text_date_field do
+    select name: :locale do
+      label 'Locale'
+
+      option '', value: nil
+      option 'en-US', value: 'en-US', selected: context[:locale] == 'en-US'
+      option 'en-GB', value: 'en-GB', selected: context[:locale] == 'en-GB'
+      option 'ar-DJ', value: 'ar-DJ', selected: context[:locale] == 'ar-DJ'
+      option 'zh-TW', value: 'zh-TW', selected: context[:locale] == 'zh-TW'
+
+      event :change do
+        replaces :text_date_field, :text_date_field
+      end
+    end
+
+    date_field name: :date, picker: false, locale: context[:locale] do
+      label 'Birthday'
+
+      event :change do
+        replaces :context_list, :context_list
+      end
+    end
+  end
 end

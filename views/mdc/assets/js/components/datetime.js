@@ -3,6 +3,7 @@ import { MDCTextField } from '@material/textfield';
 import { VTextField } from './text-fields';
 import { hookupComponents, unhookupComponents } from './base-component';
 import appConfig from '../config';
+import {DateParser} from '../utils/date-parser';
 
 // field types:
 const TYPE_DATE = 'date';
@@ -141,35 +142,24 @@ export class VDateTime extends VTextField {
 export class VDateText extends VTextField {
     constructor(element, mdcComponent) {
         super(element, mdcComponent);
-        element.addEventListener('input', this.createInputHandler(element.vComponent));
-        element.vComponent.input.addEventListener('blur', () => this.validate(null));
-    }
 
-    createInputHandler(component) {
-        return function(e) {
-            let input = component.value();
+        const locale = this.element.dataset.locale;
+        this.setLocale(locale);
 
-            // Add a leading zero if input is like 1/ or 01 / 1/
-            if (/^\d\/$/.test(input)) input = '0' + input;
-            if (/^\d{2}\s\/\s\d\/$/.test(input)) input = input.slice(0,4) + '0' + input.slice(5,6);
-
-            // Parse and format input
-            if (/\D\/$/.test(input)) input = input.substr(0, input.length - 3);
-            let values = input.split('/').map(function(v) {
-                return v.replace(/\D/g, '')
-            });
-            if (values[0]) values[0] = checkValue(values[0], 12);
-            if (values[1]) values[1] = checkValue(values[1], 31);
-            const output = values.map(function(v, i) {
-                return v.length === 2 && i < 2 ? v + ' / ' : v;
-            });
-            component.setValue(output.join('').substr(0, 14));
-        }
+        element.vComponent.input.addEventListener('blur', () => this.validate());
+        window.addEventListener('languagechanged', () => this.setLocale(null));
     }
 
     validate(formData) {
-        const input = this.element.vComponent.value();
-        if (this.isValidDate(input)) {
+        const value = this.value();
+
+        if (!this.input.required && (!value || value.length < 1)) {
+            return true;
+        }
+
+        const date = this.dateParser.parse(value);
+
+        if (date != null) {
             if (this.origHelperText !== '') {
                 this.helperDisplay.innerHTML = this.origHelperText;
                 this.helperDisplay.classList.remove('mdc-text-field-helper-text--validation-msg');
@@ -178,65 +168,73 @@ export class VDateText extends VTextField {
             else {
                 this.helperDisplay.classList.add('v-hidden');
             }
+
             return true;
         }
 
         const message = this.helperDisplay.dataset.validationError ?
-          this.helperDisplay.dataset.validationError :
-          this.input.validationMessage;
+            this.helperDisplay.dataset.validationError :
+            this.input.validationMessage;
 
         this.helperDisplay.innerHTML = message;
         this.helperDisplay.classList.add('mdc-text-field-helper-text--validation-msg');
         this.element.classList.add('mdc-text-field--invalid');
+        this.mdcComponent.label_.shake(true);
 
-        const errorMessage = {};
-        errorMessage[this.element.id] = [message];
-        return errorMessage;
+        return {[this.element.id]: message};
     }
-
-    isValidDate(dateString) {
-        dateString = dateString.replace(/\s+/g, '');
-        if (dateString === '' && !this.input.required) {
-            return true
-        }
-        if(!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-            return false;
-        }
-
-        const parts = dateString.split("/");
-        const day = parseInt(parts[1], 10);
-        const month = parseInt(parts[0], 10);
-        const year = parseInt(parts[2], 10);
-
-        if (year < 1000 || year > 3000 || month === 0 || month > 12) {
-            return false;
-        }
-
-        const monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
-        if(year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)) {
-            monthLength[1] = 29;
-        }
-
-        return day > 0 && day <= monthLength[month - 1];
-    };
 
     isDirty() {
         if (!this.dirtyable) {
             return false;
         }
-        const currVal = new Date(this.fp.input.value);
-        const prevVal = new Date(this.originalValue);
-        return currVal.getTime() !== prevVal.getTime();
+
+        const value = new Date(this.fp.input.value);
+        const original = new Date(this.originalValue);
+
+        return value.getTime() != original.getTime();
+    }
+
+    prepareSubmit(params) {
+        // validate will have halted submission if the input's value is not a valid date, so here
+        // we're safe to assume the input is valid.
+        params.push([this.input.name, this.dateParser.parse(this.value())]);
+    }
+
+    /** @private */
+    setLocale(locale) {
+        this.locale = new Intl.Locale(locale || navigator.language);
+        this.formatter = new Intl.DateTimeFormat(this.locale);
+        this.dateParser = new DateParser(this.formatter);
+
+        this.origHelperText = this.hintText;
+        this.helperDisplay.dataset.validationError = this.origHelperText;
+        this.helperDisplay.textContent = this.origHelperText;
+
+        console.debug('VDateText: locale =', this.locale);
+    }
+
+    /** @private */
+    get hintText() {
+        const parts = this.formatter.formatToParts();
+
+        // Map each date format part to a human-readable representation of the part's expected
+        // format:
+        const format = parts.map(({type, value}) => {
+            switch (type) {
+            case 'day':
+                return 'DD';
+            case 'month':
+                return 'MM';
+            case 'year':
+            case 'relatedYear':
+                return 'YYYY';
+            default:
+                // Strip all LRM/RLM code points to normalize non-digit values:
+                return value.replaceAll(/(\u200e|\u200f)/giu, '');
+            }
+        });
+
+        return format.join('');
     }
 }
-
-function checkValue(str, max) {
-    if (str.charAt(0) !== '0' || str === '00') {
-        let num = parseInt(str);
-        if (isNaN(num) || num <= 0 || num > max) num = 1;
-        str = num > parseInt(max.toString().charAt(0)) && num.toString().length === 1 ? '0' + num : num.toString();
-    }
-    return str;
-}
-
-

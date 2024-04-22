@@ -147,6 +147,7 @@ export class VDateText extends VTextField {
         this.setLocale(locale);
 
         element.vComponent.input.addEventListener('blur', () => this.validate());
+        element.vComponent.input.addEventListener('input', () => this.format());
         window.addEventListener('languagechanged', () => this.setLocale(null));
     }
 
@@ -201,11 +202,17 @@ export class VDateText extends VTextField {
         params.push([this.input.name, this.dateParser.parse(this.value())]);
     }
 
-    /** @private */
-    setLocale(locale) {
-        this.locale = new Intl.Locale(locale || navigator.language);
+    /**
+     * Sets the locale for the component.
+     * @param {String} tag A Unicode locale identifier string. If not provided, the value of
+     * `navigator.language` is used.
+     * @private
+     */
+    setLocale(tag = navigator.language) {
+        this.locale = new Intl.Locale(tag);
         this.formatter = new Intl.DateTimeFormat(this.locale);
         this.dateParser = new DateParser(this.formatter);
+        this.parts = this.formatter.formatToParts();
 
         this.origHelperText = this.hintText;
         this.helperDisplay.dataset.validationError = this.origHelperText;
@@ -216,11 +223,9 @@ export class VDateText extends VTextField {
 
     /** @private */
     get hintText() {
-        const parts = this.formatter.formatToParts();
-
         // Map each date format part to a human-readable representation of the part's expected
         // format:
-        const format = parts.map(({type, value}) => {
+        const format = this.parts.map(({type, value}) => {
             switch (type) {
             case 'day':
                 return 'DD';
@@ -228,13 +233,83 @@ export class VDateText extends VTextField {
                 return 'MM';
             case 'year':
             case 'relatedYear':
+            case 'yearName':
                 return 'YYYY';
             default:
-                // Strip all LRM/RLM code points to normalize non-digit values:
-                return value.replaceAll(/(\u200e|\u200f)/giu, '');
+                return value.trim();
             }
         });
 
-        return format.join('');
+        return stripDirectionMarkers(format.join(''));
     }
+
+    /**
+     * Formats the component's value as the user types, inserting separators between digit groups
+     * where appropriate.
+     * @private
+     */
+    format() {
+        const mask = this.hintText;
+        const formattedValue = [];
+        const separators = this.parts
+            .filter(({type, value}) => type == 'literal')
+            .map(({type, value}) => stripDirectionMarkers(value));
+        const value = String(this.input.value).trim();
+        let inputIndex = 0;
+
+        // iterate over the mask (to ensure |input| ≤ |mask|), building a formatted date string:
+        for (let i = 0; i < mask.length; i++) {
+            const placeholder = mask[i];
+            const input = value[inputIndex];
+
+            if (input === undefined) {
+                // no input left to consume.
+                break;
+            }
+
+            if (isSeparator(input) && isLetter(placeholder)) {
+                // if the user manually provided a separator, take input and skip to the next
+                // digit group:
+                formattedValue.push(input);
+                inputIndex++;
+                i++;
+            }
+            else if (isInteger(input) && isSeparator(placeholder)) {
+                // prefix input with a separator if it's a digit and placeholder is a separator:
+                const separator = separators.shift() || '/'; // just in case!
+
+                formattedValue.push(separator);
+                formattedValue.push(input);
+                inputIndex++;
+                i += separator.length; // skip over placeholder
+            }
+            else if (isInteger(input) && isLetter(placeholder) || isSeparator(input)) {
+                // if input is a digit and placeholder is a letter, or if input is a separator,
+                // pass it through:
+                formattedValue.push(input);
+                inputIndex++;
+            }
+        }
+
+        this.input.value = formattedValue.join('');
+    }
+}
+
+function isInteger(value) {
+    return Boolean(value.trim().match(/\p{N}/u));
+}
+
+const PLACEHOLDERS = ['d', 'D', 'm', 'M', 'y', 'Y'];
+
+function isLetter(value) {
+    return PLACEHOLDERS.includes(value);
+}
+
+function isSeparator(value) {
+    return Boolean(value.trim().match(/\p{P}/u));
+}
+
+function stripDirectionMarkers(value) {
+    // Strip all LRM/RLM code points to normalize non-digit values:
+    return value.trim().replaceAll(/(\u200e|\u200f)/g, '');
 }

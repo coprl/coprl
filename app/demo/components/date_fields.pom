@@ -107,15 +107,25 @@ Coprl::Presenters.define(:date_fields) do
 end
 
 Coprl::Presenters.define(:text_date_field) do
+  helpers do
+    def locale_option(locale)
+      is_selected = context.key?(:locale) ? context[:locale] == locale : locale == "en-US"
+
+      option locale, value: locale, selected: is_selected
+    end
+  end
+
   content id: :text_date_field do
     select name: :locale do
-      label 'Locale'
+      label "Locale"
 
-      option '', value: nil
-      option 'en-US', value: 'en-US', selected: context[:locale] == 'en-US'
-      option 'en-GB', value: 'en-GB', selected: context[:locale] == 'en-GB'
-      option 'ar-DJ', value: 'ar-DJ', selected: context[:locale] == 'ar-DJ'
-      option 'zh-TW', value: 'zh-TW', selected: context[:locale] == 'zh-TW'
+      option "", value: nil
+      locale_option "en-US"
+      locale_option "en-GB"
+      locale_option "en-CA"
+      locale_option "de-DE"
+      locale_option "ar-DJ"
+      locale_option "zh-TW"
 
       event :change do
         replaces :text_date_field, :text_date_field

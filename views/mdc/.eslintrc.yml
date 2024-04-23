@@ -21,3 +21,9 @@ rules:
 parserOptions:
   sourceType: module
   ecmaVersion: 2019 # for unicode character classes, like \p{N}.
+
+overrides:
+  - files: "**/*.test.js"
+    env:
+      jest: true
+      node: true

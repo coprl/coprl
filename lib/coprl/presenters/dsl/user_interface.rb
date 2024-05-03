@@ -47,18 +47,11 @@ module Coprl
           @page = Components::Page.new(parent: self, **attribs, &block)
         end
 
-        def header(title = nil, **attribs, &block)
-          return @header if locked?
-          @header = Components::Header.new(parent: self, title: title,
-                                           **attribs, &block)
-        end
-
         def drawer(name = nil, **attribs, &block)
           return @drawer if locked?
           @drawer = Components::Drawer.new(parent: self, title: name,
                                            **attribs, &block)
         end
-
 
         def footer(**attribs, &block)
           return @footer if locked?

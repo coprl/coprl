@@ -11,6 +11,7 @@ module Coprl
             include Mixins::Buttons
             include Mixins::ExpansionPanels
             include Mixins::Content
+            include Mixins::Header
             include Mixins::Menus
             include Mixins::TabBars
             include Mixins::Images

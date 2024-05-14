@@ -7,7 +7,7 @@ export class DateParser {
 
     parse(dateString) {
         const parts = this.formatter.formatToParts();
-        const codePoints = Array.from(dateString);
+        const codePoints = Array.from(String(dateString));
         const accumulator = {
             day: [],
             month: [],
@@ -52,6 +52,14 @@ export class DateParser {
             // day, month, and year may be valid integers (as per parseInt), but they may not
             // collectively make a valid date.
             console.warn('Invalid date:', dateString);
+            return null;
+        }
+
+        // flag overflow as invalid:
+        if ((date.getFullYear() != year && date.getYear() != year)
+            || date.getMonth() != monthIndex
+            || date.getDate() != day) {
+            console.warn('Invalid date (overflow):', dateString);
             return null;
         }
 

@@ -49,7 +49,9 @@ module Coprl
 
             custom_css = []
 
-            custom_css << file_paths.map do |path:, digest:|
+            custom_css << file_paths.map do |file_path|
+              path = file_path[:path]
+              digest = file_path[:digest]
               relative_file_path = path.relative_path_from(pwd)
               url = asset_url(relative_file_path)
 

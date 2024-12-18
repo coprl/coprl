@@ -20,52 +20,52 @@ module Coprl
             @actions << comp
           end
 
-          def loads(presenter = nil, path: nil, target: nil, input_tag: nil, wait_for_download: nil, **params, &block)
+          def loads(presenter = nil, params = {}, &block)
             self << Actions::Loads.new(parent: self,
                                        presenter: presenter,
-                                       path: path,
-                                       target: target,
-                                       input_tag: input_tag,
-                                       wait_for_download: wait_for_download,
+                                       path: params[:path],
+                                       target: params[:target],
+                                       input_tag: params[:input_tag],
+                                       wait_for_download: params[:wait_for_download],
                                        params: params, &block)
           end
           alias load loads
 
-          def replaces(target, presenter, input_tag: nil, ignore_input_values: [], **params, &block)
+          def replaces(target, presenter, params = {}, &block)
             self << Actions::Replaces.new(parent: self,
                                           target: target,
                                           presenter: presenter,
-                                          input_tag: input_tag,
-                                          ignore_input_values: Array(ignore_input_values),
+                                          input_tag: params[:input_tag],
+                                          ignore_input_values: Array(params[:ignore_input_values] || []),
                                           params: params, &block)
           end
           alias replace replaces
 
-          def posts(path, input_tag: nil, headers: nil, **params, &block)
+          def posts(path, params = {}, &block)
             self << Actions::Posts.new(parent: self,
                                        path: path,
-                                       input_tag: input_tag,
-                                       headers: headers,
+                                       input_tag: params[:input_tag],
+                                       headers: params[:headers],
                                        params: params, &block)
           end
           alias post posts
           alias creates posts
           alias create posts
 
-          def updates(path, input_tag: nil, headers: nil, **params, &block)
+          def updates(path, params = {}, &block)
             self << Actions::Updates.new(parent: self,
                                          path: path,
-                                         input_tag: input_tag,
-                                         headers: headers,
+                                         input_tag: params[:input_tag],
+                                         headers: params[:headers],
                                          params: params, &block)
           end
           alias update updates
 
-          def deletes(path, input_tag: nil, headers: nil, **params, &block)
+          def deletes(path, params = {}, &block)
             self << Actions::Deletes.new(parent: self,
                                          path: path,
-                                         input_tag: input_tag,
-                                         headers: headers,
+                                         input_tag: params[:input_tag],
+                                         headers: params[:headers],
                                          params: params, &block)
           end
           alias delete deletes
@@ -108,10 +108,10 @@ module Coprl
             toggle_disabled(component_id, **params.merge(action: :enable), &block)
           end
 
-          def prompt_if_dirty(dialog_id, input_tag: nil, **params, &block)
+          def prompt_if_dirty(dialog_id, params = {}, &block)
             self << Actions::PromptIfDirty.new(parent: self,
                                                target: dialog_id,
-                                               input_tag: input_tag,
+                                               input_tag: params[:input_tag],
                                                params: params, &block)
           end
 

@@ -37,9 +37,9 @@ module Coprl
             expand!
           end
 
-          def column(size, color: nil, **attribs, &block)
+          def column(size, **attribs, &block)
             attribs = size.respond_to?(:keys) ? attribs.merge(size) : attribs.merge(size: size)
-            @columns << Column.new(parent: self, color: color, **attribs, &block)
+            @columns << Column.new(parent: self, color: attribs[:color], **attribs, &block)
           end
 
           private

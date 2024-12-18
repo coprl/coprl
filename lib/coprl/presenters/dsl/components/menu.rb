@@ -17,8 +17,8 @@ module Coprl
             expand!
           end
 
-          def item(first_text = nil, text: nil, **attribs, &block)
-            the_text = first_text || text
+          def item(first_text = nil, **attribs, &block)
+            the_text = first_text || attribs[:text]
             @items << Item.new(parent: self, text: the_text,
                                **attribs, &block)
           end

@@ -37,9 +37,11 @@ module Coprl
             expand!
           end
 
-          def column(size, **attribs, &block)
-            attribs = size.respond_to?(:keys) ? attribs.merge(size) : attribs.merge(size: size)
-            @columns << Column.new(parent: self, color: attribs[:color], **attribs, &block)
+          def column(size = nil, phone: nil, tablet: nil, desktop: nil, **attribs, &block)
+            if phone || tablet || desktop
+              attribs.merge!({ phone: phone, tablet: tablet, desktop: desktop }.compact)
+            end
+            @columns << Column.new(parent: self, size: size, **attribs, &block)
           end
 
           private

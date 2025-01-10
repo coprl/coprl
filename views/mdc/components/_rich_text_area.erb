@@ -16,9 +16,9 @@
        data-img-max-height="<%= comp.img_max_height %>"
        data-server-upload-path="<%= comp.server_upload_path %>"
        data-server-upload-enabled="<%= comp.server_upload_enabled %>"
-       <%== "data-placeholder=\"#{comp.placeholder}\"" if comp.placeholder %>
+       <%= raw("data-placeholder=\"#{comp.placeholder}\"") if comp.placeholder %>
        <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
-    <%== comp.value %>
+    <%= raw(comp.value) %>
   </div>
   <span class="mdl-textfield__error" ><%= comp.hint%></span>
   <p id="<%= comp.id %>-input-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--persistent mdc-text-field-helper-text--validation-msg" aria-hidden="true">

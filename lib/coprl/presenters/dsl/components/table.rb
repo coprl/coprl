@@ -52,7 +52,7 @@ module Coprl
               super(type: type, **attribs_, &block)
               @columns = []
               @color = attribs.delete(:color)
-              self.checkbox(attribs.slice(:name, :value, :checked)) if @parent.selectable
+              self.checkbox(**attribs.slice(:name, :value, :checked)) if @parent.selectable
               expand!
             end
 

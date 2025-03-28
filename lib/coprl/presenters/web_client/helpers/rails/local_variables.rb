@@ -1,5 +1,10 @@
 module Coprl::Presenters::WebClient::Helpers::Rails
   module LocalVariables
+    def forwarded_locals(binding)
+      locals = binding.local_variable_get(:local_assigns)
+      locals.slice(*locals.keys - %i[comp components scope index])
+    end
+
     # A rails specific helper to see if a local variable is defined
     # This passes the binding from the evaluating (erb) context
     # We don't do this inline, because rails and sintra have different variable names for the same thing

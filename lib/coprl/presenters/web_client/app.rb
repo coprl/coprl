@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'honeybadger' if ENV['HONEYBADGER_API_KEY']
 require 'uri'
-require 'redcarpet'
 require 'dry/inflector'
 
 module Coprl

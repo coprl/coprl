@@ -1,4 +1,4 @@
-require 'erb'
+require "erb"
 
 module Coprl
   module Presenters
@@ -15,17 +15,28 @@ module Coprl
         end
 
         def render
-          results = ""
-          ((@plugins||[]) + Coprl::Presenters::Settings.config.presenters.plugins).each do |plugin|
+          results = StringIO.new
+
+          header_plugins.each do |plugin|
             header_method = :"render_header_#{plugin}"
-            results << send(header_method,
-                 @pom,
-                 render: @render) if respond_to?(header_method)
+
+            if respond_to?(header_method)
+              results << send(header_method, @pom, render: @render)
+            end
           end
-          results
+
+          results.string
         end
 
         private
+
+        def header_plugins
+          @header_plugins ||= (plugins + Coprl::Presenters::Settings.config.presenters.plugins).uniq
+        end
+
+        def plugins
+          @plugins || []
+        end
 
         def initialize_plugins
           @plugins = @pom.send(:plugins)

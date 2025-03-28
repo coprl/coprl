@@ -21,7 +21,7 @@ class CoprlTemplateHandler
   def presenter_template(source)
     # Magic -- we must return callable ruby -- by putting a begin and end block around the erb evalulation/call above it works.
     # Without the begin;;end -- no go
-    <<-SOURCE
+    <<-RUBY
       begin
       unless @pom
         # if we are called as a partial fetch the presenter name passed 
@@ -36,7 +36,7 @@ class CoprlTemplateHandler
       end
       #{source}
       end
-    SOURCE
+    RUBY
   end
 end
 

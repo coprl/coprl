@@ -32,6 +32,10 @@ module Coprl
               self << Components::Form.new(parent: self, id: id, **attributes, &block)
             end
 
+            def turbo_form(id: nil, **attributes, &block)
+              self << Components::TurboForm.new(parent: self, id: id, **attributes, &block)
+            end
+
             def list(**attributes, &block)
               self << Components::List.new(parent: self,
                                            **attributes, &block)

@@ -22,6 +22,8 @@
     %><%= partial "components/buttons/icon", locals: {comp: comp, **forwarded_locals} %><%
   when :image
     %><%= partial "components/buttons/image", locals: {comp: comp, **forwarded_locals} %><%
+  when :submit
+    %><%= partial "components/buttons/submit", locals: {comp: comp, **forwarded_locals} %><%
   else
     %><%= partial "components/buttons/button", locals: {comp: comp, **forwarded_locals} %><%
   end

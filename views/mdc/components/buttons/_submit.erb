@@ -1,0 +1,21 @@
+<% class_name = '' unless bound_locals_include?(:class_name, binding)
+   position_classes = comp.position.map {|p| "v-button-position-#{p}"}.join(' ')
+   data_attributes = '' unless bound_locals_include?(:data_attributes, binding)
+%>
+<button id="<%= comp.id %>"
+        type="submit"
+        class="v-button v-button--button mdc-button <%=class_name%>
+               <%= 'v-hidden' if comp.hidden %>
+               <%= 'mdc-button--raised' if eq(comp.button_type, :raised) %>
+               <%= 'v-secondary-filled-button' if eq(comp.button_type, :raised) && eq(comp.color, :secondary) %>
+               <%= 'v-secondary-text-button' if eq(comp.button_type, :flat) && eq(comp.color, :secondary) %>
+               <%=  position_classes %>
+               <%= 'v-nowrap' unless comp.wrap_text%>
+               <%= color_classname(comp, 'background-', :background_color)%>"
+        style="<%= color_style(comp) %> <%= color_style(comp, 'background-', :background_color) %>"
+        <%= data_attributes %>
+        data-turbo="true"
+        <% if comp.disabled %>disabled<% end %>
+        <%= partial 'components/shared/test_id', locals: {comp: comp} %>>
+  <%= comp.text %>
+</button>

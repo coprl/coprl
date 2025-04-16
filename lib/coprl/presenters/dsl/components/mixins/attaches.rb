@@ -5,7 +5,7 @@ module Coprl
         module Mixins
           module Attaches
             include Namespace
-            def attach(presenter, **params, &yield_block)
+            def attach(presenter, params = {}, &yield_block)
               @_yield_block_ = yield_block
               fq_presenter = _expand_namespace_(presenter, namespace)
               presenter = Presenters::App.registered?(fq_presenter) ? fq_presenter : presenter

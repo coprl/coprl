@@ -63,7 +63,7 @@ module Coprl
           self << Components::Progress.new(parent: self, **attributes, &block)
         end
 
-        def attach(presenter, **params, &yield_block)
+        def attach(presenter, params = {}, &yield_block)
           pom = super
           @header ||= pom.header
           @drawer ||= pom.drawer

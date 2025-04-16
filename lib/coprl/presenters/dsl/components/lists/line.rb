@@ -16,7 +16,7 @@ module Coprl
               super(type: :line, **attribs_, &block)
               @selected = attribs.delete(:selected) {false}
               @selectable = attribs.delete(:selectable) {false}
-              self.text(attribs.delete(:text), attribs) if attribs[:text]
+              self.text(attribs.delete(:text), **attribs) if attribs[:text]
               self.subtitle(attribs.delete(:subtitle)) if attribs[:subtitle]
               self.info(attribs.delete(:info)) if attribs[:info]
               self.body(attribs.delete(:body)) if attribs[:body]

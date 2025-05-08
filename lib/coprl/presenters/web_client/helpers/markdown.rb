@@ -23,7 +23,7 @@ module Coprl::Presenters::WebClient::Helpers
       if markdown
         self.markdown(Array(text).join("\n\n")) #.gsub("\n\n", "<br/>")
       else
-        Array(text).join('<br/>')
+        html_safe(Array(text).join('<br/>'))
       end
     end
   end

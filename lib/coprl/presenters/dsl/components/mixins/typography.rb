@@ -6,43 +6,43 @@ module Coprl
           module Typography
             include Mixins::Append
 
-            def headline(*text, level: nil, **attributes, &block)
+            def headline(*text, **attributes, &block)
               self << Components::Typography.new(parent: self, type: :headline, text: text,
-                                                 level: level || Settings.default(:headline, :level),
+                                                 level: attributes[:level] || Settings.default(:headline, :level),
                                                  **attributes, &block)
             end
 
-            def headline1(*text, level: nil, **attributes, &block)
+            def headline1(*text, **attributes, &block)
               headline(*text, level: 1, **attributes, &block)
             end
 
             alias heading1 headline1
 
-            def headline2(*text, level: nil, **attributes, &block)
+            def headline2(*text, **attributes, &block)
               headline(*text, level: 2, **attributes, &block)
             end
 
             alias heading2 headline2
 
-            def headline3(*text, level: nil, **attributes, &block)
+            def headline3(*text, **attributes, &block)
               headline(*text, level: 3, **attributes, &block)
             end
 
             alias heading3 headline3
 
-            def headline4(*text, level: nil, **attributes, &block)
+            def headline4(*text, **attributes, &block)
               headline(*text, level: 4, **attributes, &block)
             end
 
             alias heading4 headline4
 
-            def headline5(*text, level: nil, **attributes, &block)
+            def headline5(*text, **attributes, &block)
               headline(*text, level: 5, **attributes, &block)
             end
 
             alias heading5 headline5
 
-            def headline6(*text, level: nil, **attributes, &block)
+            def headline6(*text, **attributes, &block)
               headline(*text, level: 6, **attributes, &block)
             end
 
@@ -52,19 +52,22 @@ module Coprl
             alias heading headline
             alias display headline
 
-            def title(*text, level: nil, **attributes, &block)
-              headline(text, level: level || Settings.default(:title, :level), **attributes, &block)
+            def title(*text, **attributes, &block)
+              headline(text, level: attributes[:level] || Settings.default(:title, :level), **attributes, &block)
             end
 
-            def subtitle(*text, level: 1, **attributes, &block)
-              self << Components::Typography.new(parent: self, type: :subtitle, text: text, level: level,
+            def subtitle(*text, **attributes, &block)
+              self << Components::Typography.new(parent: self,
+                                                 type: :subtitle,
+                                                 text: text,
+                                                 level: attributes[:level] || 1,
                                                  **attributes, &block)
             end
 
             alias subtitle1 subtitle
 
-            def subtitle2(*text, level: 2, **attributes, &block)
-              subtitle(*text, level: level, **attributes, &block)
+            def subtitle2(*text, **attributes, &block)
+              subtitle(*text, level: attributes[:level] || 2, **attributes, &block)
             end
 
             alias subheading subtitle
@@ -73,22 +76,28 @@ module Coprl
               self << Components::PageTitle.new(parent: self, text: text, level: 1, **attributes, &block)
             end
 
-            def body(*text, level: 1, **attributes, &block)
-              self << Components::Typography.new(parent: self, type: :body, text: text, level: level,
+            def body(*text, **attributes, &block)
+              self << Components::Typography.new(parent: self,
+                                                 type: :body,
+                                                 text: text,
+                                                 level: attributes[:level] || 1,
                                                  **attributes, &block)
             end
 
-            def body2(*text, level: 2, **attributes, &block)
-              body(*text, level: level, **attributes, &block)
+            def body2(*text, **attributes, &block)
+              body(*text, level: attributes[:level] || 2, **attributes, &block)
             end
 
-            def text(*text, level: 1, **attributes, &block)
+            def text(*text, **attributes, &block)
               return @text if defined? @text
-              body(*text, level: 1, **attributes, &block)
+              body(*text, level: attributes[:level] || 1, **attributes, &block)
             end
 
-            def blank(level: 1, **attributes, &block)
-              self << Components::Typography.new(parent: self, type: :body, text: ['&nbsp;'], level: level,
+            def blank(**attributes, &block)
+              self << Components::Typography.new(parent: self,
+                                                 type: :body,
+                                                 text: ['&nbsp;'],
+                                                 level: attributes[:level] || 1,
                                                  **attributes, &block)
             end
 

@@ -16,7 +16,7 @@ module Coprl
               super(type: :line, **attribs_, &block)
               @selected = attribs.delete(:selected) {false}
               @selectable = attribs.delete(:selectable) {false}
-              self.text(attribs.delete(:text), attribs) if attribs[:text]
+              self.text(attribs.delete(:text), **attribs) if attribs[:text]
               self.subtitle(attribs.delete(:subtitle)) if attribs[:subtitle]
               self.info(attribs.delete(:info)) if attribs[:info]
               self.body(attribs.delete(:body)) if attribs[:body]
@@ -24,9 +24,9 @@ module Coprl
               self.icon(attribs.delete(:icon)) if attribs.key?(:icon)
 
               if @selectable
-                self.checkbox(attribs.slice(*CHECKBOX_ATTRIBUTES))
+                self.checkbox(**attribs.slice(*CHECKBOX_ATTRIBUTES))
               elsif attribs.key?(:checkbox)
-                self.checkbox(attribs.delete(:checkbox))
+                self.checkbox(**attribs.delete(:checkbox))
               end
               @components = []
               @actions = []
@@ -66,7 +66,7 @@ module Coprl
                                **attribs, &block)
             end
 
-            def checkbox(**attributes, &block)
+            def checkbox(attributes = {}, &block)
               return @checkbox if locked?
 
               # Append [] if the list is selectable and the checkbox's name
@@ -80,18 +80,18 @@ module Coprl
                                                    &block)
             end
 
-            def hidden_field(**attributes, &block)
+            def hidden_field(attributes = {}, &block)
               return @hidden_field if locked?
 
               @hidden_field = Components::HiddenField.new(parent: self, **attributes, &block)
             end
 
-            def menu(**attributes, &block)
+            def menu(attributes = {}, &block)
               return @menu if locked?
               @menu = Components::Menu.new(parent: self, **attributes, &block)
             end
 
-            def actions(**attribs, &block)
+            def actions(attribs = {}, &block)
               return @actions if locked?
               Lists::Actions.new(@actions, parent: self, **attribs, &block)
             end

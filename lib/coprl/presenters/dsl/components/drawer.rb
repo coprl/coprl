@@ -22,7 +22,7 @@ module Coprl
                              **attribs, &block)
           end
 
-          def attach(presenter, **params, &block)
+          def attach(presenter, params = {}, &block)
             pom = super
             @menu = pom.components.select {|i| i.type == :menu}.first
           end

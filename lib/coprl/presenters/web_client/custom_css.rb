@@ -51,7 +51,7 @@ module Coprl
         def global_css
           css_file = File.join(custom_css_path, 'global.css')
           full_path = File.join(presenters_root, css_file)
-          full_path if File.exists?(full_path)
+          full_path if File.exist?(full_path)
         end
 
         def global_namespace_css(path)
@@ -61,7 +61,7 @@ module Coprl
           css_file = File.join(css_file, 'global.css')
           full_path = File.join(presenters_root, css_file)
           trace {"Loading global namespace: #{full_path}"}
-          full_path if File.exists?(full_path)
+          full_path if File.exist?(full_path)
         end
 
         # returns the path to a custom css file that matches the presenter
@@ -73,7 +73,7 @@ module Coprl
           css_file = File.join(css_file, 'index') if path == '/'
           css_file = "#{css_file}.css"
           full_path = File.join(presenters_root, css_file)
-          full_path if File.exists?(full_path)
+          full_path if File.exist?(full_path)
         end
       end
     end

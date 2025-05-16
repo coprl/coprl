@@ -152,6 +152,7 @@ export class VDateText extends VTextField {
     }
 
     validate(formData) {
+        this.input.setCustomValidity(''); // Reset any previous validation errors
         const value = this.value();
 
         if (!this.input.required && (!value || value.length < 1)) {
@@ -181,6 +182,7 @@ export class VDateText extends VTextField {
         this.helperDisplay.classList.add('mdc-text-field-helper-text--validation-msg');
         this.element.classList.add('mdc-text-field--invalid');
         this.mdcComponent.label_.shake(true);
+        this.input.setCustomValidity('Invalid date');
 
         return {[this.element.id]: message};
     }

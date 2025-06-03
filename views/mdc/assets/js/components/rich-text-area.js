@@ -4,6 +4,11 @@ import { HorizontalRuleBlot } from './rich-text-area/horizontal-rule-blot'
 import { hookupComponents, VBaseComponent } from './base-component'
 import { eventHandlerMixin } from './mixins/event-handler'
 import { dirtyableMixin } from './mixins/dirtyable'
+import Delta from 'quill-delta'
+import Emitter from 'quill/core/emitter'
+import { VErrors } from './events/errors'
+import { ValidatingClipboard } from './rich-text-area/validating-clipboard'
+import { checkMimeType, unsupportedFileTypeError } from './rich-text-area/mime-type'
 
 // These Blots will be registered with Quill.
 const blots = [
@@ -19,7 +24,10 @@ export function initRichTextArea(e) {
 export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseComponent)) {
     constructor(element, mdcComponent) {
         super(element, mdcComponent);
+
         this.quillWrapper = element.querySelector('.v-rich-text-area');
+        this.acceptedMimeTypes = JSON.parse(this.quillWrapper.dataset.acceptedMimeTypes);
+        this.errors = new VErrors(this.root, this.quillWrapper);
 
         if (!this.hasServerUpload()) {
             Quill.register('modules/imageCompress', ImageCompress);
@@ -47,7 +55,11 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
 
         if (this.hasServerUpload()) {
             this.quill.on('text-change',  async () => await this.performServerImageUpload());
+            this.quill.getModule('toolbar')
+                .addHandler('image', this.toolbarImageButtonHandler.bind(this));
         }
+
+        this.installDragAndDropValidation();
     }
 
     createQuillComponent() {
@@ -163,6 +175,75 @@ export class VRichTextArea extends dirtyableMixin(eventHandlerMixin(VBaseCompone
 
         return await postToServer(base64Str, this.quillWrapper.dataset.serverUploadPath, this.quillWrapper.dataset.serverUploadKey);
     }
+
+    toolbarImageButtonHandler() {
+        // This handler was lifted from Quill's source and modified to check the file's MIME type.
+        let fileInput = this.quill.container.querySelector('input.ql-image[type=file]');
+
+        if (!fileInput) {
+            fileInput = document.createElement('input');
+            fileInput.setAttribute('type', 'file');
+            fileInput.setAttribute('accept', this.acceptedMimeTypes.join(','));
+            fileInput.classList.add('ql-image');
+
+            fileInput.addEventListener('change', () => {
+                this.errors.clearErrors();
+                const file = (fileInput.files || [])[0]
+
+                if (!file) {
+                    return
+                }
+
+                if (!checkMimeType(file.type, this.acceptedMimeTypes)) {
+                    const error = unsupportedFileTypeError();
+
+                    this.errors.displayErrors(error);
+                    console.log(error);
+
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = e => {
+                    const range = this.quill.getSelection(true);
+                    const delta = new Delta()
+                        .retain(range.index)["delete"](range.length)
+                        .insert({ image: e.target.result })
+
+                    this.quill.updateContents(delta, Emitter.sources.USER);
+                    this.quill.setSelection(range.index + 1, Emitter.sources.SILENT);
+
+                    fileInput.value = "";
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            });
+
+            this.quill.container.appendChild(fileInput);
+        }
+
+        fileInput.click();
+    }
+
+    installDragAndDropValidation() {
+        this.quill.container.addEventListener('drop', (event) => {
+            this.errors.clearErrors();
+
+            const file = (event.dataTransfer.files || [])[0];
+
+            if (file && !checkMimeType(file.type, this.acceptedMimeTypes)) {
+                event.preventDefault();
+
+                const error = unsupportedFileTypeError(file);
+
+                this.errors.displayErrors(error);
+                console.log(error);
+
+                return false;
+            }
+        });
+    }
 }
 
 function adjustEditorStyles(richTextArea) {
@@ -229,6 +310,8 @@ function configureQuill() {
     for (const attributor of styleAttributors) {
         Quill.register(attributor, true);
     }
+
+    Quill.register('modules/clipboard', ValidatingClipboard);
 }
 
 // Quill 1 is not capable of generating structurally-sound nested lists. Instead

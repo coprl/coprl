@@ -1,2 +1,2 @@
-js: npm run start -- --watch
+js: npm run start -- --watch --mode development
 css: npm run sass -- --watch

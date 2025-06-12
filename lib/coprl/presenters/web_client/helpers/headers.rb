@@ -10,13 +10,12 @@ module Coprl
 
             # TODO: digest file contents.
             script_name = defined?(::Rails) ? request.env['SCRIPT_NAME'] : "localhost:9292/"
-            @bundle_css ||= asset_url("/#{script_name}bundle.css?v=653a36a9b8a877074d6357c1fa5920eb2b9a9739")
-            @bundle_js ||= asset_url("/#{script_name}bundle.js?v=87618f772b7c9c5212ecff20204c47e0c0329a89")
+            @bundle_css ||= asset_url("/#{script_name}bundle.css?v=33d0c0d8af54a10915131958f0f16a130214a8a3")
+            @bundle_js ||= asset_url("/#{script_name}bundle.js?v=0742c562e4b1bce4b5869f08ec88ca33e8cee204")
 
             html_safe <<~HTML
               <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons&family=Material+Icons+Outlined">
               <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-              <!-- #{request.inspect} -->
               <link rel="stylesheet" href="#{@bundle_css}">
               <script defer src="#{@bundle_js}"></script>
               #{plugin_headers(@pom)}

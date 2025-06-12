@@ -7,7 +7,6 @@ import { dirtyableMixin } from './mixins/dirtyable'
 import Delta from 'quill-delta'
 import Emitter from 'quill/core/emitter'
 import { VErrors } from './events/errors'
-import { ValidatingClipboard } from './rich-text-area/validating-clipboard'
 import { checkMimeType, unsupportedFileTypeError } from './rich-text-area/mime-type'
 
 // These Blots will be registered with Quill.
@@ -310,8 +309,6 @@ function configureQuill() {
     for (const attributor of styleAttributors) {
         Quill.register(attributor, true);
     }
-
-    Quill.register('modules/clipboard', ValidatingClipboard);
 }
 
 // Quill 1 is not capable of generating structurally-sound nested lists. Instead

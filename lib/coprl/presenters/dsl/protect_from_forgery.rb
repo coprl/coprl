@@ -18,20 +18,20 @@ module Coprl
 
         def form_authenticity_token(session)
           session[:_csrf_token] ||= SecureRandom.urlsafe_base64(AUTHENTICITY_TOKEN_LENGTH)
-          raw_token = get_decoded_csfr_token(session[:_csrf_token])
+          raw_token = get_decoded_csrf_token(session[:_csrf_token])
           one_time_pad = SecureRandom.random_bytes(AUTHENTICITY_TOKEN_LENGTH)
           encrypted_csrf_token = xor_byte_strings(one_time_pad, raw_token)
           masked_token = one_time_pad + encrypted_csrf_token
           Base64.strict_encode64(masked_token)
         end
 
-        def get_decoded_csfr_token(csfr_token)
+        def get_decoded_csrf_token(csrf_token)
           # Decode the CSRF token from the session, after Rails 7, this will come in a Base64 URL-safe format,
           # but we need backwards compatibility with older versions.
           begin
-            Base64.urlsafe_decode64(csfr_token)
+            Base64.urlsafe_decode64(csrf_token)
           rescue ArgumentError
-            Base64.strict_decode64(csfr_token)
+            Base64.strict_decode64(csrf_token)
           end
         end
 

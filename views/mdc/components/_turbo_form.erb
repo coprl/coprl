@@ -1,0 +1,13 @@
+<form role="form"
+      id="<%= comp.id %>"
+      class="v-turbo-form"
+      action="<%= comp.action %>"
+      method="<%= comp.method_type %>"
+      style='width: 100%'
+      data-turbo="true"
+      <%= partial 'components/shared/test_id', locals: {comp: comp} %>
+      data-is-container>
+  <div class="<% if comp.shows_errors %>v-errors<% end %>">
+    <%= partial "components/render", :locals => {:components => comp.components, :scope => nil, :parent_form => comp} if comp.components.any? %>
+  </div>
+</form>

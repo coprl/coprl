@@ -1,6 +1,11 @@
-
 import isCompatible from './utils/compatibility';
 import config from './config';
+import { initialize } from './components/initialize';
+import { uninitialize } from './components/uninitialize';
+
+window.coprl = window.corpl || {};
+window.coprl.initialize = initialize;
+window.coprl.uninitialize = uninitialize;
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!isCompatible) {

@@ -1,13 +1,13 @@
 import isCompatible from './utils/compatibility';
 import config from './config';
-import { initialize } from './components/initialize';
-import { uninitialize } from './components/uninitialize';
+import {initialize} from './components/initialize';
+import {uninitialize} from './components/uninitialize';
 
 window.coprl = window.corpl || {};
 window.coprl.initialize = initialize;
 window.coprl.uninitialize = uninitialize;
-
-document.addEventListener('DOMContentLoaded', () => {
+window.coprl.turboInitialLoad = true;
+const initializationHandler = () => {
     if (!isCompatible) {
         const errorMessage = config.get(
             'compatibility.errorMessage',
@@ -33,4 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
             break;
         }
     }
+};
+
+document.addEventListener('DOMContentLoaded', initializationHandler);
+document.addEventListener('turbo:load', (event) => {
+    if (window.coprl.turboInitialLoad) {
+        console.debug('Skipping coprl initialization, it will be handled by DOMContentLoaded');
+        window.coprl.turboInitialLoad = false;
+        return;
+    }
+    initializationHandler(event);
 });

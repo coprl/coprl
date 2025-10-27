@@ -21,3 +21,7 @@ select {
 .mdc-select__label--float-above {
   white-space: nowrap;
 }
+
+.mdc-select-field--invalid {
+  border-color: #b00020;
+}

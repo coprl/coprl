@@ -16,10 +16,36 @@ export class VSelect extends dirtyableMixin(visibilityObserverMixin(VBaseCompone
         this.select.vComponent = this;
         this.recalcWhenVisible(this);
         this.originalValue = this.value();
+        this.helperDisplay = this.root.getElementById(`${element.id}-input-helper-text`);
+        this.origHelperText = this.helperDisplay.innerHTML.trim();
     }
 
     prepareSubmit(params) {
         params.push([this.name(), this.value()]);
+    }
+
+    // Called whenever a form is about to be submitted.
+    // returns true on success
+    // returns on failure return an error object that can be processed by VErrors:
+    //    { email: ["email must be filled", "email must be from your domain"] }
+    //    { :page: ["must be filled"] }
+    validate(formData) {
+        console.debug('Select validate', formData);
+        const isValid = this.select.checkValidity();
+        if (isValid) {
+            this.resetHelperDisplay();
+
+            return true;
+        }
+
+        const message = this.helperDisplay.dataset.validationError ?
+          this.helperDisplay.dataset.validationError :
+          this.select.validationMessage;
+
+        const errorMessage = {};
+        errorMessage[this.element.id] = [message];
+        this.element.classList.add('mdc-select-field--invalid');
+        return errorMessage;
     }
 
     name() {
@@ -60,5 +86,21 @@ export class VSelect extends dirtyableMixin(visibilityObserverMixin(VBaseCompone
 
     isDirty() {
         return this.dirtyable && this.value() !== this.originalValue;
+    }
+
+    resetHelperDisplay() {
+        if (this.shouldShowHelperText) {
+            this.helperDisplay.innerHTML = this.origHelperText;
+            this.helperDisplay.classList.remove('v-hidden', 'mdc-text-field-helper-text--validation-msg');
+        }
+        else {
+            this.helperDisplay.classList.add('v-hidden');
+        }
+
+        this.element.classList.remove('mdc-select-field--invalid');
+    }
+
+    get shouldShowHelperText() {
+        return this.helperDisplay && Boolean(this.origHelperText);
     }
 }

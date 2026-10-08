@@ -19,7 +19,6 @@ module Coprl
         include_plugins(:DSLComponents, :DSLHelpers)
 
         include Coprl::Serializer
-        include Coprl::Trace
 
         attr_reader :router, :context, :components, :name, :namespace
         private :router, :namespace

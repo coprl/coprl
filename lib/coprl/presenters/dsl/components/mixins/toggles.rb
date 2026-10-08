@@ -21,7 +21,6 @@ module Coprl
             end
 
             def icon_toggle(icon, **attribs, &block)
-              trace { attribs.inspect }
               self << IconToggle.new(parent: self,
                                      icon: icon,
                                      **attribs, &block)

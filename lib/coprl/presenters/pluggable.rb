@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-include Coprl::Trace
-
 module Coprl
   module Presenters
     module Pluggable

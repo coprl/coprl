@@ -2,7 +2,7 @@ module Coprl
   module Presenters
     class Registry
       class << self
-        include Coprl::Trace
+        include Coprl::LoggerMethods
       end
 
       @registry = {}

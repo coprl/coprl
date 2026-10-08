@@ -60,7 +60,6 @@ module Coprl
           css_file = File.join(custom_css_path, namespace_path ? namespace_path : '')
           css_file = File.join(css_file, 'global.css')
           full_path = File.join(presenters_root, css_file)
-          trace {"Loading global namespace: #{full_path}"}
           full_path if File.exist?(full_path)
         end
 

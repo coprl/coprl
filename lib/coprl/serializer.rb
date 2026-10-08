@@ -1,14 +1,10 @@
 require 'coprl/parameters'
-require 'coprl/trace'
 
 module Coprl
   # Simple serializer that will build add a to_hash method to an object by inspecting
   # the intersection of its instance variables and public accessor methods.
   module Serializer
-    include Trace
-
     def to_hash(serializer=true)
-      trace {self.class.to_s}
       return build_hash unless serializer
       begin
         serializer_name = "#{self.class.to_s}Serializer"
@@ -23,7 +19,6 @@ module Coprl
     def build_hash
       accessable = instance_variables.map {|i| i.to_s.gsub('@', '').to_sym} & methods
       accessable.reduce({}) do |hash, v|
-        trace {"#{v}:#{params.inspect}"}
         params = Parameters.new(method(v).parameters)
         unless params.required_args? || params.required_options?
           value = self.send(v)

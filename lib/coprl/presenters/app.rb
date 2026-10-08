@@ -4,7 +4,6 @@ module Coprl
       class << self
         include Coprl::ContainerMethods
         include Coprl::LoggerMethods
-        include Coprl::Trace
         include Coprl::Symbol
 
         def boot!
@@ -33,8 +32,7 @@ module Coprl
 
         def load(dir='app', root=ENV['VOOM_ROOT']||File.expand_path("../../../", __FILE__))
           path = File.expand_path(dir, root)
-          trace {"Loading Presenters from: #{path}"}
-          Presenters::Registry.load(File.expand_path(dir, root))
+          Presenters::Registry.load(path)
           Presenters::Registry.finalize
         end
 

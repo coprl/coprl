@@ -10,6 +10,7 @@ module Coprl
               @header = Components::Header.new(
                 parent: self,
                 **attributes,
+                title: title,
                 &block
               )
               self << @header

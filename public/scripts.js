@@ -1,5 +1,6 @@
 // Hookup Dialogs
-document.addEventListener("DOMContentLoaded", function (event) {
+window.coprl.dialogTurboInitialLoad = false;
+const dialogInitHandler = (event) => {
     'use strict';
     var docDialogButtons = document.querySelectorAll('.vml-js-dialog-button');
     for (var i = 0; i < docDialogButtons.length; i++) {
@@ -23,6 +24,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
             });
         }
     }
+}
+document.addEventListener('DOMContentLoaded', dialogInitHandler);
+document.addEventListener('turbo:load', (event) => {
+    if (window.coprl.dialogTurboInitialLoad) {
+        window.coprl.dialogTurboInitialLoad = false;
+        return;
+    }
+    dialogInitHandler(event);
 });
 
 // This class displays a page level message

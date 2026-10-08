@@ -7,7 +7,6 @@ module Coprl
   module Presenters
     module WebClient
       class App < Sinatra::Base
-        include Trace
         set :root, File.expand_path('../../../../..', __FILE__)
         set :router_, WebClient::Router
         set :bind, '0.0.0.0'

@@ -13,7 +13,6 @@ require_relative 'support/loader'
 RSpec.configure do |c|
   c.include Support::Directories
   c.include Support::Loader
-  c.include Coprl::Trace
   c.include RSpecHtmlMatchers
 end
 

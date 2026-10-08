@@ -5,11 +5,15 @@ module Coprl
         module Mixins
           module Header
             def header(title = nil, **attributes, &block)
-              self << Components::Header.new(
+              return @header if locked?
+
+              @header = Components::Header.new(
                 parent: self,
                 **attributes,
+                title: title,
                 &block
               )
+              self << @header
             end
           end
         end

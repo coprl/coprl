@@ -12,7 +12,7 @@ Coprl::Presenters.define(:clipboard, namespace: :plugins) do
     end
     button :copy, type: :raised do
       event :click do
-        clipboard copy: :copy_me
+        clipboard({copy: :copy_me})
       end
     end
   end

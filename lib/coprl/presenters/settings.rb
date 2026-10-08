@@ -1,5 +1,3 @@
-#include Coprl::Trace
-#trace {"Loading Presenters Settings"}
 require 'dry-configurable'
 
 unless defined?(Coprl::Presenters::Settings)

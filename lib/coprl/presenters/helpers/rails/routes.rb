@@ -23,7 +23,6 @@ module Coprl
 
             def method_missing(name, *args)
               if UrlHelper.instance.respond_to?(name)
-                trace { "delegating ##{name} to UrlHelper" }
                 return UrlHelper.instance.public_send(name, *args)
               end
 

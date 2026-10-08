@@ -10,7 +10,6 @@ module Coprl
           include Lockable
           include Coprl::Serializer
           include LoggerMethods
-          include Trace
           include Mixins::YieldTo
           include Mixins::Event
 
